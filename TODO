@@ -1,5 +1,4 @@
 TODO, in approximate order:
-- better Makefile, possible conversion to Automake
 - clean up code, consistent style, function headers
 - ncurses output
 - support Step, Slow, Fast, Run, Stop
