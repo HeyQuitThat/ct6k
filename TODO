@@ -1,0 +1,17 @@
+TODO, in approximate order:
+- better Makefile, possible conversion to Automake
+- clean up code, consistent style, function headers
+- ncurses output
+- support Step, Slow, Fast, Run, Stop
+- "serial" I/O
+ - could publish here
+- support live memory modification
+- support live assembly
+- support breakpoints
+- support .ORG statement
+    - multi-segment object files
+    - loader for multi-segment
+- linker (depends on multi-segment object files
+- Qt front-end
+- card reader/writer
+- random access storage?

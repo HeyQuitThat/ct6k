@@ -1,0 +1,10 @@
+ct6k - a simple, visual emulator for a simple commputer: The CompuTron 6000
+
+This package includes source for the emulator and an assembler, along with
+some example assembly files.
+
+To build:
+$ cd src
+$ make
+
+
