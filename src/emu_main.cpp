@@ -141,13 +141,15 @@ int main(int argc, char *argv[0])
         std::cout << "Error reading file, continuing\n";
     }
     infile.close();
+    std::cout << "Loading complete, beginning run.\n\n";
+
     
     PrintCpuState(c);
     while (!c->IsHalted()) {
+        std::cout << "Press enter to step...\n";
+        std::cin.ignore();
         c->Step();
         PrintCpuState(c);
-        std::cout << "Press enter to continue...\n";
-        std::cin.ignore();
     }
 
     std::cout << "HALT - END OF RUN\n";
