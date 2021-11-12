@@ -1,4 +1,4 @@
-// cpu.cpp - definitions for CPU class
+// cpu.cpp - definitions for CPU class of Comp-o-Tron 6000
 // First successful code execution: October 24, 2021
 // First loop executed November 4, 2021
 
@@ -9,216 +9,247 @@
 #include "arch.h"
 #include "cpu.hpp"
 
+// Constructor, takes no arguments. If needed, we could take one to set the memory size.
 CPU::CPU()
 {
-    mem = new Memory(); /* using DEFAULT_SIZE */
+    Mem = new Memory(); /* using DEFAULT_SIZE */
 };
+
+// Destructor
 CPU::~CPU()
 {
-    delete mem;
+    delete Mem;
 };
 
-uint32_t CPU::read_reg(uint8_t reg_index)
+// Returns value of register at given index. This is public to allow inspection.
+uint32_t CPU::ReadReg(uint8_t Index)
 {
-    assert (reg_index < NUMREGS);
-    return reg[reg_index];
+    assert (Index < NUMREGS);
+    return Reg[Index];
 };
 
-void CPU::write_reg(uint8_t reg_index, uint32_t value)
+// Write register with given value at given index.
+void CPU::WriteReg(uint8_t Index, uint32_t Value)
 {
-    assert (reg_index < NUMREGS);
-    reg[reg_index] = value;
+    assert (Index < NUMREGS);
+    Reg[Index] = Value;
 }
-void CPU::incr_IP()
+
+// Convenience function to increment IP - used during execution.
+void CPU::IncrIP()
 {
-    reg[REG_IP]++;
+    Reg[REG_IP]++;
 };
 
-cpu_internal_state CPU::dump_internal_state()
+// Getter function for complete internal state in one call.
+CPUInternalState CPU::DumpInternalState()
 {
-    cpu_internal_state retval;
+    CPUInternalState retval;
     for (int i = 0; i < NUMREGS; i++)
-        retval.registers[i] = reg[i];
-    retval.halted = !running;
-    retval.FHAP_base = FHAPAddr;
-    retval.IHAP_base = IHAPAddr;
+        retval.Registers[i] = Reg[i];
+    retval.Halted = !Running;
+    retval.FHAP_Base = FHAP_Addr;
+    retval.IHAP_Base = IHAP_Addr;
     return retval;
 }
-// no bounds checking for memory access, address space is 32 bits.
-// reads beyond populated memory return all F
-// writes beyond populated memory are sent to the 12th dimension, never to be seen again
-uint32_t CPU::read_mem(uint32_t address)
+
+// Passthrough to memory read function
+uint32_t CPU::ReadMem(uint32_t Address)
 {
-    return mem->MemRead(address);
+    return Mem->MemRead(Address);
 };
 
-void CPU::write_mem(uint32_t address, uint32_t value)
+// Passthrough to memory write function. Intended for debug use.
+void CPU::WriteMem(uint32_t Address, uint32_t Value)
 {
-    mem->MemWrite(address, value);
+    Mem->MemWrite(Address, Value);
 };
 
-void CPU::set_flag(uint32_t flag)
+// Utility function to directly set a flag in the flag register. Does not check the state of the flag
+// first, and does not modify other flags.
+void CPU::SetFlag(uint32_t Flag)
 {
-    uint32_t tmp = read_reg(REG_FLG);
-    tmp |= flag;
-    write_reg(REG_FLG, tmp);
+    uint32_t tmp = ReadReg(REG_FLG);
+    tmp |= Flag;
+    WriteReg(REG_FLG, tmp);
 };
 
-void CPU::clear_flag(uint32_t flag)
+// Utility function to clear a flag in the flag register. Does not check the state of the flag
+// first, and does not modify other flags.
+void CPU::ClearFlag(uint32_t Flag)
 {
-    uint32_t tmp = read_reg(REG_FLG);
-    tmp &= ~flag;
-    write_reg(REG_FLG, tmp);
+    uint32_t tmp = ReadReg(REG_FLG);
+    tmp &= ~Flag;
+    WriteReg(REG_FLG, tmp);
 };
 
-void CPU::clear_math_flags()
+// Utility function to clear all math-related flags before any math function is performed. Affects overflow,
+// underflow, and zero flags.
+void CPU::ClearMathFlags()
 {
-    uint32_t tmp = read_reg(REG_FLG);
+    uint32_t tmp = ReadReg(REG_FLG);
     tmp &= ~(FLG_OVER | FLG_UNDER | FLG_ZERO);
-    write_reg(REG_FLG, tmp);
+    WriteReg(REG_FLG, tmp);
 };
 
-void CPU::indicate_zero(uint32_t val)
+// Set the state of the zero flag based on the given word.
+void CPU::IndicateZero(uint32_t Val)
 {
-        if (val == 0)
-            set_flag(FLG_ZERO);
+        if (Val == 0)
+            SetFlag(FLG_ZERO);
         else
-            clear_flag(FLG_ZERO);
+            ClearFlag(FLG_ZERO);
 }
 
-bool CPU::is_flag_set(uint32_t flag)
+// Convenience function to check the state of the given flag.
+bool CPU::IsFlagSet(uint32_t Flag)
 {
-    uint32_t tmp = read_reg(REG_FLG);
-    return !!(tmp & flag);
+    uint32_t tmp = ReadReg(REG_FLG);
+    return !!(tmp & Flag);
 };
 
 
-void CPU::set_FHAP(uint32_t addr)
+// Private function to set the the value of the Fault Handler Address Pointer.
+void CPU::Set_FHAP(uint32_t Addr)
 {
-    FHAPAddr = addr;
+    FHAP_Addr = Addr;
 };
 
-void CPU::set_IHAP(uint32_t addr)
+// Private function to set the the value of the Interrupt Handler Address Pointer.
+void CPU::Set_IHAP(uint32_t Addr)
 {
-    // error checking in instruction handling, should it move here?
-    IHAPAddr = addr;
+    IHAP_Addr = Addr;
 };
 
 // This is where things actually happen! Simulates a single clock cycle of the processor.
-void CPU::step()
+void CPU::Step()
 {
-    if (!running)
+    if (!Running)
         // we are halted; don't do anything
         return;
-    // TODO check for interrupts here
-    uint32_t iaddr = read_reg(REG_IP);
-    incr_IP();
-    CurrentInst = new Instruction(read_mem(iaddr));
-    uint32_t ftype = execute();
+    // TODO check for and deal with interrupts here (better have some I/O devices first!)
+    uint32_t iaddr = ReadReg(REG_IP);
+    IncrIP();
+    CurrentInst = new Instruction(ReadMem(iaddr));
+    uint32_t ftype = Execute();
     delete CurrentInst;
     if (ftype)
-        fault(ftype);
+        Fault(ftype);
 };
 
-void CPU::fault(uint32_t fault_type)
+// Fault processing. When a fault is found, save the CPU state and jump to the registered fault
+// handler in the FHAP. Note that there is no error checking, so if the FHAP isn't set up, the CPU
+// will immediately double-fault on the next clock.
+void CPU::Fault(uint32_t Type)
 {
     uint32_t newIP;
 
-    if (is_flag_set(FLG_FAULT)) {
+    if (IsFlagSet(FLG_FAULT)) {
         // already in a fault, this is a double-fault
-        halt();
+        Halt();
         return;
     }
-    set_flag(FLG_FAULT);
-    push_state();
-    newIP = read_mem(FHAPAddr + fault_type);
-    write_reg(REG_IP, newIP);
+    SetFlag(FLG_FAULT);
+    PushState();
+    newIP = ReadMem(FHAP_Addr + Type);
+    WriteReg(REG_IP, newIP);
 };
 
-int CPU::push_state()
+// Save the CPU state to the stack, in preparation for calling a fault handler, an interrupt handler, or a subroutine.
+// Fault handlers can look at the stack to get the IP of the original fault location.
+// Returns fault status.
+int CPU::PushState()
 {
     // All registers pushed to stack, including SP, then SP updated. Fault if we hit top of memory.
     // Bad Things will happen if SP + space for 16 words are not located in populated memory, but not a fault.
     // No flags are updated here.
-    uint32_t mem_base = read_reg(REG_SP);
+    uint32_t mem_base = ReadReg(REG_SP);
+
     if (mem_base > MAX_STATE_PUSH) { // no space for state
         return FAULT_STACK;
     }
     for (int i = 0; i < NUMREGS; i++)
-        write_mem(mem_base + i, read_reg(i));
-    write_reg(REG_SP, mem_base + NUMREGS);
+        WriteMem(mem_base + i, ReadReg(i));
+    WriteReg(REG_SP, mem_base + NUMREGS);
     return FAULT_NO_FAULT;
 };
 
-int CPU::pop_state()
+// Restore machine state after call or interrupt/fault handler.
+// Returns fault status.
+int CPU::PopState()
 {
     // All registers popped from stack, including SP, which simplifies things because we don't need to
     // roll SP back explicitly.
-    uint32_t mem_base = read_reg(REG_SP);
+    uint32_t mem_base = ReadReg(REG_SP);
     if (mem_base < MIN_STATE_POP) { // stack underflow
         return FAULT_STACK;
     }
     mem_base -= NUMREGS;
     for (int i = 0; i < NUMREGS; i++)
-        write_reg(i, read_mem(mem_base + i));
+        WriteReg(i, ReadMem(mem_base + i));
     return FAULT_NO_FAULT;
 };
 
-int CPU::push_word(uint32_t word)
+// Push the given word to the stack, adjusting SP in the process.
+// Returns fault status.
+int CPU::PushWord(uint32_t Word)
 {
-    uint32_t mem_base = read_reg(REG_SP);
+    uint32_t mem_base = ReadReg(REG_SP);
     if (mem_base == MAX_ADDR) { // overflow
         return FAULT_STACK;
     }
-    write_mem(mem_base, word);
+    WriteMem(mem_base, Word);
     mem_base++;
-    write_reg(REG_SP, mem_base);
+    WriteReg(REG_SP, mem_base);
     return FAULT_NO_FAULT;
 }
 
-int CPU::pop_word(uint32_t &word)
+// Pop the next word off the stack, adjusting SP in the process.
+// Returns fault status.
+int CPU::PopWord(uint32_t &Word)
 {
-    uint32_t mem_base = read_reg(REG_SP);
+    uint32_t mem_base = ReadReg(REG_SP);
 
     if (mem_base == 0) { // stack underflow
         return FAULT_STACK;
     }
 
     mem_base--;
-    word = read_mem(mem_base);
+    Word = ReadMem(mem_base);
     return FAULT_NO_FAULT;
 };
 
-// Execute the current opcode
-uint32_t CPU::execute()
+// Execute the current opcode. Basically just a switch to call the appropriate function for the given opcode.
+// Returns fault status.
+uint32_t CPU::Execute()
 {
     uint32_t retval {FAULT_NO_FAULT};
     
-    if (CurrentInst->get_opcode() == OP_INVALID) {
+    if (CurrentInst->GetOpcode() == OP_INVALID) {
         return FAULT_BAD_INSTR;
     }
     // For ease of comprehension, this is all open-coded. It would be possible to
     // set up a bunch of classes and do some polymorphic magic and dynamic casts,
-    // but that would get (IMO) too ugly and confusing very quickly.
+    // but that would get ugly and confusing very quickly.
 
-    switch (CurrentInst->get_type()) {
+    switch (CurrentInst->GetType()) {
         case op_no_args:
-            retval = execute_no_args();
+            retval = ExecuteNoArgs();
             break;
         case op_src_only:
-            retval = execute_src_only();
+            retval = ExecuteSrcOnly();
             break;
         case op_src_dest:
-            retval = execute_src_dest();
+            retval = ExecuteSrcDest();
             break;
         case op_dest_only:
-            retval = execute_dest_only();
+            retval = ExecuteDestOnly();
             break;
         case op_control_flow:
-            retval = execute_control_flow();
+            retval = ExecuteControlFlow();
             break;
         case op_2src_dest:
-            retval = execute_2src_dest();
+            retval = Execute2SrcDest();
             break;
         default:
             retval = FAULT_BAD_INSTR;
@@ -227,21 +258,23 @@ uint32_t CPU::execute()
     return retval;
 };
 
-uint32_t CPU::put_to_dest(uint32_t value)
+// Update the destination register of the instruction with the given word. If the destination is marked as direct,
+// then just update the specified register. If it's indirect, then update the memory word pointed to by the register.
+// Returns fault status.
+uint32_t CPU::PutToDest(uint32_t Value)
 {
-    auto dest = CurrentInst->get_dest();
-    assert(dest.get_type() != rt_unused);
+    auto dest = CurrentInst->GetDestReg();
 
-    switch (dest.get_type())
+    switch (dest.GetType())
     {
         case rt_indirect:
         {
-            uint32_t addr = read_reg(dest.get_num());
-            write_mem(addr, value);
+            uint32_t addr = ReadReg(dest.GetNum());
+            WriteMem(addr, Value);
             break;
         }
         case rt_value:
-            write_reg(dest.get_num(), value);
+            WriteReg(dest.GetNum(), Value);
             break;
         default:
             return FAULT_BAD_INSTR;
@@ -249,20 +282,23 @@ uint32_t CPU::put_to_dest(uint32_t value)
     return FAULT_NO_FAULT;
 };
 
-uint32_t CPU::get_from_reg(RegisterArg srcreg, uint32_t &val)
+// Load the value specified by the given register. Since instructions can have one or two source registers, the actual
+// register argument is passed here. If the register argument is marked as direct, then just read the specified
+// register. If it's indirect, then read the memory word pointed to by the register.
+// Returns fault status.
+uint32_t CPU::GetFromReg(RegisterArg SrcReg, uint32_t &Value)
 {
-    assert(srcreg.get_type() != rt_unused);
 
-    switch (srcreg.get_type())
+    switch (SrcReg.GetType())
     {
         case rt_indirect:
         {
-            uint32_t memaddr = read_reg(srcreg.get_num());
-            val = read_mem(memaddr);
+            uint32_t memaddr = ReadReg(SrcReg.GetNum());
+            Value = ReadMem(memaddr);
             break;
         }
         case rt_value:
-            val = read_reg(srcreg.get_num());
+            Value = ReadReg(SrcReg.GetNum());
             break;
         default:
             return FAULT_BAD_INSTR;
@@ -270,72 +306,78 @@ uint32_t CPU::get_from_reg(RegisterArg srcreg, uint32_t &val)
     return FAULT_NO_FAULT;
 };
 
-uint32_t CPU::retrieve_direct_value()
+// If we've determined that a direct value is needed, read it from memory and update IP so we skip it when
+// we go to execute the next instruction.
+// Returns fault status.
+uint32_t CPU::RetrieveDirectValue()
 {
     
-    uint32_t addr = read_reg(REG_IP);
-    uint32_t retval = read_mem(addr);
-    incr_IP();
+    uint32_t addr = ReadReg(REG_IP);
+    uint32_t retval = ReadMem(addr);
+    IncrIP();
     return retval;
 };
 
-void CPU::halt()
+// Stop the CPU, forever.
+void CPU::Halt()
 {
-    running = false;
-    return;
+    Running = false;
 }
 
-bool CPU::is_halted()
+// Getter for halt state.
+bool CPU::IsHalted()
 {
-    return (!running);
+    return (!Running);
 }
 
-uint32_t CPU::execute_no_args()
+// Subfunction to execute instructions with no arguments.
+// Returns fault status. May change registers and memory.
+uint32_t CPU::ExecuteNoArgs()
 {
     uint32_t faultval {FAULT_NO_FAULT};
 
-    switch(CurrentInst->get_opcode()) {
+    switch(CurrentInst->GetOpcode()) {
         case OP_SSTATE:
-            faultval = push_state();
+            faultval = PushState();
             break;
         case OP_LSTATE:
         {
             // save off IP and R0 so we can restore them after we read the stack
-            uint32_t tmpIP = read_reg(REG_IP);
-            uint32_t tmpR0 = read_reg(REG_R0);
-            faultval = pop_state();
-            write_reg(REG_IP, tmpIP);
-            write_reg(REG_R0, tmpR0);
+            uint32_t tmpIP = ReadReg(REG_IP);
+            uint32_t tmpR0 = ReadReg(REG_R0);
+            faultval = PopState();
+            WriteReg(REG_IP, tmpIP);
+            WriteReg(REG_R0, tmpR0);
             break;
         }
         case OP_RETURN:
         {
             uint32_t newIP;
-            faultval = pop_word(newIP);
-            write_reg(REG_IP, newIP);
+            faultval = PopWord(newIP);
+            WriteReg(REG_IP, newIP);
             break;
         }
         case OP_IRET:
-            faultval = pop_state(); // IP restored to previous position
-            clear_flag(FLG_IN_INT);
+            faultval = PopState(); // IP restored to previous position
+            ClearFlag(FLG_IN_INT);
             break;
         case OP_SIGNED:
-            set_flag(FLG_SIGNED);
+            SetFlag(FLG_SIGNED);
             break;
         case OP_UNSIGNED:
-            clear_flag(FLG_SIGNED);
+            ClearFlag(FLG_SIGNED);
             break;
         case OP_INTENA:
-            set_flag(FLG_INTENA);
+            SetFlag(FLG_INTENA);
             break;
         case OP_INTDIS:
-            clear_flag(FLG_INTENA);
+            ClearFlag(FLG_INTENA);
             break;
         case OP_NOP:
             // do nothing
             break;
         case OP_HALT:
-            halt();
+            Halt();
             break;
         default: // should never get here, but make the compiler happy
             faultval = FAULT_BAD_INSTR;
@@ -344,69 +386,75 @@ uint32_t CPU::execute_no_args()
     return faultval;
 }
 
-uint32_t CPU::execute_src_dest()
+// Subfunction to execute instructions with a single source register and destination register.
+// Returns fault status. May change registers and memory.
+uint32_t CPU::ExecuteSrcDest()
 {
     uint32_t faultval {FAULT_NO_FAULT};
-    uint8_t opcode = CurrentInst->get_opcode();
-    
-    if ((opcode != OP_MOVE) && CurrentInst->is_direct_val_instr())
+    uint8_t opcode = CurrentInst->GetOpcode();
+
+    if ((opcode != OP_MOVE) && CurrentInst->IsDirectValInstr())
         return FAULT_BAD_INSTR;
 
+    // There are only two instructions with this pattern, so no need to bother with a switch.
     if (opcode == OP_MOVE) {
         // First, the special case: MOV 0x000ff000, R0
-        if (CurrentInst->is_direct_val_instr()) {
-            faultval = put_to_dest(retrieve_direct_value());
+        if (CurrentInst->IsDirectValInstr()) {
+            faultval = PutToDest(RetrieveDirectValue());
         } else {
             uint32_t v;
-            faultval = get_from_reg(CurrentInst->get_src1(), v);
+
+            faultval = GetFromReg(CurrentInst->GetSrc1Reg(), v);
             if (faultval == FAULT_NO_FAULT)
-                faultval = put_to_dest(v);
+                faultval = PutToDest(v);
         }
     } else if (opcode == OP_CMP) {
         uint32_t srcval, destval;
-        clear_math_flags();
-        // TODO good place for throw/catch, logic is ugly
-        faultval = get_from_reg(CurrentInst->get_src1(), srcval);
+
+        ClearMathFlags();
+        faultval = GetFromReg(CurrentInst->GetSrc1Reg(), srcval);
         if (faultval == FAULT_NO_FAULT)
-            faultval = get_from_reg(CurrentInst->get_dest(), destval);
+            faultval = GetFromReg(CurrentInst->GetDestReg(), destval);
         if (faultval == FAULT_NO_FAULT) {
             if (srcval == destval)
-                set_flag(FLG_ZERO);
+                SetFlag(FLG_ZERO);
             else if (srcval < destval)
-                set_flag(FLG_UNDER);
+                SetFlag(FLG_UNDER);
             else
-                set_flag(FLG_OVER);
+                SetFlag(FLG_OVER);
         }
     }
 
     return faultval;
 }
 
-uint32_t CPU::execute_src_only()
+// Subfunction to execute instructions with a single source register only.
+// Returns fault status. May change registers and memory.
+uint32_t CPU::ExecuteSrcOnly()
 {
     uint32_t faultval {FAULT_NO_FAULT};
     uint32_t tmp;
-    uint8_t opcode = CurrentInst->get_opcode();
+    uint8_t opcode = CurrentInst->GetOpcode();
 
-    faultval = get_from_reg(CurrentInst->get_src1(), tmp);
+    faultval = GetFromReg(CurrentInst->GetSrc1Reg(), tmp);
     if (faultval == FAULT_NO_FAULT)
         switch(opcode) {
             case OP_PUSH:
-                faultval = push_word(tmp);
+                faultval = PushWord(tmp);
                 break;
             case OP_SETFHAP:
                 if (tmp > MAX_FHAP) {
-                    faultval = FAULT_BAD_INSTR;
+                    faultval = FAULT_BAD_ADDR;
                     break;
                 }
-                set_FHAP(tmp);
+                Set_FHAP(tmp);
                 break;
             case OP_SETIHAP:
                 if (tmp > MAX_IHAP) {
-                    faultval = FAULT_BAD_INSTR;
+                    faultval = FAULT_BAD_ADDR;
                     break;
                 }
-                set_IHAP(tmp);
+                Set_IHAP(tmp);
                 break;
             default:
                 faultval = FAULT_BAD_INSTR;
@@ -415,57 +463,59 @@ uint32_t CPU::execute_src_only()
     return faultval;
 }
 
-uint32_t CPU::execute_dest_only()
+// Subfunction to execute instructions with destination register only.
+// Returns fault status. May change registers and memory.
+uint32_t CPU::ExecuteDestOnly()
 {
     uint32_t faultval {FAULT_NO_FAULT};
     uint32_t tmp;
-    uint8_t opcode = CurrentInst->get_opcode();
+    uint8_t opcode = CurrentInst->GetOpcode();
 
     if (opcode == OP_POP) {
-        faultval = pop_word(tmp);
+        faultval = PopWord(tmp);
         if (faultval == FAULT_NO_FAULT)
-            faultval = put_to_dest(tmp);
+            faultval = PutToDest(tmp);
     } else {
-        faultval = get_from_reg(CurrentInst->get_dest(), tmp);
+        faultval = GetFromReg(CurrentInst->GetDestReg(), tmp);
         if (faultval == FAULT_NO_FAULT)
             switch (opcode) {
                 case OP_NOT:
-                    clear_math_flags();
+                    ClearMathFlags();
                     tmp = ~tmp;
-                    faultval = put_to_dest(tmp);
-                    indicate_zero(tmp);
+                    faultval = PutToDest(tmp);
+                    IndicateZero(tmp);
                     break;
                 case OP_INCR:
-                    clear_math_flags();
-                    if (is_flag_set(FLG_SIGNED)) {
+                    ClearMathFlags();
+                    if (IsFlagSet(FLG_SIGNED)) {
                         int32_t stmp = tmp;
-                        stmp++; // will properly handle negative numbers;
+                        stmp++;
                         if (stmp == INT_MIN) // overflow
-                            set_flag(FLG_OVER);
+                            SetFlag(FLG_OVER);
                         tmp = stmp;
-                    } else {
+                    } else { // unsigned math
                         tmp++;
                         if (tmp == 0) // overflow
-                            set_flag(FLG_OVER);
+                            SetFlag(FLG_OVER);
                     }
-                    faultval = put_to_dest(tmp);
-                    indicate_zero(tmp);
+                    faultval = PutToDest(tmp);
+                    IndicateZero(tmp);
                     break;
                 case OP_DECR:
-                    clear_math_flags();
-                    if (is_flag_set(FLG_SIGNED)) {
+                    ClearMathFlags();
+                    if (IsFlagSet(FLG_SIGNED)) {
                         int32_t stmp = tmp;
-                        stmp--; // will properly handle negative numbers;
+                        stmp--;
                         if (stmp == INT_MAX) // underflow
-                            set_flag(FLG_UNDER);
+                            SetFlag(FLG_UNDER);
                         tmp = stmp;
-                    } else {
+                    } else { // unsigned math
                         tmp--;
                         if (tmp == 0xFFFFFFFF)
-                            set_flag(FLG_UNDER);
+                            SetFlag(FLG_UNDER);
                     }
-                    faultval = put_to_dest(tmp);
-                    indicate_zero(tmp);
+                    faultval = PutToDest(tmp);
+                    IndicateZero(tmp);
                     break;
                 default:
                     faultval = FAULT_BAD_INSTR;
@@ -476,51 +526,53 @@ uint32_t CPU::execute_dest_only()
 }
 
 
-uint32_t CPU::execute_control_flow()
+// Subfunction to execute control flow instructions (with destination register only).
+// Returns fault status. May change registers and memory.
+uint32_t CPU::ExecuteControlFlow()
 {
     uint32_t faultval {FAULT_NO_FAULT};
     uint32_t tmp;
-    uint8_t opcode = CurrentInst->get_opcode();
+    uint8_t opcode = CurrentInst->GetOpcode();
 
-    if (CurrentInst->is_direct_val_instr())
-        tmp = retrieve_direct_value(); // cannot fault
+    if (CurrentInst->IsDirectValInstr())
+        tmp = RetrieveDirectValue(); // cannot fault
     else
-        faultval = get_from_reg(CurrentInst->get_dest(), tmp);
+        faultval = GetFromReg(CurrentInst->GetDestReg(), tmp);
 
     if (faultval == FAULT_NO_FAULT) {
         switch (opcode) {
             case OP_JZERO:
-                if (is_flag_set(FLG_ZERO))
-                    write_reg(REG_IP, tmp);
+                if (IsFlagSet(FLG_ZERO) == true)
+                    WriteReg(REG_IP, tmp);
                 break;
             case OP_JNZERO:
-                if (!is_flag_set(FLG_ZERO))
-                    write_reg(REG_IP, tmp);
+                if (IsFlagSet(FLG_ZERO) == false)
+                    WriteReg(REG_IP, tmp);
                 break;
             case OP_JOVER:
-                if (is_flag_set(FLG_OVER))
-                    write_reg(REG_IP, tmp);
+                if (IsFlagSet(FLG_OVER) == true)
+                    WriteReg(REG_IP, tmp);
                 break;
             case OP_JNOVER:
-                if (!is_flag_set(FLG_OVER))
-                    write_reg(REG_IP, tmp);
+                if (IsFlagSet(FLG_OVER) == false)
+                    WriteReg(REG_IP, tmp);
                 break;
             case OP_JUNDER:
-                if (is_flag_set(FLG_UNDER))
-                    write_reg(REG_IP, tmp);
+                if (IsFlagSet(FLG_UNDER) == true)
+                    WriteReg(REG_IP, tmp);
                 break;
             case OP_JNUNDER:
-                if (!is_flag_set(FLG_UNDER))
-                    write_reg(REG_IP, tmp);
+                if (IsFlagSet(FLG_UNDER) == false)
+                    WriteReg(REG_IP, tmp);
                 break;
             case OP_JMP:
-                write_reg(REG_IP, tmp);
+                WriteReg(REG_IP, tmp);
                 break;
             case OP_CALL:
                 // push current IP, then jump
-                faultval = push_word(read_reg(REG_IP));
+                faultval = PushWord(ReadReg(REG_IP));
                 if (faultval == FAULT_NO_FAULT)
-                    write_reg(REG_IP, tmp);
+                    WriteReg(REG_IP, tmp);
                 break;
             default:
                 faultval = FAULT_BAD_INSTR;
@@ -530,44 +582,46 @@ uint32_t CPU::execute_control_flow()
     return faultval;
 }
 
-uint32_t CPU::execute_2src_dest()
+// Subfunction to execute instructions with two source and one destination register specified.
+// Returns fault status. May change registers and memory.
+uint32_t CPU::Execute2SrcDest()
 {
     uint32_t faultval {FAULT_NO_FAULT};
     uint32_t src1val, src2val, destval;
-    uint8_t opcode = CurrentInst->get_opcode();
+    uint8_t opcode = CurrentInst->GetOpcode();
 
-    faultval = get_from_reg(CurrentInst->get_src1(), src1val);
+    faultval = GetFromReg(CurrentInst->GetSrc1Reg(), src1val);
     if (faultval == FAULT_NO_FAULT)
-        faultval = get_from_reg(CurrentInst->get_src2(), src2val);
+        faultval = GetFromReg(CurrentInst->GetSrc2Reg(), src2val);
     if (faultval == FAULT_NO_FAULT) {
-        clear_math_flags();
+        ClearMathFlags();
         switch (opcode) {
             case OP_ADD:
-                if (is_flag_set(FLG_SIGNED)) {
+                if (IsFlagSet(FLG_SIGNED)) {
                     int32_t s1 = src1val;
                     int32_t s2 = src2val;
                     int32_t d = s1 + s2;
                     if (d < s1 || d < s2)
-                        set_flag(FLG_OVER);
+                        SetFlag(FLG_OVER);
                     destval = d;
-                } else {
+                } else { // unsigned
                     destval = src1val + src2val;
                     if (destval < src1val || destval < src2val)
-                        set_flag(FLG_OVER);
+                        SetFlag(FLG_OVER);
                 }
                 break;
             case OP_SUB:
-                if (is_flag_set(FLG_SIGNED)) {
+                if (IsFlagSet(FLG_SIGNED)) {
                     int32_t s1 = src1val;
                     int32_t s2 = src2val;
                     int32_t d = s1 - s2;
                     if (d > s1 || d > s2)
-                        set_flag(FLG_UNDER);
+                        SetFlag(FLG_UNDER);
                     destval = d;
-                } else {
+                } else { // unsigned
                     destval = src1val - src2val;
                     if (destval > src1val || destval > src2val)
-                        set_flag(FLG_UNDER);
+                        SetFlag(FLG_UNDER);
                 }
                 break;
             case OP_AND:
@@ -590,8 +644,8 @@ uint32_t CPU::execute_2src_dest()
                 break;
         }
     }
-    indicate_zero(destval);
-    faultval = put_to_dest(destval);
+    IndicateZero(destval);
+    faultval = PutToDest(destval);
     return faultval;
 }
 

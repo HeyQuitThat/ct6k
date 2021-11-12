@@ -5,82 +5,87 @@
 #include <cstdint>
 #include <string>
 
+// Register type 
 enum _reg_type {
     rt_unused,
     rt_indirect,
     rt_value,
     rt_invalid,
-    rt_null, // special case for MOV instruction
+    rt_null, // special case for direct value
 };
 
-class RegisterArg {
-public:
-    RegisterArg(uint8_t);
-    _reg_type get_type();
-    uint8_t get_num();
-    bool is_valid();
-    void print(std::string &);
-
-private:
-    enum _reg_type type;
-    uint8_t regnum;
-};
-
+// Opcode type - used to determine what type of args the opcode takes
 enum _op_type {
     op_invalid = 0,
     op_no_args,
     op_src_only,
     op_dest_only,
-    op_control_flow, // can use direct data
-    op_src_dest, // allows direct data as well
+    op_control_flow, // uses destination register only, but also can use direct data
+    op_src_dest,     // allows direct data as well
     op_2src_dest,
 };
 
-#define MAX_INSTR_TEXT_LEN 9    // UNSIGNED + null. In real life, the compiler's likely to give us
-                                // 16 bytes anyway.
-struct opmap {
-    const char name[MAX_INSTR_TEXT_LEN];
-    const uint8_t opcode;
-    const enum _op_type type;
+// This is the class that handles the actual register argument bytes in each instruction word
+class RegisterArg {
+public:
+    RegisterArg(uint8_t);
+    _reg_type GetType();
+    uint8_t GetNum();
+    bool IsValid();
+    void Print(std::string &);
+
+private:
+    enum _reg_type Type;
+    uint8_t RegNum;
 };
 
+#define MAX_INSTR_TEXT_LEN 9    // "UNSIGNED" + null
+
+// Opcode map - allows lookups based on both name and opcode value
+struct OpMap {
+    const char Name[MAX_INSTR_TEXT_LEN];
+    const uint8_t Opcode;
+    const enum _op_type Type;
+};
+
+// The meat of the file - instantiated by the CPU for each instruction it executes
 class Instruction {
 public:
     Instruction(uint32_t, uint32_t); // extra prefetch value for immdiate addressing,
-    Instruction(uint32_t); // decodes upon init
+    Instruction(uint32_t);           // decodes upon init
     ~Instruction();
-    void print(std::string&);
-    uint32_t output_binary(bool, uint32_t&);
-    uint8_t get_opcode();
-    _op_type get_type();
-    RegisterArg get_src1();
-    RegisterArg get_src2();
-    RegisterArg get_dest();
-    bool is_direct_val_instr();
-    bool is_direct_val_present();    // only used when assembling or debugging
-    uint32_t get_direct_val();
+    void Print(std::string&);
+    uint8_t GetOpcode();
+    _op_type GetType();
+    RegisterArg GetSrc1Reg();
+    RegisterArg GetSrc2Reg();
+    RegisterArg GetDestReg();
+    bool IsDirectValInstr();
+    bool IsDirectValPresent();
+    uint32_t GetDirectVal();
 
 
 private:
-    // data
-    uint32_t raw;
-    bool is_raw {false};
-    uint8_t opcode;
-    struct opmap *map;
-    RegisterArg *src1;
-    RegisterArg *src2;
-    RegisterArg *dest;
-    uint32_t direct_val {0}; // only allowed for MOV
-    bool direct_val_in_use {false};
-    bool direct_val_provided {false};
+    uint32_t Raw;   // used for data
+    bool IsRaw {false};
+    uint8_t Opcode;
+    struct OpMap *Map;
+    RegisterArg *Src1;
+    RegisterArg *Src2;
+    RegisterArg *Dest;
+    uint32_t DirectVal {0};
+    bool DirectValInUse {false};
+    bool DirectValProvided {false};
 
-    // methods
-    bool is_valid_instruction();
-    void print_opstr(std::string &outstr);
+    bool IsValidInstruction();
+    void PrintOpstr(std::string &Out);
 
 };
 
 // Not part of the class, but can be used to build one
-uint32_t build_instruction(std::string instring, uint32_t& extra_word, bool& extra_word_present);
+// Originally this was part of the class but it didn't feel great
+// due to single responsibility principle. So now it's a helper
+// function. Could it go back in the class? Sure, if it needs to.
+uint32_t BuildInstruction(std::string In, uint32_t& ExtraWord, bool& ExtraWordPresent);
 
 #endif // __INSTRUCTION_HPP__

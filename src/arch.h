@@ -84,7 +84,9 @@ SHIFTL and SHIFTR shift src1 by number of bits in src2, result in dest. Shift va
 SHIFTL zero-fills, SHIFTR fills with value in bit 31.
 
 For JMP and related control-flow instructions, setting src1, src2 and dest register bytes to 0xFFFFFF
-indicates a direct value for the jump destination.
+indicates a direct value for the jump destination. Otherwise, the address to which the CPU should jump
+is specified in the destination register. This is a little weird architecturally because the CPU is actually
+reading from the destination register, but makes sense semantically to humans: "Jump to this destination".
 
 Memory:
 All accesses 32-bits. Memory granularity is 32 bits. No endianness.
@@ -253,7 +255,7 @@ TODO: preload a register with mem size?
 /* Fault codes */
 #define FAULT_NO_FAULT	0		// used internally
 #define FAULT_BAD_INSTR	0x00000001
-#define FAULT_BAD_MEM	0x00000002
+#define FAULT_BAD_ADDR	0x00000002
 #define FAULT_STACK		0x00000004
 #define	FAULT_DOUBLE	0x80000000
 

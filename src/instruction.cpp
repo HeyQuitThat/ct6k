@@ -14,69 +14,77 @@
 
 using namespace std::string_literals;
 
-RegisterArg::RegisterArg(uint8_t reg)
+// Constructor for RegisterArg class
+// Takes a uint8 and decodes it into a register argument, ready for processing
+RegisterArg::RegisterArg(uint8_t Reg)
 {
-    regnum = reg & REGNUM_MASK;
-    if (reg == REG_NULL) {
-        type = rt_null;
+    RegNum = Reg & REGNUM_MASK;
+    // Special case for direct value instructions; not decoded further. Indicates need for CPU to fetch next
+    // word from memory to act as the argument to the function.
+    if (Reg == REG_NULL) {
+        Type = rt_null;
         return;
     }
-    if ((reg & REG_ERR) || !(reg & REG_VALID)) {
-        type = rt_invalid; // fault on its way
+
+    if ((Reg & REG_ERR) || !(Reg & REG_VALID)) {
+        Type = rt_invalid;
     } else {
-        switch (reg & REGTYPE_MASK) {
+        switch (Reg & REGTYPE_MASK) {
         case REG_UNUSED:
-            type = rt_unused;
+            Type = rt_unused;
             break;
         case REG_IND:
-            type = rt_indirect;
+            Type = rt_indirect;
             break;
         case REG_VAL:
-            type = rt_value;
+            Type = rt_value;
             break;
         default:
-            type = rt_invalid; // zero or more than one bit set, fault
+            Type = rt_invalid;
             break;
         }
     }
 };
 
-_reg_type RegisterArg::get_type()
+// Getter functions for register type, number, validity. There are no setters, these values are not changed
+// after construction.
+_reg_type RegisterArg::GetType()
 {
-    return type;
+    return Type;
 };
 
-uint8_t RegisterArg::get_num()
+uint8_t RegisterArg::GetNum()
 {
-    return regnum;
+    return RegNum;
 };
 
-bool RegisterArg::is_valid()
+bool RegisterArg::IsValid()
 {
-    return ((type == rt_indirect) || (type == rt_value));
+    return ((Type == rt_indirect) || (Type == rt_value));
 }
 
-void RegisterArg::print(std::string &outstr)
+// Prints the register argument. Called in context of decoding and printing the entire instruction.
+void RegisterArg::Print(std::string &Out)
 {
-    if (type == rt_value) {
-        outstr += "R";
-        outstr += std::__cxx11::to_string(regnum);
-    } else if (type == rt_indirect) {
-        outstr += "I";
-        outstr += std::__cxx11::to_string(regnum);
+    if (Type == rt_value) {
+        Out += "R";
+        Out += std::__cxx11::to_string(RegNum);
+    } else if (Type == rt_indirect) {
+        Out += "I";
+        Out += std::__cxx11::to_string(RegNum);
     } else {
-        outstr += "ERROR";
+        Out += "ERROR";
     }
 };
 
 
 
-// We could use a STL list function here, instead of open-coding the search, but we need to be able
+// We could use an STL list function here, instead of open-coding the search, but we need to be able
 // to search on two different keys: uint8 if executing and string if assembling or debugging.
 // Because of this, and because it's a short, static list, we will open-code the search functions
-// and just use fixed-lenght c strings.
+// and just use fixed-length C strings.
 
-struct opmap opcode_map[] ={
+OpMap opcode_map[] ={
 {"MOVE", OP_MOVE, op_src_dest},
 {"CMP", OP_CMP, op_src_dest},
 {"ADD", OP_ADD, op_2src_dest},
@@ -114,106 +122,115 @@ struct opmap opcode_map[] ={
 {"", OP_INVALID, op_invalid},
 };
 
-opmap *find_from_opcode(uint8_t op)
+// Given an opcode, find the map. This lets us print the name and tells us the type so we can
+// execute the opcode.
+OpMap *FindFromOpcode(uint8_t Op)
 {
     int i = 0;
 
-    while (opcode_map[i].opcode > OP_INVALID) {
-        if (op == opcode_map[i].opcode)
+    while (opcode_map[i].Opcode > OP_INVALID) {
+        if (Op == opcode_map[i].Opcode)
             break;
         i++;
     }
     return &opcode_map[i];
 };
 
-opmap *find_from_string(std::string instr)
+// Given a name, find the map. This is used for assembly.
+OpMap *FindFromString(std::string Instr)
 {
     int i = 0;
+    std::string tmpstr;
 
-    for(auto& c : instr)
-        c = toupper(c);
+    // Convert input string to uppercase without destroying it.
+    for(auto& c : Instr)
+        tmpstr += toupper(c);
 
-    while (opcode_map[i].opcode) {
-        if (instr.compare(opcode_map[i].name) == 0)
+    while (opcode_map[i].Opcode) {
+        if (tmpstr.compare(opcode_map[i].Name) == 0)
             return &opcode_map[i];
         i++;
     }
     return &opcode_map[i];
 };
 
-// functions for class Instruction
+// Functions for class Instruction
 
-// constructor with u32 decodes from memory
-Instruction::Instruction(uint32_t inst)
+// Constructor from single word - used during execution. If the instruction calls for a direct value,
+// the CPU will fetch it as it executes.
+Instruction::Instruction(uint32_t Inst)
 {
-    raw = inst;
-    opcode = GET_OP(inst);
-    map = find_from_opcode(opcode); // TODO check for nullptr and set a bool to indicate raw data
+    Raw = Inst;
+    Opcode = GET_OP(Inst);
+    Map = FindFromOpcode(Opcode);
 
-    src1 = new RegisterArg(GET_SRC1(inst));
-    src2 = new RegisterArg(GET_SRC2(inst));
-    dest = new RegisterArg(GET_DEST(inst));
-    // Check for direct value. This will fault when executed if opcode is not MOVE.
+    Src1 = new RegisterArg(GET_SRC1(Inst));
+    Src2 = new RegisterArg(GET_SRC2(Inst));
+    Dest = new RegisterArg(GET_DEST(Inst));
+    // Check for direct value. This will fault when executed if opcode doesn't support direct data.
     // Actual direct value to be retrieved later when executed or printed.
-    if (opcode == OP_MOVE)
-        direct_val_in_use = (src1->get_type() == rt_null) && (src2->get_type() == rt_null);
+    if (Opcode == OP_MOVE)
+        DirectValInUse = (Src1->GetType() == rt_null) && (Src2->GetType() == rt_null);
     else
-        direct_val_in_use = (map->type == op_control_flow) && (dest->get_type() == rt_null);
+        DirectValInUse = (Map->Type == op_control_flow) && (Dest->GetType() == rt_null);
 
 };
 
-
-Instruction::Instruction(uint32_t inst, uint32_t prefetch)
+// Constructor with two words - used for disassembly and printing. The second word is provided
+// opportunistically, in case a direct value is required. 
+Instruction::Instruction(uint32_t Inst, uint32_t Prefetch)
 {
-    raw = inst;
-    opcode = GET_OP(inst);
-    map = find_from_opcode(opcode);
+    Raw = Inst;
+    Opcode = GET_OP(Inst);
+    Map = FindFromOpcode(Opcode);
 
-    src1 = new RegisterArg(GET_SRC1(inst));
-    src2 = new RegisterArg(GET_SRC2(inst));
-    dest = new RegisterArg(GET_DEST(inst));
-    // Check for direct value. This will fault when executed if opcode is not MOVE.
-    if (opcode == OP_MOVE)
-        direct_val_in_use = (src1->get_type() == rt_null) && (src2->get_type() == rt_null);
+    Src1 = new RegisterArg(GET_SRC1(Inst));
+    Src2 = new RegisterArg(GET_SRC2(Inst));
+    Dest = new RegisterArg(GET_DEST(Inst));
+    // Check for direct value. This will fault when executed if opcode doesn't support direct data.
+    if (Opcode == OP_MOVE)
+        DirectValInUse = (Src1->GetType() == rt_null) && (Src2->GetType() == rt_null);
     else
-        direct_val_in_use = (map->type == op_control_flow) && (dest->get_type() == rt_null);
+        DirectValInUse = (Map->Type == op_control_flow) && (Dest->GetType() == rt_null);
 
-    direct_val = prefetch;
-    direct_val_provided = true;
+    DirectVal = Prefetch;
+    DirectValProvided = true;
 
 };
 
-
+// Destructor.
 Instruction::~Instruction()
 {
-    delete src1;
-    delete src2;
-    delete dest;
+    delete Src1;
+    delete Src2;
+    delete Dest;
 };
 
-bool Instruction::is_valid_instruction()
+// Test validity of the instruction, based on its type and the register arguments presented.
+// Attempting to execute an invalid instruction will fault!
+bool Instruction::IsValidInstruction()
 {
     bool retval {false};
-    if (!is_raw)
-        switch(map->type) {
+    if (!IsRaw)
+        switch(Map->Type) {
         case op_no_args:
             retval = true;
             break;
         case op_src_only:
-            retval = src1->is_valid();
+            retval = Src1->IsValid();
             break;
         case op_src_dest:
-            retval = dest->is_valid() && (src1->is_valid() || 
-                            (src1->get_type() == rt_null && (src2->get_type() == rt_null)));
+            retval = Dest->IsValid() && (Src1->IsValid() || 
+                            (Src1->GetType() == rt_null && (Src2->GetType() == rt_null)));
             break;
         case op_dest_only:
-            retval = dest->is_valid();
+            retval = Dest->IsValid();
             break;
         case op_control_flow:
-            retval = dest->is_valid() || direct_val_in_use;
+            retval = Dest->IsValid() || DirectValInUse;
             break;
         case op_2src_dest:
-            retval = src1->is_valid() && src2->is_valid() && dest->is_valid();
+            retval = Src1->IsValid() && Src2->IsValid() && Dest->IsValid();
             break;
         default:
             break; // retval is false by default
@@ -222,222 +239,218 @@ bool Instruction::is_valid_instruction()
 
 }
 
-void Instruction::print_opstr(std::string &outstr)
+// Print the name of the opcode. Called in context of printing the entire instruction.
+void Instruction::PrintOpstr(std::string &Out)
 {
-    outstr += "\t";
-    outstr += map->name;
-    outstr += " ";
+    Out += "\t";
+    Out += Map->Name;
+    Out += " ";
 }
 
-void Instruction::print(std::string &outstr)
+// Print the entire instruction, including register arguments and direct value if available.
+void Instruction::Print(std::string &Out)
 {
-    if (is_valid_instruction() == false) {
+    if (IsValidInstruction() == false) {
         // assume it's raw data
-        outstr += (boost::format("\t0x%08X\n") % raw).str();
+        Out += (boost::format("\t0x%08X\n") % Raw).str();
     } else {
-        print_opstr(outstr);
-        switch(map->type) {
+        PrintOpstr(Out);
+        switch(Map->Type) {
         case op_no_args:
             break;
         case op_src_only:
-            src1->print(outstr);
+            Src1->Print(Out);
             break;
         case op_src_dest:
-            if (direct_val_in_use)
-                if (direct_val_provided)
-                    outstr += (boost::format("0x%08X") % direct_val).str();
+            if (DirectValInUse)
+                if (DirectValProvided)
+                    Out += (boost::format("0x%08X") % DirectVal).str();
                 else
-                    outstr += "<direct data>";
+                    Out += "<direct data>";
             else    
-                src1->print(outstr);
-            outstr += ", ";
-            dest->print(outstr);
+                Src1->Print(Out);
+            Out += ", ";
+            Dest->Print(Out);
             break;
         case op_dest_only:
-            dest->print(outstr);
+            Dest->Print(Out);
             break;
         case op_control_flow:
-            if (direct_val_in_use)
-                if (direct_val_provided)
-                    outstr += (boost::format("0x%08X") % direct_val).str();
+            if (DirectValInUse)
+                if (DirectValProvided)
+                    Out += (boost::format("0x%08X") % DirectVal).str();
                 else
-                    outstr += "<direct data>";
+                    Out += "<direct data>";
             else    
-                dest->print(outstr);
+                Dest->Print(Out);
             break;
         case op_2src_dest:
-            src1->print(outstr);
-            outstr += ", ";
-            src2->print(outstr);
-            outstr += ", ";
-            dest->print(outstr);
+            Src1->Print(Out);
+            Out += ", ";
+            Src2->Print(Out);
+            Out += ", ";
+            Dest->Print(Out);
             break;
         default:
             // should never get here
             break;
         }
-        outstr += "\n";
+        Out += "\n";
     }
     return;
 };
 
-
-uint32_t Instruction::output_binary(bool extra_word_present, uint32_t& extra_word)
-{   
-    if (direct_val_in_use && direct_val_provided) {
-        extra_word_present = true;
-        extra_word = direct_val;
-    }
-    return raw;
-}
-
-uint8_t Instruction::get_opcode()
+// Getter functions. Like with Register class, there are no setters; these values are not changed at runtime.
+uint8_t Instruction::GetOpcode()
 {
-    return opcode;
+    return Opcode;
 };
 
-_op_type Instruction::get_type()
+_op_type Instruction::GetType()
 {
-    return map->type;
+    return Map->Type;
 };
 
-RegisterArg Instruction::get_src1()
+RegisterArg Instruction::GetSrc1Reg()
 {
-    return *src1;
+    return *Src1;
 };
 
-RegisterArg Instruction::get_src2()
+RegisterArg Instruction::GetSrc2Reg()
 {
-    return *src2;
+    return *Src2;
 };
 
-RegisterArg Instruction::get_dest()
+RegisterArg Instruction::GetDestReg()
 {
-    return *dest;
+    return *Dest;
 };
 
-bool Instruction::is_direct_val_instr()
+bool Instruction::IsDirectValInstr()
 {
-    return direct_val_in_use;
+    return DirectValInUse;
 };
 
-bool Instruction::is_direct_val_present()    // only used when assembling or debugging
+bool Instruction::IsDirectValPresent()    // only used when assembling or debugging
 {
-    return direct_val_in_use && direct_val_provided;
+    return DirectValInUse && DirectValProvided;
 };
 
-uint32_t Instruction::get_direct_val()
+uint32_t Instruction::GetDirectVal()
 {
-    return direct_val;
+    return DirectVal;
 };
 
-
-#define CHECK_TOKENS(_n) {if (num_tokens < (_n)) throw("Insufficient input");}
-
-uint8_t build_reg(std::string regarg)
+// Build binary register argument based on string input.
+// This function can throw an exception!
+uint8_t BuildReg(std::string RegArg)
 {
     uint8_t retval {0};
     uint32_t tmp;
-    if (regarg[0] == 'R') {
+
+    if (RegArg[0] == 'R') {
         retval = REG_VAL;
-    } else if (regarg[0] == 'I') {
+    } else if (RegArg[0] == 'I') {
         retval = REG_IND;
     } else {
         throw("Invalid argument");
     }
-    if (!isdigit(regarg[1]))    // TODO handle IP, SP, FLG registers;
+    if (!isdigit(RegArg[1]))
         throw("Invalid argument");
         
-    tmp = std::strtoul(&regarg[1], nullptr, 10);
+    tmp = std::strtoul(&RegArg[1], nullptr, 10);
     if (tmp > 15)
         throw("Invalid argument");
     retval |= (uint8_t)(tmp & REGNUM_MASK);
     return retval;
 };
 
+// This line of code hurts my C-loving heart
 typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
+// This line of code hurts everyone else's C++ loving hearts!
+#define CHECK_TOKENS(_n) {if (num_tokens < (_n)) throw("Insufficient input");}
 
-// build_instruction - quite possibly the worst parser in the history of the world.
+// BuildInstruction - quite possibly the worst parser in the history of the world.
 // We can get away with this terrible excuse for a parser because the language
 // is so very simple. No macros, no assemble-time math, and symbols get handled by the caller
 // of this function.
 // Can throw exception!
-uint32_t build_instruction(std::string instring, uint32_t& extra_word, bool& extra_word_present)
+uint32_t BuildInstruction(std::string In, uint32_t& ExtraWord, bool& ExtraWordPresent)
 {
-    tokenizer tok{instring};
+    tokenizer tok{In};
     uint32_t retval;
     tokenizer::iterator it;
     int num_tokens {0};
-    opmap *map;
-    extra_word_present = false;
-    std::string tmpstr;
+    OpMap *map;
+    std::string tmp;
 
+    ExtraWordPresent = false;
     for (it = tok.begin(); it != tok.end(); ++it)
         num_tokens++;
     CHECK_TOKENS(1);
     it = tok.begin();
-    tmpstr = *it;
-    if (isalpha(tmpstr[0])) {
+    tmp = *it;
+    if (isalpha(tmp[0])) {
         // possibly a keyword, possibly junk
-        map = find_from_string(tmpstr);
-        retval = OP_LOAD(map->opcode);
-        switch (map->type) {
+        map = FindFromString(tmp);
+        retval = OP_LOAD(map->Opcode);
+        switch (map->Type) {
             case op_no_args:
                 // done; retval is complete
                 break;
             case op_src_only:
                 CHECK_TOKENS(2);
                 it++; // next token should be src reg
-                retval |= S1_LOAD(build_reg(*it));
+                retval |= S1_LOAD(BuildReg(*it));
                 break;
             case op_src_dest:
                 CHECK_TOKENS(4); // instruction, src, separator, dest
                 it++; // next token should be src reg
-                tmpstr = *it;
-                if (isdigit(tmpstr[0])) {
+                tmp = *it;
+                if (isdigit(tmp[0])) {
                     retval |= (S1_LOAD(REG_NULL) | S2_LOAD(REG_NULL));
-                    extra_word = std::stoul(tmpstr,nullptr,0);
-                    extra_word_present = true;
+                    ExtraWord = std::stoul(tmp,nullptr,0);
+                    ExtraWordPresent = true;
                 } else
-                    retval |= S1_LOAD(build_reg(*it));
+                    retval |= S1_LOAD(BuildReg(*it));
                 it++; // skip separator
                 it++;
-                retval |= DEST_LOAD(build_reg(*it));
+                retval |= DEST_LOAD(BuildReg(*it));
                 break;
             case op_dest_only:
                 CHECK_TOKENS(2);
                 it++; // next token should be dest reg
-                retval |= DEST_LOAD(build_reg(*it));
+                retval |= DEST_LOAD(BuildReg(*it));
                 break;
             case op_control_flow:
                 CHECK_TOKENS(2);
                 it++; // next token should be dest reg or direct val
-                tmpstr = *it;
-                if (isdigit(tmpstr[0])) {
+                tmp = *it;
+                if (isdigit(tmp[0])) {
                     retval |= DEST_LOAD(REG_NULL);
-                    extra_word = std::stoul(tmpstr,nullptr,0);
-                    extra_word_present = true;
+                    ExtraWord = std::stoul(tmp,nullptr,0);
+                    ExtraWordPresent = true;
                 } else
-                    retval |= DEST_LOAD(build_reg(*it));
+                    retval |= DEST_LOAD(BuildReg(*it));
                 break;
             case op_2src_dest:
                 CHECK_TOKENS(6); // instruction, src1, separator, src2, separator, dest
                 it++;
-                retval |= S1_LOAD(build_reg(*it));
+                retval |= S1_LOAD(BuildReg(*it));
                 it++; // skip separator
                 it++;
-                retval |= S2_LOAD(build_reg(*it));
+                retval |= S2_LOAD(BuildReg(*it));
                 it++; // skip separator
                 it++;
-                retval |= DEST_LOAD(build_reg(*it));
+                retval |= DEST_LOAD(BuildReg(*it));
                 break;
             default:
                 throw("Invalid instruction");
                 break;
         }
-    } else if (isdigit(tmpstr[0])) {
+    } else if (isdigit(tmp[0])) {
         // Easiest case - just raw data in decimal or hex format
-        retval = std::stoul(tmpstr, nullptr, 0);
+        retval = std::stoul(tmp, nullptr, 0);
         // Testing with g++ shows that neither strtoul or stoul successfully catches
         // an overflow - errno never gets set. So this exception never throws.
         // Leaving the code in place anyway just in case another compiler does it differently.

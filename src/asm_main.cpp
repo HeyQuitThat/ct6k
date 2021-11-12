@@ -62,157 +62,140 @@
 // If all symbols have been defined, then we walk the table and fix up all the spots in the object
 // file with the correct value, before finally writing the output to disk.
 //
-#if 0
-void test_hexval(uint32_t val)
-{
-    std::string outstr;
-    auto i = new Instruction(val);
-    i->print(outstr);
-    std::cout << outstr;
-    delete i;
-}
-
-void test_2hexval(uint32_t val, uint32_t val2)
-{
-    std::string outstr;
-    auto i = new Instruction(val, val2);
-    i->print(outstr);
-    std::cout << outstr;
-    delete i;
-}
-#endif
 
 
-
+// Extract a symbol from the string, beginning at the specified position.
+// Returns a string, possibly empty.
 std::string ExtractSymbol(std::string Line, unsigned int Pos)
 {
-    std::string RetVal;
+    std::string retval;
     
     while (isalpha(Line[Pos]))
-        RetVal += Line[Pos];
+        retval += Line[Pos];
 
-    return RetVal;
+    return retval;
 }
 
-int usage(char *cmd)
+// Display usage. Caller passes in argv[0] so that we can display the name of the command.
+int Usage(char *Cmd)
 {
     std::cout << "USAGE:\n\t";
-    std::cout << cmd << " infile outfile\n";
+    std::cout << Cmd << " infile outfile\n";
     std::cout << "No other options are currently supported\n\n";
     return 0;
 }
 
-void fill_buf_msb_first(uint8_t *buf, uint32_t dword)
+// Fill a byte array from the given word in MSB order for binary output.
+void FillMSBFirst(uint8_t *Buffer, uint32_t Word)
 {
     for (auto i = 24, j = 0; i >= 0; i -= 8, j++) // ugly magic numbers
-        buf[j] = (uint8_t)((dword >> i) & 0xff);
+        Buffer[j] = (uint8_t)((Word >> i) & 0xff);
 }
 
+// Write a blob of 32-bit words to the given output file in MSB-first order. Not particularly efficient,
+// but we're not dealing with huge amounts of data here.
 void WriteBlob(std::vector<uint32_t>& Blob, std::ofstream &File)
 {
     uint8_t outbuf[4];
 
     for (auto i : Blob) {
-        fill_buf_msb_first(outbuf, i);
+        FillMSBFirst(outbuf, i);
         File.write((const char *)outbuf, 4);
     }
 }
 
+// Main function of the assembler. Most of the work is done in the BuildInstruction() function, and in
+// the SymbolTable class.
 int main(int argc, char *argv[0])
 {
-    int retval {0};
-    std::ifstream InFile;
-    std::vector<uint32_t> OutBuf;
-    std::ofstream OutFile;
-    std::string InLine;
-    unsigned int LineNum {0};
+    std::ifstream infile;
+    std::vector<uint32_t> outbuf;
+    std::ofstream outfile;
+    std::string in_line;
+    unsigned int linenum {0};
     uint32_t addr {0};
     SymbolTable syms;
 
     if (argc != 3)
-        return usage(argv[0]);
+        return Usage(argv[0]);
 
     try {
-        InFile.open(argv[1], std::ios::in);
+        infile.open(argv[1], std::ios::in);
     } catch (const char* msg) {
         std::cout << "Error opening input file: " << msg << "\n";
         return -1;
     }
 
     try {
-        OutFile.open(argv[2], std::ios::binary | std::ios::out | std::ios::trunc);
+        outfile.open(argv[2], std::ios::binary | std::ios::out | std::ios::trunc);
     } catch (const char* msg) {
         std::cout << "Error opening output file: " << msg << "\n";
-        InFile.close();
+        infile.close();
         return -1;
     }
 
-    while (!InFile.eof()) {
+    // The actual loop where things get done.
+    while (!infile.eof()) {
         uint32_t word, extra_word;
         bool extra_present;
         bool ret;
-        size_t Pos;
+        size_t pos;
         
-        getline(InFile, InLine);
-        LineNum++;
-        std::cout << "Line " << LineNum << "\n";
+        getline(infile, in_line);
+        linenum++;
         // skip comment and blank lines
-        if (InLine[0] == '*' || (InLine.length() == 0)) {
-            std::cout << "Skipping comment\n";
+        if (in_line[0] == '*' || (in_line.length() == 0))
             continue;
-        }
         // check for symbol on a line
-        Pos = InLine.find('$');
-        if (Pos != std::string::npos) {
-            std::string TmpSymbol = ExtractSymbol(InLine, Pos);
-            std::cout << "Extracted symbol " << TmpSymbol << " at position " << Pos << "\n";
+        pos = in_line.find('$');
+        if (pos != std::string::npos) {
+            std::string tmpsym = ExtractSymbol(in_line, pos);
             
-            if (Pos > 0) {
-                ret = syms.AddRef(TmpSymbol, addr+1, LineNum);
+            if (pos > 0) { // symbol is a reference
+                ret = syms.AddRef(tmpsym, addr+1, linenum);
                 // for direct value instructions, the value comes after the instruction
                 // fix up source line so parser inserts a zero
                 if (!ret) {
-                    InLine.erase(Pos);
-                    InLine += "0\n";
-                    std::cout << "Fixed up line to read \"" << InLine << "\"\n"; 
+                    in_line.erase(pos);
+                    in_line += "0\n";
                 }
-            } else {
-                ret = syms.AddSymbol(TmpSymbol, addr, LineNum); // TODO handle ret or exception
+            } else { // Symbol starts at position 0, it's a declaration.
+                ret = syms.AddSymbol(tmpsym, addr, linenum);
                 if (!ret)
                     continue; // no further processing on this line
             }
         }
         if (ret) { // error happened!
             std::cout << "Error found, stopping\n";
-            InFile.close();
-            OutFile.close();
+            infile.close();
+            outfile.close();
             remove(argv[2]);
             exit(1);
         }
         // process line as an instruction
         try {
-            word = build_instruction(InLine, extra_word, extra_present);
+            word = BuildInstruction(in_line, extra_word, extra_present);
         } catch (const char* msg) {
-            std::cerr << "Fatal: parse error, line " << InLine << ": " << msg << "\n";
-            InFile.close();
-            OutFile.close();
+            std::cerr << "Fatal: parse error, line " << in_line << ": " << msg << "\n";
+            infile.close();
+            outfile.close();
             remove(argv[2]);
             exit(1);
         }
-        std::cout << "Encoded instruction as " << std::hex << word << "\n";
-        OutBuf.push_back(word);
+        // Add the resultant word(s) to the output blob.
+        outbuf.push_back(word);
         addr++;
         if (extra_present) {
-            std::cout << "Adding extra word " << std::hex << extra_word << "\n";
-            OutBuf.push_back(extra_word);
+            outbuf.push_back(extra_word);
             addr++;
         }
         
     }
 
-    syms.UpdateExecutable(OutBuf);
-    WriteBlob(OutBuf, OutFile);
-    InFile.close();
-    OutFile.close();
-    return retval;
+    // Fix up all of the symbols and make sure each reference actually points somewhere valid.
+    syms.UpdateExecutable(outbuf);
+    WriteBlob(outbuf, outfile);
+    infile.close();
+    outfile.close();
+    return 0;
 }
