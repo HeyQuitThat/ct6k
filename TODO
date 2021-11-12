@@ -1,16 +1,22 @@
 TODO, in approximate order:
-- clean up code, consistent style, function headers
 - ncurses output
 - support Step, Slow, Fast, Run, Stop
-- "serial" I/O
- - could publish here
+- "serial" I/O (polling, hacky)
+- update documentation in arch.h to include discussion of endianness.
+- update test.asm to test as many instructions/address modes as possible
+    - could publish here
+- Interrupt support
+- Timer interrupt?
+- add assembler support for reg aliases (IP, SP, FLG)
+- Qt front-end
 - support live memory modification
 - support live assembly
 - support breakpoints
 - support .ORG statement
     - multi-segment object files
     - loader for multi-segment
-- linker (depends on multi-segment object files
-- Qt front-end
+- support strings as static data in assembler (possible now but must be done by hand)
+- linker (depends on multi-segment object files)
+- non-hacky way to register peripherals' memory space
 - card reader/writer
 - random access storage?
