@@ -1,0 +1,145 @@
+The History of the Comp-o-Tron Corporation
+
+
+The seeds that sprouted the Comp-o-Tron Corporation were planted in the
+heady days following the second world war. With both Hirohito and Hitler
+awaiting trial in The Hauge, 1947 ended with a bang as a crack team of
+researchers at Bell Labs announced the invention of the transistor.
+
+Upon taking office in 1948, President Dewey announced a ground-breaking
+consortium between industry, academia, and government. Drawn by promises
+of good salaries and royalty-free patent licensing, corporations, 
+researchers, and engineers flocked to the project. At the time, President
+Dewey predicted a "tenfold increase in development velocity" for the
+effort, dubbed "Project Brooklyn".
+
+While we have no way of evaluating President Dewey's claims, it is clear
+that the open communications fostered by Project Brooklyn have borne fruit.
+By 1949, development efforts had shifted from germanium to silicon, and
+engineers had begun to create perfect silicon crystals in increasingly
+larger sizes.
+
+Inexpensive dual-junction transistors hit the open market in 1951, in time
+for manufacturers to create pocket-sized radios for the Christmas season.
+
+Also in 1951, Walter Pfistermonger formed the Pfistermonger Transistorized
+Computing Corporation, which was focused on making fully-transistorized
+computing devices - no vacuum tubes were allowed in the factory. The
+corporation was soon renamed to Comp-o-Tron, Inc., based on input from
+Pfistermonger's seven-year-old daughter, Edith.
+
+The Comp-o-Tron Model 1 was powered on in late 1952. Never intended for
+production, this proof-of-concept machine was an early success for the
+company. Aside from the power supply (which was purchashed off-the-shelf),
+the Model 1 was entirely transistorized and functioned entirely on
+Boolean mathematical principles.
+
+The decision to build the Model 1 with fully-modular architecture bore
+early fruit when the plummeting price of transistors allowed engineers
+to change from a 6-bit-wide bus to a 9-bit-wide bus midway through the
+program, with minimal impact to cost or schedule.
+
+Edith Pfistermonger, now eight years old, was given the honor of pressing
+the "RUN" button for the first program execution. Much to her delight, the
+Model 1 printed "Hello, Edith." on the attached Print-o-Tron. To this day,
+the first program written by any new engineer at Comp-o-Tron is the
+"Hello, Edith" program, and a copy of this program is shipped with
+each and every new Comp-o-Tron computing device.
+
+By 1953, the first Multi-Gate Devices (MTGs) began to emerge from the labs.
+These devices, with two or sometimes three transistors integrated onto a
+single slab of silicon, changed the way designers thought about circuits.
+It was clear that slabs were the way forward.
+
+The engineers at Comp-o-Tron did not miss this trend. Plans for the Model
+2 were rapidly shelved in favor of the slab-based Model 3. Because it was
+apparent that logic slabs were going to provide paired and quad logic
+blocks, the basic modular component of the device was changed from three
+bits to four. The planned 12-bit Model 2 now became a 16-bit Model 3.
+
+This change caused a lot of excitement and interest (and deposits) from
+potential customers. A 16-bit bus would allow a whopping 65,536 storage
+words, each storing values up to 65,536. But who could afford that much
+storage? The total cost would be hundreds of millions of dollars.
+
+Enter a scrappy bunch of engineers from California, newly graduated from
+the California Institute of Technology. They had developed a new type of
+experimental semiconductor memory called Capacitor Auto-Refresh Dynamic
+Storage, or CARDS. The directors of Comp-o-Tron, seeing an opportunity,
+bought the CARDS company outright, paying the founders handsomely for their
+work.
+
+Although the patents could not remain exclusive to Comp-o-Tron under the
+rules of the Brooklyn Project, the company was still in an advantageous 
+position. Comp-o-Tron computers, which were already transistor-based, were
+easily adapted use the new CARDS memory, dubbed Stor-o-Tron for the market.
+
+Released in fall of 1954, the Model 3 was a huge success for Comp-o-Tron,
+selling well over 200 machines to government, business and academia. Users
+tout its small size (smaller than the family car!), low power and cooling
+requirements, and ease of programming. If any computing device could be
+considered a "hit", it is the Comp-o-Tron Model 3.
+
+The Comp-o-Tron Model 3 was accompanied by some outstanding peripheral
+devices as well. The Print-o-Tron XL full-width matrix imager is able to
+print a full page of standard pink-bar paper in 3 seconds flat. And the
+Card-o-Tron 3CS combination card scanner/puncher is able to read and 
+write high-density Comp-o-Tron cards as well as the low-density Hollerith
+cards used by CTC equipment.
+
+In 1955, Comp-o-Tron engineers doubled down, with the release of the
+record-setting Tape-o-Tron 1200: a magnetic tape device capable of reading
+and writing data at an astounding 1200 bits per second - four times the
+industry standard.
+
+And now, in 1956, the Comp-o-Tron Corporation is prepared once again to
+upend the industry. Originally dubbed the Model 6 (because its bus is twice
+as wide as that of the Model 3), the new computing device is now officially
+named the Comp-o-Tron 6000. 
+
+Constructed almost entirely of multi-gate slabs, the Comp-o-Tron 6000 is
+tiny -- the size of an ordinary four-drawer file cabinet -- and sips power,
+able to run off an ordinary 20-Ampere household circuit. And its 32-bit bus
+is able to access, in theory, over 4 billion words of local storage.
+
+Although this mind-boggling storage size is impossible to build today, the
+Comp-o-Tron 6000 is ready when the technology catches up, possibly as soon
+as 1960! Meanwhile, configurations are available with capacities ranging
+from 16,384 words to an astounding 512 thousand words, with millions of
+words expected to be available in 1957.
+
+Speed? The Model 6000 has that too, able to execute commands at a rate
+more than twice that of the Model 3 -- up to 300,000 cycles per second,
+another world record. And because the bus is twice as wide, each of those
+300,000 cycles can process twice as much data.
+
+The Comp-o-Tron 6000 already supports the Print-o-Tron XL, the Card-o-Tron
+3CS, and the Tape-o-Tron 1200. Introduced alongside the 6000 is the amazing
+new Disc-o-Tron, which is a fully-addressable magnetic platter device
+capable of storing up to 2,000,000 words of information. The Disc-o-Tron
+can access any word on its massive platters within 2 seconds!
+
+Comp-o-Tron computing devices have always had a reputation for easy 
+programming, and the 6000 is no different. While the 32-bit instruction
+codes are all-new, they are laid out in an easy-to-understand fashion
+and can be hand-assembled with minimal effort. Even better, a full
+symbolic assembler is included with each Comp-o-Tron computing device.
+
+But Comp-o-Tron isn't standing still. We've invested heavily in high-level
+languages and have borrowed some top talent from the United States Navy.
+This team is right now putting the finishing touches on a new business-
+oriented high-level language that we call Type-o-Tron Business. Software to
+support this language will be available in late 1956 and will support the
+6000 AND sufficiently-configured Model 3 devices.
+
+Additionally, Comp-o-Tron is cooperating with the CTC Corporation on a new
+science-oriented language that we call Type-o-Tron Formula. While this
+language is early in development, we expect to unveil it to the public in
+1957, with software tools available soon after.
+
+It's an exciting time for the computing device industry, and Comp-o-Tron
+is at the forefront. Who knows what the future will bring?
+
+We know - it will bring new and more exciting Comp-o-Tron computing
+devices! And each and every one of them will print "Hello, Edith" when it
+is first powered on.
