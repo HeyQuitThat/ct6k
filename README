@@ -1,4 +1,7 @@
-ct6k - a simple, visual emulator for a simple commputer: The Comp-o-Tron 6000
+ct6k - a simple, visual emulator for a simple, old-school computer:
+The Comp-o-Tron 6000!
+
+Basic directions:
 
 This package includes source for the emulator and an assembler, along with
 some example assembly files.
@@ -7,4 +10,80 @@ To build:
 $ cd src
 $ make
 
+Write your code with any editor - see arch.h for the instruction set
+and system architecture basics.
+
+To assemble your code:
+$ cd src
+$ ./asm <input file> <output file>
+
+By convention, the input file has the extension .asm, and the output file
+has the extension .ct6k. But you can use whatever you want!
+
+To run your code:
+$ cd src
+$ ./emu <binary file>
+
+
+What is the Comp-o-Tron 6000? Short answer: it's a toy.
+
+Long answer:
+
+It's a educational toy! The Comp-o-Tron 6000 (ct6k for short) is an emulator
+for a fictional 1950s computer. It has a big pretty front panel that shows
+the full internal state of the machine - each register, each flag, and each
+instruction to be executed. It's a great way to see how the internals of a
+computer work, on an approachable level.
+
+It's also a great way to learn the fundamentals of assembly language
+programming, with a simple, flexible instruction set, and intuitive
+addressing modes. It's a lot simpler than ARM(!), without all of the
+bizarre backward-compatibility gunk of x86.
+
+Once you've written your code and assembled it, you can see exactly what it
+does in real time - speed it up, slow it down, step through - all while
+seeing the effect on the registers of each instruction.
+
+ct6k is a great way to learn the low-level basics of programming and
+computer science, without having to figure out gunk like segment registers.
+
+If you want to get really bare-knuckled, try hand-assembling your code!
+Write it out on graph paper, translate by hand to binary or hexadecimal,
+then crank up your favorite hex editor to save the binary to disk.
+
+Note: ct6k thinks in terms of 32-bit words, these are stored most-
+significant-byte first on disk. (If you don't understand what those words
+mean, it's OK. Just stick with the assembler.)
+
+
+Really long and boring answer:
+
+Many years ago, I was involved in writing some BIOS code for PCs. Since BIOS
+code is super hard to debug, I was given access to a very expensive piece
+of equipment called an ICE, or In-Circuit Emulator. (Sometimes you'll see
+references to an ITP or In-circuit Target Probe. Ours may have actually been
+an ITP, but we called it an ICE because that's what we were used to. And it's
+easier to say.)
+
+The ICE was great because you could click a button, stop the CPU, and see the
+state of every single register and flag. You could read memory, you could write
+memory, you could disassemble code, you could single-step, or set breakpoints...
+all of the things you would expect a debugger to do. And it was HARDWARE, which
+meant you could trace what the CPU did from the very beginning - as soon as it
+came out of reset.
+
+You didn't need an OS, or any software at all (at least, not on the target
+machine). It was great! Not only was it a powerful tool, it was super fascin-
+ating to see the machine running at that level.
+
+That view of the machine's internals is something that we as engineers - as
+nerds - have lost. That's why so many of us have a love for archaic hardware.
+It's not just that these machines are big and hot and (sometimes) dangerous.
+It's also that they are comprehensible - those with the appropriate knowledge
+can look at the control panel and easily see what's happening INSIDE the machine.
+
+And let's face it - everyone likes blinky lights.
+
+The Comp-o-Tron 6000 is a re-imagining of those classic early computers, in
+software.
 
