@@ -197,13 +197,14 @@ void UI::DrawFlags(uint32_t FlagsReg)
     HighlightFlagRow(FLG_SIGNED_ROW, (FlagsReg & FLG_SIGNED));
     HighlightFlagRow(FLG_INT_ENA_ROW, (FlagsReg & FLG_INTENA));
     HighlightFlagRow(FLG_FAULT_ROW, (FlagsReg & FLG_FAULT));
+    wrefresh(FlagWin);
 }
 
 // Update IHAP and FHAP display on screen
 void UI::DrawHAPs(uint32_t FHAPAddr, uint32_t IHAPAddr)
 {
     mvwaddstr(HAPsWin, FHAP_ADDR_ROW, FHAP_ADDR_COL, (boost::format("0x%08X") % FHAPAddr).str().c_str());
-    mvwprintw(HAPsWin, IHAP_ADDR_ROW, IHAP_ADDR_COL, (boost::format("0x%08X") % FHAPAddr).str().c_str());
+    mvwaddstr(HAPsWin, IHAP_ADDR_ROW, IHAP_ADDR_COL, (boost::format("0x%08X") % IHAPAddr).str().c_str());
 }
 
 // In hex mode, draw a stack dump window
