@@ -224,7 +224,8 @@ int main(int argc, char *argv[0])
             // Reset
             case KEY_END:
             // exit
-                quitting = true;
+                if (foil->ShowConfirmation())
+                    quitting = true;
                 break;
             case 'B':
             default:
