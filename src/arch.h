@@ -19,6 +19,8 @@ Flags (R13) (R/0)
 	Bit 31: Fault
 
 SP (R14)
+  The stack counts UP from SP as things are pushed. Overflow or underflow of
+  address space is a fault.
 IP (R15)
 
 Data structures in memory:
