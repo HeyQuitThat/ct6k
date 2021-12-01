@@ -242,7 +242,6 @@ bool Instruction::IsValidInstruction()
 // Print the name of the opcode. Called in context of printing the entire instruction.
 void Instruction::PrintOpstr(std::string &Out)
 {
-    Out += "\t";
     Out += Map->Name;
     Out += " ";
 }
@@ -252,7 +251,7 @@ void Instruction::Print(std::string &Out)
 {
     if (IsValidInstruction() == false) {
         // assume it's raw data
-        Out += (boost::format("\t0x%08X\n") % Raw).str();
+        Out += (boost::format("0x%08X") % Raw).str();
     } else {
         PrintOpstr(Out);
         switch(Map->Type) {
@@ -295,7 +294,6 @@ void Instruction::Print(std::string &Out)
             // should never get here
             break;
         }
-        Out += "\n";
     }
     return;
 };
