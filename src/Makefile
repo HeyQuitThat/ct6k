@@ -15,16 +15,18 @@ cpu.o: cpu.cpp cpu.hpp memory.hpp $(COMMON_HEADERS)
 
 symref.o: symref.cpp symref.hpp
 
-emu_main.o: emu_main.cpp cpu.hpp $(COMMON_HEADERS)
+ui.o: ui.cpp ui.hpp arch.h
+
+emu_main.o: emu_main.cpp cpu.hpp ui.hpp $(COMMON_HEADERS)
 
 asm_main.o: asm_main.cpp $(COMMON_HEADERS)
 
-#emulator - likely to be more frontends later
-EMU_OBJS = emu_main.o instruction.o memory.o cpu.o
+# nucurses emulator
+EMU_OBJS = emu_main.o instruction.o memory.o cpu.o ui.o
 ASM_OBJS = asm_main.o instruction.o symref.o
 
 emu: $(EMU_OBJS)
-	g++ -o emu $(EMU_OBJS)
+	g++ -o emu $(EMU_OBJS) -lncurses
 
 asm: $(ASM_OBJS)
 	g++ -o asm $(ASM_OBJS)
