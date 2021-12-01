@@ -95,4 +95,5 @@ private:
 #define RUN_STATE_COL 50
 #define RUN_STATE_BLANK "                              "
 #define INSTR_ROW 20
+#define MESSAGE_ROW 21
 #endif // __UI_HPP__

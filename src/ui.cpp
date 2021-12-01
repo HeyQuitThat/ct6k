@@ -260,7 +260,14 @@ bool UI::InputMem(uint32_t &Addr, uint32_t &NewVal)
 
 bool UI::ShowConfirmation()
 {
-    return true;
+    int c;
+
+    attron(COLOR_PAIR(CP_RED));
+    mvprintw(MESSAGE_ROW, 27, "Exit? Are you sure? (Y/N)");
+    attroff(COLOR_PAIR(CP_RED));
+    c = getch();
+    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK);
+    return ((c == 'y') || (c == 'Y'));
 }
 
 // Utility function to swap register display from binary to blinky and back. Does not need to know the values
