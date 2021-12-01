@@ -1,8 +1,13 @@
 TODO, in approximate order:
-- ncurses output
-- support Step, Slow, Fast, Run, Stop
+- complete feature set in ncurses emulator
+ - modify reg/mem
+ - breakpoints
+ - disassembly window
+ - help
+ - live assembler
+ - reset
+ - load program after reset?
 - "serial" I/O (polling, hacky)
-- update documentation in arch.h to include discussion of endianness.
 - update test.asm to test as many instructions/address modes as possible
     - could publish here
 - Interrupt support
