@@ -77,6 +77,7 @@ void UI::DrawStaticElements()
     wattron(RegWin, COLOR_PAIR(CP_BLUE));
     for (int i = 0; i < 16; i++)
         mvwprintw(RegWin, i + 1, 2, "R%2.2d:", i);
+
     mvwprintw(RegWin, REG_FLG_Y, REG_NAME_X, "FLG");
     mvwprintw(RegWin, REG_SP_Y, REG_NAME_X, "SP");
     mvwprintw(RegWin, REG_IP_Y, REG_NAME_X, "IP");
@@ -298,6 +299,7 @@ int UI::RegCharTranslate(int Current)
 }
 
 // Redraw the register window when the display mode changes
+// TODO hex mode
 void UI::RedrawRegWindow()
 {
     int current;
