@@ -43,8 +43,8 @@
 #define INSTR_ROW 20
 #define MESSAGE_ROW 21
 #define HELP_WIN_X 4
-#define HELP_WIN_Y 3
+#define HELP_WIN_Y 1
 #define HELP_WIN_WIDTH 72
-#define HELP_WIN_HEIGHT 19
+#define HELP_WIN_HEIGHT 21
 
 #endif //__UI_PRIV_HPP

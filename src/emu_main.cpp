@@ -217,8 +217,6 @@ int main(int argc, char *argv[0])
             // show disassembly
             case 'K':
             // set breakpoint
-            case KEY_F(1):
-            // show help window
             case KEY_F(10):
             // Reset
             case KEY_END:
@@ -227,6 +225,9 @@ int main(int argc, char *argv[0])
                     quitting = true;
                 break;
             case 'B':
+            case KEY_F(1):
+                foil->ShowHelpWindow();
+                break;
             default:
             // break from run, already handled
                 break;

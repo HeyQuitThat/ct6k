@@ -234,9 +234,73 @@ void UI::DrawNextInstr(std::string Instruction)
     refresh();
 }
 
+const char *HelpText[] =
+{
+"COMP-O-TRON 6000 EMULATOR",
+"",
+"The Comp-o-Tron 6000 is a premium, all-transistor computing device,",
+"introduced by the Comp-o-Tron Corporation in 1956. Utilitizing a",
+"full 32-bit address width, and a full 32-bit data width, the",
+"Comp-o-Tron 6000 is able to hold and process MILLIONS of words of",
+"data in its exclusive Stor-o-Tron memory.",
+"",
+"Like the original Comp-o-Tron 6000, this emulator allows the user",
+"to control the flow of execution, and to modify the values",
+"contained in memory or in machine registers.",
+"",
+"Unlike the original Comp-o-Tron 6000, this emulator also allows the",
+"user to see the textual representation of instructions (AKA dis-",
+"assembly) as well to directly enter instructions in textual mode.",
+"",
+"Please review the README and HISTORY files for more information.",
+"",
+"Press any key to continue.",
+nullptr,
+};
+
+const char *HelpTextB[] =
+{
+"ACHTUNG! ALLES LOOKENSPEEPERS!",
+"",
+"Alles touristen und non-technischen looken peepers!",
+"Das computenmachine ist nicht fur gefingerpoken und mittengrabben.",
+"Ist easy schnappen der springenwerk, blowenfusen und poppencorken",
+"mit spitzensparken. Ist nicht fuer gewerken bei das dumpkopfen.",
+"Das rubbernecken sichtseeren keepen das cotten-pickenen hans in das",
+"pockets muss; relaxen und watchen das blinkenlichten.",
+"",
+"Drucken Sie any keyboardenbutton.",
+nullptr,
+};
+
+
 // Modal dialogs
 void UI::ShowHelpWindow()
 {
+    WINDOW *helpwin;
+    const char *textline;
+    char const **txt;
+    int i = 0;
+
+    helpwin = CreateWindow(HELP_WIN_HEIGHT, HELP_WIN_WIDTH, HELP_WIN_Y, HELP_WIN_X);
+    wattron(RegWin, COLOR_PAIR(CP_BLUE));
+    if (CurrentState == DS_Blinky)
+        txt = HelpTextB;
+    else
+        txt = HelpText;
+    textline = txt[i];
+    while (textline != nullptr) {
+        mvwaddstr(helpwin, i+1, 2, textline);
+        textline = txt[++i];
+    }
+    wrefresh(helpwin);
+    refresh();
+    getch();
+    wborder(helpwin, ' ', ' ', ' ',' ',' ',' ',' ',' ');
+    wrefresh(helpwin);
+    refresh();
+    delwin(helpwin);
+    RefreshAll();
     return;
 }
 
