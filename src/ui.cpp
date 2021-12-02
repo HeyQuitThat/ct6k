@@ -1,5 +1,6 @@
 // ui.cpp - methods for ui class - ncurses interface for ct6k emulator
 #include "ui.hpp"
+#include "ui-priv.hpp"
 #include <boost/format.hpp>
 
 
