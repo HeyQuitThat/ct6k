@@ -316,9 +316,13 @@ void UI::RedrawRegWindow()
 // Full refresh after a modal dialog blows away the screen
 void UI::RefreshAll()
 {
+    redrawwin(stdscr);
+    refresh();
+    redrawwin(RegWin);
     wrefresh(RegWin);
+    redrawwin(FlagWin);
     wrefresh(FlagWin);
+    redrawwin(HAPsWin);
     wrefresh(HAPsWin);
     // if in hex mode, refresh the stack window as well
-    refresh();
 }
