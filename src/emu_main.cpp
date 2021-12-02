@@ -127,8 +127,6 @@ int main(int argc, char *argv[0])
     foil->DrawStaticElements();
     foil->DrawRunState("STEPPING");
 
-
-    // TODO DrawRunState
     while (!quitting) {
         int c;
         std::string tmp;
