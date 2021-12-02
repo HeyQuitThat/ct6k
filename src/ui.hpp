@@ -43,7 +43,6 @@ private:
     WINDOW *FlagWin;
     WINDOW *StackWin;
     WINDOW *HAPsWin;
-    WINDOW *HelpWin;
     WINDOW *DisasmWin;
     DisplayState CurrentState;
     // methods
