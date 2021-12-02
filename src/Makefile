@@ -15,7 +15,7 @@ cpu.o: cpu.cpp cpu.hpp memory.hpp $(COMMON_HEADERS)
 
 symref.o: symref.cpp symref.hpp
 
-ui.o: ui.cpp ui.hpp arch.h
+ui.o: ui.cpp ui.hpp ui-priv.hpp arch.h
 
 emu_main.o: emu_main.cpp cpu.hpp ui.hpp $(COMMON_HEADERS)
 
