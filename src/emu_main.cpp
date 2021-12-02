@@ -217,7 +217,7 @@ int main(int argc, char *argv[0])
             // show disassembly
             case 'K':
             // set breakpoint
-            case KEY_F(10):
+            case KEY_F(12):
             // Reset
             case KEY_END:
             // exit

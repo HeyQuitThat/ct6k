@@ -69,7 +69,7 @@ void UI::DrawStaticElements()
     mvprintw(1, 32, "COMP-O-TRON 6000");
     mvprintw(22, 3, "Execute: (S)tep slo(W) (Q)uick (F)ull (B)reak");
     mvprintw(23, 3, "Modify: (R)egister (M)emory (A)ssemble (D)isassemble Brea(K)point");
-    mvprintw(24, 3, "F1 Help  END Exit  F10 Reset");
+    mvprintw(24, 3, "F1 Help  END Exit  F12 Reset");
     mvprintw(24, 35, "(T)oggle Mode");
     attroff(COLOR_PAIR(CP_DEFAULT));
 
