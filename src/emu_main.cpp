@@ -142,8 +142,9 @@ int main(int argc, char *argv[0])
         if (curr_state.Halted == true) {
             RS = RS_Halted;
             foil->DrawRunState("HALTED");
-
+            nodelay(stdscr, false);
         }
+
         // TODO check for breakpoint
         switch (RS) {
             case RS_Slow:
