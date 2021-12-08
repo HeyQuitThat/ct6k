@@ -49,6 +49,7 @@ private:
     WINDOW *CreateWindow(int Height, int Width, int Y, int X);
     int RegCharTranslate(int Current);
     void HighlightFlagRow(int Row, bool On);
+    bool HexInput(int Row, int Col, uint32_t &Input);
     void RedrawRegWindow();
     void RefreshAll(); // must be called after destroying any modal window
 

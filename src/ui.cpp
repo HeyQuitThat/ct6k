@@ -376,6 +376,56 @@ void UI::RedrawRegWindow()
     wrefresh(RegWin);
 }
 
+// Input a new hex value from the specified location on the screen. Input is uint32 so we can
+// limit to 8 characters and only allow 0-9 and A-F.
+// This probably could have been done by the forms library, but that seems awful heavy for this.
+// Returns true if input is good, false if failure or cancel.
+bool UI::HexInput(int Row, int Col, uint32_t &Input)
+{
+    int c;
+    int count {0};
+    std::string instr;
+    bool retval {false};
+    bool done {false};
+
+    move(Row, Col);
+    curs_set(1);
+    refresh();
+    while (!done) {
+        c = getch();
+        // adding new input to the string
+        if (count < 8) {
+            if ((c >= '0' && c <= '9') ||
+                (c >= 'a' && c <= 'f') ||
+                (c >= 'A' && c <= 'F')) {
+                count++;
+                addch(c);
+                refresh();
+                instr += c;
+            }
+        }
+        // backspace handling
+        if ((c == KEY_BACKSPACE) && (count > 0)) {
+            count--;
+            instr.pop_back();
+            move(Row, Col + count);
+            addch(' ');
+            move(Row, Col + count);
+            refresh();
+        }
+        if ((c == KEY_ENTER) || (c == KEY_STAB) || (c == '\n'))
+            done = true;
+    }
+    if (count > 0) {
+        retval = true;
+        Input = std::stoul(instr, nullptr, 16);
+    }
+    // cursor off
+    curs_set(0);
+    refresh();
+    return retval;
+}
+
 
 // Full refresh after a modal dialog blows away the screen
 void UI::RefreshAll()
