@@ -162,7 +162,6 @@ int main(int argc, char *argv[0])
                 } else {
                     RS = RS_Step;
                     foil->DrawRunState("STEPPING");
-                    c = 'B'; // will fall through next switch statement
                     nodelay(stdscr, false);
                     continue;
                 }
