@@ -110,10 +110,12 @@ void UpdateScreen(CPUInternalState Current, CPUInternalState Previous, UI *Scree
 int main(int argc, char *argv[0])
 {
     CPU *ct6k = new CPU();
-    CPUInternalState curr_state, prev_state;
-    RunState RS = RS_Step;
-    int quitting = false;
     UI *foil = new UI();  // [n]curses, foiled again!
+    CPUInternalState curr_state, prev_state;
+    RunState RS {RS_Step};
+    int quitting {false};
+    bool bp_active {false};
+    uint32_t breakpoint {0};
 
     // Loading a program is optional, users can hand-assemble a bootstrap loader if they want.
     if (argc > 2)
@@ -134,6 +136,15 @@ int main(int argc, char *argv[0])
         prev_state = curr_state;
         curr_state = ct6k->DumpInternalState();
         UpdateScreen(curr_state, prev_state, foil);
+
+        if (bp_active && (curr_state.Registers[REG_IP] == breakpoint))
+        {
+            nodelay(stdscr, false);
+            foil->DrawMessage("    Reached breakpoint! Press any key.");
+            RS = RS_Step;
+            foil->DrawRunState("STEPPING");
+        }
+
         if (RS != RS_Full) {
             tmp = FormatDisasm(ct6k->ReadMem(curr_state.Registers[REG_IP]), ct6k->ReadMem(curr_state.Registers[REG_IP]+1));
             foil->DrawNextInstr(tmp);
@@ -203,6 +214,10 @@ int main(int argc, char *argv[0])
                     foil->DrawRunState("RUNNING 10Hz");
                 }
                 break;
+            case 'K':
+                bp_active = foil->InputBreakpoint(breakpoint);
+                break;
+            // set breakpoint
             case 'T':
                 foil->ChangeDisplayState();
                 break;
@@ -214,8 +229,6 @@ int main(int argc, char *argv[0])
             // assemble code
             case 'D':
             // show disassembly
-            case 'K':
-            // set breakpoint
             case KEY_F(12):
             // Reset
             case KEY_END:
