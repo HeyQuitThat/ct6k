@@ -321,6 +321,21 @@ void UI::ShowDisasmWindow()
     return;
 }
 
+bool UI::InputBreakpoint(uint32_t &BP)
+{
+    bool retval;
+
+    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK);
+    attron(COLOR_PAIR(CP_GREEN));
+    mvprintw(MESSAGE_ROW, 4, "Input Breakpoint Address: [        ]");
+    refresh();
+    retval = HexInput(MESSAGE_ROW, 31, BP);
+    attroff(COLOR_PAIR(CP_GREEN));
+    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK);
+    refresh();
+    return retval;
+}
+
 bool UI::InputAssembly(uint32_t &Addr, std::string Input)
 {
     return false;
