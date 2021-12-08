@@ -234,6 +234,18 @@ void UI::DrawNextInstr(std::string Instruction)
     refresh();
 }
 
+void UI::DrawMessage(std::string Message)
+{
+    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK RUN_STATE_BLANK);
+    attron(COLOR_PAIR(CP_GREEN));
+    mvprintw(MESSAGE_ROW, 0, Message.c_str());
+    attroff(COLOR_PAIR(CP_GREEN));
+    refresh();
+    getch();
+    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK RUN_STATE_BLANK);
+    refresh();
+}
+
 const char *HelpText[] =
 {
 "COMP-O-TRON 6000 EMULATOR",

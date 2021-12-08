@@ -28,6 +28,7 @@ public:
     void DrawStack(uint32_t *Stack);                      // 8 words, begins at SP - 7, only in hex mode
     void DrawRunState(std::string State);
     void DrawNextInstr(std::string Instruction);
+    void DrawMessage(std::string Message);
     // Modal dialogs
     void ShowHelpWindow(); // called function gets keystroke and destroys window
     void ShowDisasmWindow(); // ditto
