@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cstdint>
 #include <cstring>
+#include <vector>
 #include "unistd.h"
 #include <ncurses.h>
 #include "arch.h"
@@ -223,12 +224,31 @@ int main(int argc, char *argv[0])
                 break;
             case 'R':
             // modify register
-            case 'M':
-            // view and change memory
+            case 'M': {
+            // change memory
+                std::vector<uint32_t> values;
+                uint32_t addr;
+                if (foil->InputMem(addr, values))
+                    for (auto i : values)
+                        ct6k->WriteMem(addr++, i);
+                break;
+            }
             case 'A':
             // assemble code
             case 'D':
             // show disassembly
+            case 'V': {
+                // view memory
+                std::vector<uint32_t> values;
+                uint32_t addr;
+
+                if (foil->InputMemAddr(addr)) {
+                    for (int i = 0; i < 16; i++)
+                        values.push_back(ct6k->ReadMem(addr + i));
+                    foil->ShowMemDump(addr, values);
+                }
+                break;
+            }
             case KEY_F(12):
             // Reset
             case KEY_END:
