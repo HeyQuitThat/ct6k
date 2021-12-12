@@ -1,22 +1,18 @@
 TODO, in approximate order:
 - complete feature set in ncurses emulator
- - modify reg/mem
- - breakpoints
+ - modify reg
  - disassembly window
- - help
  - live assembler
  - reset
  - load program after reset?
+- printer support
 - "serial" I/O (polling, hacky)
 - update test.asm to test as many instructions/address modes as possible
     - could publish here
 - Interrupt support
 - Timer interrupt?
 - add assembler support for reg aliases (IP, SP, FLG)
-- Qt front-end
-- support live memory modification
-- support live assembly
-- support breakpoints
+- gtk front-end
 - support .ORG statement
     - multi-segment object files
     - loader for multi-segment
