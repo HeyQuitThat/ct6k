@@ -296,7 +296,8 @@ nullptr,
 };
 
 
-// Modal dialogs
+// Modal dialog - show the help window and populate it from the help
+// text embedded in this file.
 void UI::ShowHelpWindow()
 {
     WINDOW *helpwin;
@@ -331,9 +332,11 @@ void UI::ShowDisasmWindow()
     return;
 }
 
+// Input a single hex value as the breakpoint for the running program.
+// Returns true if a valid hex number was collected.
 bool UI::InputBreakpoint(uint32_t &BP)
 {
-    bool retval;
+    bool retval {false};
 
     ClearMessageLine();
     attron(COLOR_PAIR(CP_GREEN));
@@ -360,6 +363,8 @@ bool UI::InputMem(uint32_t &Addr, uint32_t &NewVal)
     return false;
 }
 
+// Show an exit confirmation line on the message line, then get a key. If the user
+// inputs Y or y, return true.
 bool UI::ShowConfirmation()
 {
     int c;
