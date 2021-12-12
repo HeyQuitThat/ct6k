@@ -214,7 +214,7 @@ int main(int argc, char *argv[0])
                     foil->DrawRunState("RUNNING 10Hz");
                 }
                 break;
-            case 'K':
+            case 'B':
                 bp_active = foil->InputBreakpoint(breakpoint);
                 break;
             // set breakpoint
@@ -236,7 +236,6 @@ int main(int argc, char *argv[0])
                 if (foil->ShowConfirmation())
                     quitting = true;
                 break;
-            case 'B':
             case KEY_F(1):
                 foil->ShowHelpWindow();
                 break;
