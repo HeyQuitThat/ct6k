@@ -53,6 +53,7 @@ private:
     void HighlightFlagRow(int Row, bool On);
     bool HexInput(int Row, int Col, uint32_t &Input);
     void RedrawRegWindow();
+    void ClearMessageLine();
     void RefreshAll(); // must be called after destroying any modal window
 
 };

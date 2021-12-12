@@ -234,16 +234,26 @@ void UI::DrawNextInstr(std::string Instruction)
     refresh();
 }
 
+// Clear the message line. Obvious.
+void UI::ClearMessageLine()
+{
+    std::string tmpstr;
+    tmpstr.assign(SCREEN_X_MIN, ' ');
+    mvprintw(MESSAGE_ROW, 0, tmpstr.c_str());
+    refresh();
+}
+
+// Draw a single line of specified text on the message line. Get
+// a character, then clear the line.
 void UI::DrawMessage(std::string Message)
 {
-    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK RUN_STATE_BLANK);
+    ClearMessageLine();
     attron(COLOR_PAIR(CP_GREEN));
     mvprintw(MESSAGE_ROW, 0, Message.c_str());
     attroff(COLOR_PAIR(CP_GREEN));
     refresh();
     getch();
-    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK RUN_STATE_BLANK);
-    refresh();
+    ClearMessageLine();
 }
 
 const char *HelpText[] =
@@ -325,14 +335,13 @@ bool UI::InputBreakpoint(uint32_t &BP)
 {
     bool retval;
 
-    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK);
+    ClearMessageLine();
     attron(COLOR_PAIR(CP_GREEN));
     mvprintw(MESSAGE_ROW, 4, "Input Breakpoint Address: [        ]");
     refresh();
     retval = HexInput(MESSAGE_ROW, 31, BP);
     attroff(COLOR_PAIR(CP_GREEN));
-    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK);
-    refresh();
+    ClearMessageLine();
     return retval;
 }
 
@@ -355,11 +364,12 @@ bool UI::ShowConfirmation()
 {
     int c;
 
+    ClearMessageLine();
     attron(COLOR_PAIR(CP_RED));
     mvprintw(MESSAGE_ROW, 27, "Exit? Are you sure? (Y/N)");
     attroff(COLOR_PAIR(CP_RED));
     c = getch();
-    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK);
+    ClearMessageLine();
     return ((c == 'y') || (c == 'Y'));
 }
 
