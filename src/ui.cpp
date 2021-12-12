@@ -305,7 +305,7 @@ void UI::ShowHelpWindow()
     int i = 0;
 
     helpwin = CreateWindow(HELP_WIN_HEIGHT, HELP_WIN_WIDTH, HELP_WIN_Y, HELP_WIN_X);
-    wattron(RegWin, COLOR_PAIR(CP_BLUE));
+    wattron(helpwin, COLOR_PAIR(CP_BLUE));
     if (CurrentState == DS_Blinky)
         txt = HelpTextB;
     else
