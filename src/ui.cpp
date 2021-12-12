@@ -358,9 +358,79 @@ bool UI::InputReg(uint32_t &RegNum, uint32_t &NewVal)
     return false;
 }
 
-bool UI::InputMem(uint32_t &Addr, uint32_t &NewVal)
+// Input one or more words of memory. First input the beginning address, then input
+// as many words as the user wants. Pressing Enter on a blank line quits.
+// Returns true if one or more words were collected.
+bool UI::InputMem(uint32_t &Addr, std::vector<uint32_t> &Data)
 {
-    return false;
+    bool retval {false};
+    uint32_t tmp {0};
+    uint32_t count {0};
+
+    Data.clear();
+    ClearMessageLine();
+    attron(COLOR_PAIR(CP_GREEN));
+    mvprintw(MESSAGE_ROW, 4, "Input Memory Address: [        ]");
+    refresh();
+    retval = HexInput(MESSAGE_ROW, 27, Addr);
+    while (retval == true) {
+        ClearMessageLine();
+        mvprintw(MESSAGE_ROW, 4, "Input value for location %s : [        ]",
+                 (boost::format("0x%08X") % (Addr + count)).str().c_str());
+        refresh();
+        retval = HexInput(MESSAGE_ROW, 43, tmp);
+        if (retval)
+            Data.push_back(tmp);
+        count++;
+    }
+    attroff(COLOR_PAIR(CP_GREEN));
+    ClearMessageLine();
+    return (count > 0);
+}
+
+// Input a single hex address. Used by both disassembly and memory dump.
+// Returns true if a valid number was collected.
+bool UI::InputMemAddr(uint32_t &Addr)
+{
+    bool retval {false};
+
+    ClearMessageLine();
+    attron(COLOR_PAIR(CP_GREEN));
+    mvprintw(MESSAGE_ROW, 4, "Input Beginning Address: [        ]");
+    refresh();
+    retval = HexInput(MESSAGE_ROW, 30, Addr);
+    attroff(COLOR_PAIR(CP_GREEN));
+    ClearMessageLine();
+    return retval;
+}
+
+// Display provided words of memory. If input vector size exceeds max of 16
+// displayable lines, output is truncated.
+void UI::ShowMemDump(uint32_t Addr, std::vector<uint32_t> Data)
+{
+    WINDOW *memwin;
+    int vpos {1};
+
+    memwin = CreateWindow(MEM_WIN_HEIGHT, MEM_WIN_WIDTH, MEM_WIN_Y, MEM_WIN_X);
+    wattron(memwin, COLOR_PAIR(CP_BLUE));
+    // no range checking for the vector - if we fall of the end of the window, it won't 
+    // print anything. But we expect 16 values.
+    for (auto i : Data) {
+        wattron(memwin, COLOR_PAIR(CP_BLUE));
+        mvwprintw(memwin, vpos, 2, "%s: ", (boost::format("0x%08X") % (Addr++)).str().c_str());
+        wattron(memwin, COLOR_PAIR(CP_GREEN));
+        mvwprintw(memwin, vpos++, 14, "%s", (boost::format("0x%08X") % i).str().c_str());
+    }
+    wrefresh(memwin);
+    refresh();
+    getch();
+    wborder(memwin, ' ', ' ', ' ',' ',' ',' ',' ',' ');
+    wrefresh(memwin);
+    refresh();
+    delwin(memwin);
+    RefreshAll();
+    return;
+
 }
 
 // Show an exit confirmation line on the message line, then get a key. If the user

@@ -7,6 +7,7 @@
 #include <ncurses.h>
 #include <cstdint>
 #include <string>
+#include <vector>
 
 enum DisplayState {
     DS_Binary, // default, shows 0/1 for each bit
@@ -36,7 +37,9 @@ public:
     bool InputBreakpoint(uint32_t &BP);
     bool InputAssembly(uint32_t &Addr, std::string Input);  // Does not actually assemble here
     bool InputReg(uint32_t &RegNum, uint32_t &NewVal);
-    bool InputMem(uint32_t &Addr, uint32_t &NewVal);
+    bool InputMem(uint32_t &Addr, std::vector<uint32_t> &Data);
+    bool InputMemAddr(uint32_t &Addr);
+    void ShowMemDump(uint32_t Addr, std::vector<uint32_t> Data); // also for display of memory
 
 
 private:

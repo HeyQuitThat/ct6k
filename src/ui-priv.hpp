@@ -46,5 +46,10 @@
 #define HELP_WIN_Y 1
 #define HELP_WIN_WIDTH 72
 #define HELP_WIN_HEIGHT 21
+#define MEM_WIN_X 26
+#define MEM_WIN_Y 3
+#define MEM_WIN_WIDTH 26
+#define MEM_WIN_HEIGHT 18
+
 
 #endif //__UI_PRIV_HPP
