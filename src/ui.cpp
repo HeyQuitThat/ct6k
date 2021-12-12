@@ -348,14 +348,25 @@ bool UI::InputBreakpoint(uint32_t &BP)
     return retval;
 }
 
-bool UI::InputAssembly(uint32_t &Addr, std::string Input)
+bool UI::InputAssembly(uint32_t &Addr, std::string& Input)
 {
     return false;
 }
 
 bool UI::InputReg(uint32_t &RegNum, uint32_t &NewVal)
 {
-    return false;
+    bool retval {false};
+#if 0
+    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK);
+    attron(COLOR_PAIR(CP_GREEN));
+    mvprintw(MESSAGE_ROW, 4, "Input Breakpoint Address: [        ]");
+    refresh();
+    retval = HexInput(MESSAGE_ROW, 31, BP);
+    attroff(COLOR_PAIR(CP_GREEN));
+    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK);
+    refresh();
+#endif
+    return retval;
 }
 
 // Input one or more words of memory. First input the beginning address, then input
