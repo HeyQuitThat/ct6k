@@ -2,12 +2,12 @@ TODO, in approximate order:
 - complete feature set in ncurses emulator
  - modify reg
  - disassembly window
- - live assembler
  - reset
  - load program after reset?
+ - live assembler ?
 - printer support
 - "serial" I/O (polling, hacky)
-- update test.asm to test as many instructions/address modes as possible
+- Add assembler test programs to test as many instructions/address modes as possible
     - could publish here
 - Interrupt support
 - Timer interrupt?
