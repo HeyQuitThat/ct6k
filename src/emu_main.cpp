@@ -250,10 +250,18 @@ int main(int argc, char *argv[0])
                 break;
             }
             case KEY_F(12):
-            // Reset
+            // reset
+                if (foil->ConfirmReset()) {
+                    ct6k->Reset();
+                    bp_active = false;
+                    RS = RS_Step;
+                    foil->DrawRunState("STEPPING");
+                    nodelay(stdscr, false);
+                }
+                break;
             case KEY_END:
             // exit
-                if (foil->ShowConfirmation())
+                if (foil->ConfirmExit())
                     quitting = true;
                 break;
             case KEY_F(1):
