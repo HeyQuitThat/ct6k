@@ -28,6 +28,16 @@ uint32_t CPU::ReadReg(uint8_t Index)
     return Reg[Index];
 };
 
+void CPU::Reset()
+{
+    delete Mem;
+    Mem = new Memory();
+    for (int i = 0; i < 16; i++)
+        Reg[i] = 0;
+    Running = true;
+    FHAP_Addr = 0;
+    IHAP_Addr = 0;
+}
 // Write register with given value at given index.
 void CPU::WriteReg(uint8_t Index, uint32_t Value)
 {

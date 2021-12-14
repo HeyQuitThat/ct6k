@@ -16,27 +16,6 @@ struct CPUInternalState {
 
 // Core class that actually executes instructions.
 class CPU {
-private:
-    Memory *Mem;
-    uint32_t Reg[NUMREGS] {0};
-    bool Running {true};
-    uint32_t FHAP_Addr {0}; // Fault Handler Pointer
-    uint32_t IHAP_Addr {0}; // Interrupt Handler Pointer
-    Instruction *CurrentInst;
-
-    uint32_t Execute(); // executes current instruction, returns fault value
-    uint32_t RetrieveDirectValue();
-    uint32_t PutToDest(uint32_t);
-    uint32_t GetFromReg(RegisterArg, uint32_t &);
-    uint32_t ExecuteNoArgs();
-    uint32_t ExecuteSrcDest();
-    uint32_t ExecuteSrcOnly();
-    uint32_t ExecuteDestOnly();
-    uint32_t ExecuteControlFlow();
-    uint32_t Execute2SrcDest();
-    void IndicateZero(uint32_t);
-    void IncrIP();
-
 public:
     CPU();
     ~CPU();
@@ -59,6 +38,28 @@ public:
     int PopWord(uint32_t &);
     void Halt();
     bool IsHalted();
+    void Reset();
+
+private:
+    Memory *Mem;
+    uint32_t Reg[NUMREGS] {0};
+    bool Running {true};
+    uint32_t FHAP_Addr {0}; // Fault Handler Pointer
+    uint32_t IHAP_Addr {0}; // Interrupt Handler Pointer
+    Instruction *CurrentInst;
+
+    uint32_t Execute(); // executes current instruction, returns fault value
+    uint32_t RetrieveDirectValue();
+    uint32_t PutToDest(uint32_t);
+    uint32_t GetFromReg(RegisterArg, uint32_t &);
+    uint32_t ExecuteNoArgs();
+    uint32_t ExecuteSrcDest();
+    uint32_t ExecuteSrcOnly();
+    uint32_t ExecuteDestOnly();
+    uint32_t ExecuteControlFlow();
+    uint32_t Execute2SrcDest();
+    void IndicateZero(uint32_t);
+    void IncrIP();
 };
 
 #endif // __CPU_HPP__
