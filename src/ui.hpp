@@ -33,12 +33,13 @@ public:
     // Modal dialogs
     void ShowHelpWindow(); // called function gets keystroke and destroys window
     void ShowDisasmWindow(); // ditto
-    bool ShowConfirmation();
     bool InputBreakpoint(uint32_t &BP);
     bool InputAssembly(uint32_t &Addr, std::string& Input);  // Does not actually assemble here
     bool InputReg(uint32_t &RegNum, uint32_t &NewVal);
     bool InputMem(uint32_t &Addr, std::vector<uint32_t> &Data);
     bool InputMemAddr(uint32_t &Addr);
+    bool ConfirmExit();
+    bool ConfirmReset();
     void ShowMemDump(uint32_t Addr, std::vector<uint32_t> Data); // also for display of memory
 
 
@@ -57,6 +58,7 @@ private:
     void RedrawRegWindow();
     void ClearMessageLine();
     void RefreshAll(); // must be called after destroying any modal window
+    bool ShowConfirmation(const char *Message);
 
 };
 

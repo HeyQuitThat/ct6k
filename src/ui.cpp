@@ -2,6 +2,7 @@
 #include "ui.hpp"
 #include "ui-priv.hpp"
 #include <boost/format.hpp>
+#include <cstring>
 
 
 // Initialize the screen. This can fail if the screen/terminal is too small or doesn't support color.
@@ -446,17 +447,27 @@ void UI::ShowMemDump(uint32_t Addr, std::vector<uint32_t> Data)
 
 // Show an exit confirmation line on the message line, then get a key. If the user
 // inputs Y or y, return true.
-bool UI::ShowConfirmation()
+bool UI::ShowConfirmation(const char *Message)
 {
     int c;
+    int loc = (80 - strlen(Message)) / 2;
 
     ClearMessageLine();
-    attron(COLOR_PAIR(CP_RED));
-    mvprintw(MESSAGE_ROW, 27, "Exit? Are you sure? (Y/N)");
-    attroff(COLOR_PAIR(CP_RED));
+    attron(COLOR_PAIR(CP_RED) | A_BOLD);
+    mvprintw(MESSAGE_ROW, loc, Message);
+    attroff(COLOR_PAIR(CP_RED) | A_BOLD);
     c = getch();
     ClearMessageLine();
     return ((c == 'y') || (c == 'Y'));
+}
+bool UI::ConfirmExit()
+{
+    return ShowConfirmation("Exit? Are you sure? (Y/N)");
+}
+
+bool UI::ConfirmReset()
+{
+    return ShowConfirmation("Reset the CPU? Are you sure? (Y/N)");
 }
 
 // Utility function to swap register display from binary to blinky and back. Does not need to know the values
