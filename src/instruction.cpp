@@ -89,7 +89,7 @@ OpMap opcode_map[] ={
 {"CMP", OP_CMP, op_src_dest},
 {"ADD", OP_ADD, op_2src_dest},
 {"SUB", OP_SUB, op_2src_dest},
-{"NOT", OP_NOT, op_2src_dest},
+{"NOT", OP_NOT, op_dest_only},
 {"AND", OP_AND, op_2src_dest},
 {"OR", OP_OR, op_2src_dest},
 {"XOR", OP_XOR, op_2src_dest},
