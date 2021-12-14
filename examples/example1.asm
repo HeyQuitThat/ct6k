@@ -1,4 +1,4 @@
-* example.asm
+* example1.asm
 * very simple test file for ct6k
 
     MOVE 10, R0
