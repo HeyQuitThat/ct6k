@@ -185,12 +185,12 @@ int main(int argc, char *argv[0])
 
         c = toupper(c);
         switch (c) {
-            case 'S':
+            case CT6K_KEY_STEP:
             case ' ':
                 // Single-step - no effect if halted
                 ct6k->Step();
                 break;
-            case 'F':
+            case CT6K_KEY_FULL:
                 // Full-speed run
                 if (RS != RS_Halted) {
                     nodelay(stdscr, true);
@@ -199,7 +199,7 @@ int main(int argc, char *argv[0])
                     foil->DrawNextInstr("FULL-SPEED RUN");
                 }
                 break;
-            case 'W':
+            case CT6K_KEY_SLOW:
                 // Slow run - 2Hz
                 if (RS != RS_Halted) {
                     nodelay(stdscr, true);
@@ -207,7 +207,7 @@ int main(int argc, char *argv[0])
                     foil->DrawRunState("RUNNING 2Hz");
                 }
                 break;
-            case 'Q':
+            case CT6K_KEY_QUICK:
                 // Quick run - 10Hz
                 if (RS != RS_Halted) {
                     nodelay(stdscr, true);
@@ -215,16 +215,16 @@ int main(int argc, char *argv[0])
                     foil->DrawRunState("RUNNING 10Hz");
                 }
                 break;
-            case 'B':
+            case CT6K_KEY_MODBRK:
                 bp_active = foil->InputBreakpoint(breakpoint);
                 break;
             // set breakpoint
-            case 'T':
+            case CT6K_KEY_MODE:
                 foil->ChangeDisplayState();
                 break;
-            case 'R':
+            case CT6K_KEY_MODREG:
             // modify register
-            case 'M': {
+            case CT6K_KEY_MODMEM: {
             // change memory
                 std::vector<uint32_t> values;
                 uint32_t addr;
@@ -233,10 +233,10 @@ int main(int argc, char *argv[0])
                         ct6k->WriteMem(addr++, i);
                 break;
             }
-            case 'C':
+            case CT6K_KEY_VIEWCODE:
             // show disassembly (code)
                 break;
-            case 'Y': {
+            case CT6K_KEY_VIEWMEM: {
                 // view memory
                 std::vector<uint32_t> values;
                 uint32_t addr;
@@ -248,7 +248,7 @@ int main(int argc, char *argv[0])
                 }
                 break;
             }
-            case 'K': {
+            case CT6K_KEY_VIEWSTACK: {
                 // view stack
                 std::vector<uint32_t> values;
                 uint32_t addr = curr_state.Registers[REG_SP];
@@ -257,7 +257,7 @@ int main(int argc, char *argv[0])
                 foil->ShowStackDump(addr, values);
                 break;
             }
-            case KEY_F(12):
+            case CT6K_KEY_RESET:
             // reset
                 if (foil->ConfirmReset()) {
                     ct6k->Reset();
@@ -267,12 +267,12 @@ int main(int argc, char *argv[0])
                     nodelay(stdscr, false);
                 }
                 break;
-            case KEY_END:
+            case CT6K_KEY_EXIT:
             // exit
                 if (foil->ConfirmExit())
                     quitting = true;
                 break;
-            case KEY_F(1):
+            case CT6K_KEY_HELP:
                 foil->ShowHelpWindow();
                 break;
             default:
