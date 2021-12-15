@@ -66,9 +66,10 @@ UI::~UI()
 void UI::DrawStaticElements()
 {
     // main screen elements
+    // If you change keystrokes, be sure to update definitions in ui.hpp
     attron(COLOR_PAIR(CP_DEFAULT));
     mvprintw(1, 32, "COMP-O-TRON 6000");
-    mvprintw(22, 3, "Run: (S)tep Slo(W) (Q)uick (F)ull / View: Memor(y) Stac(K) (C)ode");
+    mvprintw(22, 3, "Run: (S)tep Slo(W) (Q)uick (F)ull / View: Memor(Y) Stac(K) (C)ode");
     mvprintw(23, 3, "Modify: (R)egister (M)emory (B)reakpoint");
     mvprintw(24, 3, "F1 Help  END Exit  F12 Reset");
     mvprintw(24, 35, "(T)oggle Mode");

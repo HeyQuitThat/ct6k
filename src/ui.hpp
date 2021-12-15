@@ -61,4 +61,18 @@ private:
 
 };
 
+#define CT6K_KEY_STEP 'S'
+#define CT6K_KEY_SLOW 'W'
+#define CT6K_KEY_QUICK 'Q'
+#define CT6K_KEY_FULL 'F'
+#define CT6K_KEY_VIEWMEM 'Y'
+#define CT6K_KEY_VIEWSTACK 'K'
+#define CT6K_KEY_VIEWCODE 'C'
+#define CT6K_KEY_MODREG 'R'
+#define CT6K_KEY_MODMEM 'M'
+#define CT6K_KEY_MODBRK 'B'
+#define CT6K_KEY_MODE 'T'
+#define CT6K_KEY_EXIT KEY_END
+#define CT6K_KEY_HELP KEY_F(1)
+#define CT6K_KEY_RESET KEY_F(12)
 #endif // __UI_HPP__
