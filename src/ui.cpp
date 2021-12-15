@@ -129,9 +129,6 @@ void UI::ChangeDisplayState()
         CurrentState = DS_Binary;
     // For a switch from binary to blinky, we only need to redraw the register values
     RedrawRegWindow();
-    // TODO hex mode 
-    // For a switch to or from hex, we need to redraw windows
-        
 }
 
 // Utility function to create an ncurses window
@@ -208,12 +205,6 @@ void UI::DrawHAPs(uint32_t FHAPAddr, uint32_t IHAPAddr)
 {
     mvwaddstr(HAPsWin, FHAP_ADDR_ROW, FHAP_ADDR_COL, (boost::format("0x%08X") % FHAPAddr).str().c_str());
     mvwaddstr(HAPsWin, IHAP_ADDR_ROW, IHAP_ADDR_COL, (boost::format("0x%08X") % IHAPAddr).str().c_str());
-}
-
-// In hex mode, draw a stack dump window
-void UI::DrawStack(uint32_t *Stack)
-{   // only active in hex mode
-    return;
 }
 
 // Update the right side of the status line with the run state, formatted right.

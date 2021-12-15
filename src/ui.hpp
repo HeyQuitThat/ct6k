@@ -12,7 +12,6 @@
 enum DisplayState {
     DS_Binary, // default, shows 0/1 for each bit
     DS_Blinky, // same as binary but red and green dots instead of 1/0
-    DS_Hex, // Hex + Comp-o-Code (which looks just like ASCII), room for stack window in text mode
 };
 
 class UI {
