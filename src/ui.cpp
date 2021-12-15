@@ -68,8 +68,8 @@ void UI::DrawStaticElements()
     // main screen elements
     attron(COLOR_PAIR(CP_DEFAULT));
     mvprintw(1, 32, "COMP-O-TRON 6000");
-    mvprintw(22, 3, "Execute: (S)tep slo(W) (Q)uick (F)ull  / (V)iew Memory / (D)isassemble");
-    mvprintw(23, 3, "Modify: (R)egister (M)emory (A)ssemble (B)reakpoint");
+    mvprintw(22, 3, "Run: (S)tep Slo(W) (Q)uick (F)ull / View: Memor(y) Stac(K) (C)ode");
+    mvprintw(23, 3, "Modify: (R)egister (M)emory (B)reakpoint");
     mvprintw(24, 3, "F1 Help  END Exit  F12 Reset");
     mvprintw(24, 35, "(T)oggle Mode");
     attroff(COLOR_PAIR(CP_DEFAULT));
@@ -409,7 +409,7 @@ bool UI::InputMemAddr(uint32_t &Addr)
 
 // Display provided words of memory. If input vector size exceeds max of 16
 // displayable lines, output is truncated.
-void UI::ShowMemDump(uint32_t Addr, std::vector<uint32_t> Data)
+void UI::ShowDumpWin(uint32_t Addr, std::vector<uint32_t> Data, bool CountUp)
 {
     WINDOW *memwin;
     int vpos {1};
@@ -420,7 +420,11 @@ void UI::ShowMemDump(uint32_t Addr, std::vector<uint32_t> Data)
     // print anything. But we expect 16 values.
     for (auto i : Data) {
         wattron(memwin, COLOR_PAIR(CP_BLUE));
-        mvwprintw(memwin, vpos, 2, "%s: ", (boost::format("0x%08X") % (Addr++)).str().c_str());
+        mvwprintw(memwin, vpos, 2, "%s: ", (boost::format("0x%08X") % (Addr)).str().c_str());
+        if (CountUp)
+            Addr++;
+        else
+            Addr--;
         wattron(memwin, COLOR_PAIR(CP_GREEN));
         mvwprintw(memwin, vpos++, 14, "%s", (boost::format("0x%08X") % i).str().c_str());
     }
@@ -434,6 +438,16 @@ void UI::ShowMemDump(uint32_t Addr, std::vector<uint32_t> Data)
     RefreshAll();
     return;
 
+}
+
+void UI::ShowMemDump(uint32_t Addr, std::vector<uint32_t> Data)
+{
+    ShowDumpWin(Addr, Data, true);
+}
+
+void UI::ShowStackDump(uint32_t Addr, std::vector<uint32_t> Data)
+{
+    ShowDumpWin(Addr, Data, false);
 }
 
 // Show an exit confirmation line on the message line, then get a key. If the user

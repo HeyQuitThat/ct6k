@@ -25,7 +25,6 @@ public:
     void DrawFlags(uint32_t FlagsReg);
     void DrawHAPs(uint32_t FHAPAddr, uint32_t IHAPAddr);  // No need for current/prev as this is updated
                                                             // so infrequently and it's only two dwords
-    void DrawStack(uint32_t *Stack);                      // 8 words, begins at SP - 7, only in hex mode
     void DrawRunState(std::string State);
     void DrawNextInstr(std::string Instruction);
     void DrawMessage(std::string Message);
@@ -39,14 +38,14 @@ public:
     bool InputMemAddr(uint32_t &Addr);
     bool ConfirmExit();
     bool ConfirmReset();
-    void ShowMemDump(uint32_t Addr, std::vector<uint32_t> Data); // also for display of memory
+    void ShowMemDump(uint32_t Addr, std::vector<uint32_t> Data);
+    void ShowStackDump(uint32_t Addr, std::vector<uint32_t> Data); // Similar to mem dump but counts down
 
 
 private:
     // data
     WINDOW *RegWin;
     WINDOW *FlagWin;
-    WINDOW *StackWin;
     WINDOW *HAPsWin;
     DisplayState CurrentState;
     // methods
@@ -58,6 +57,7 @@ private:
     void ClearMessageLine();
     void RefreshAll(); // must be called after destroying any modal window
     bool ShowConfirmation(const char *Message);
+    void ShowDumpWin(uint32_t Addr, std::vector<uint32_t> Data, bool CountUp);
 
 };
 
