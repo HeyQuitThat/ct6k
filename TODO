@@ -2,9 +2,9 @@ TODO, in approximate order:
 - complete feature set in ncurses emulator
  - modify reg
  - disassembly window
- - reset
- - load program after reset?
+ - reload program after reset?
  - live assembler ?
+- non-hacky way to register peripherals' memory space
 - printer support
 - "serial" I/O (polling, hacky)
 - Add assembler test programs to test as many instructions/address modes as possible
@@ -18,6 +18,5 @@ TODO, in approximate order:
     - loader for multi-segment
 - support strings as static data in assembler (possible now but must be done by hand)
 - linker (depends on multi-segment object files)
-- non-hacky way to register peripherals' memory space
 - card reader/writer
 - random access storage?
