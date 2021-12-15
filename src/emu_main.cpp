@@ -248,6 +248,15 @@ int main(int argc, char *argv[0])
                 }
                 break;
             }
+            case 'K': {
+                // view stack
+                std::vector<uint32_t> values;
+                uint32_t addr = curr_state.Registers[REG_SP];
+                for (int i = 0; i < 16; i++)
+                    values.push_back(ct6k->ReadMem(addr - i));
+                foil->ShowStackDump(addr, values);
+                break;
+            }
             case KEY_F(12):
             // reset
                 if (foil->ConfirmReset()) {
