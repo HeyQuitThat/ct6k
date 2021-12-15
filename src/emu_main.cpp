@@ -233,11 +233,10 @@ int main(int argc, char *argv[0])
                         ct6k->WriteMem(addr++, i);
                 break;
             }
-            case 'A':
-            // assemble code
-            case 'D':
-            // show disassembly
-            case 'V': {
+            case 'C':
+            // show disassembly (code)
+                break;
+            case 'Y': {
                 // view memory
                 std::vector<uint32_t> values;
                 uint32_t addr;
