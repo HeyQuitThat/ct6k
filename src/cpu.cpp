@@ -226,6 +226,7 @@ int CPU::PopWord(uint32_t &Word)
 
     mem_base--;
     Word = ReadMem(mem_base);
+    WriteReg(REG_SP, mem_base);
     return FAULT_NO_FAULT;
 };
 
