@@ -342,19 +342,25 @@ bool UI::InputBreakpoint(uint32_t &BP)
 }
 
 
-bool UI::InputReg(uint32_t &RegNum, uint32_t &NewVal)
+bool UI::InputReg(uint8_t &RegNum, uint32_t &NewVal)
 {
     bool retval {false};
-#if 0
-    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK);
+
+    ClearMessageLine();
     attron(COLOR_PAIR(CP_GREEN));
-    mvprintw(MESSAGE_ROW, 4, "Input Breakpoint Address: [        ]");
+    mvprintw(MESSAGE_ROW, 4, "Input Register Number: ");
     refresh();
-    retval = HexInput(MESSAGE_ROW, 31, BP);
+    retval = RegNumInput(MESSAGE_ROW, 26, RegNum);
     attroff(COLOR_PAIR(CP_GREEN));
-    mvprintw(MESSAGE_ROW, 0, RUN_STATE_BLANK RUN_STATE_BLANK);
-    refresh();
-#endif
+    if (retval)
+    {
+        ClearMessageLine();
+        mvprintw(MESSAGE_ROW, 4, "Input value for register: [        ]");
+        refresh();
+        retval = HexInput(MESSAGE_ROW, 31, NewVal);
+    }
+    attroff(COLOR_PAIR(CP_GREEN));
+    ClearMessageLine();
     return retval;
 }
 
@@ -562,6 +568,51 @@ bool UI::HexInput(int Row, int Col, uint32_t &Input)
     return retval;
 }
 
+// Input a register number, in decimal - 0 to 15
+// Returns true if valid input, false if not
+bool UI::RegNumInput(int Row, int Col, uint8_t &Input)
+{
+    int c;
+    int count {0};
+    std::string instr;
+    bool retval {false};
+    bool done {false};
+
+    move(Row, Col);
+    curs_set(1);
+    refresh();
+    while (!done) {
+        c = getch();
+        // adding new input to the string
+        if (count < 2) {
+            if (c >= '0' && c <= '9') {
+                count++;
+                addch(c);
+                refresh();
+                instr += c;
+            }
+        }
+        // backspace handling
+        if ((c == KEY_BACKSPACE) && (count > 0)) {
+            count--;
+            instr.pop_back();
+            move(Row, Col + count);
+            addch(' ');
+            move(Row, Col + count);
+            refresh();
+        }
+        if ((c == KEY_ENTER) || (c == KEY_STAB) || (c == '\n'))
+            done = true;
+    }
+    if (count > 0) {
+        Input = std::stoul(instr, nullptr, 10);
+        retval = (Input < NUMREGS);
+    }
+    // cursor off
+    curs_set(0);
+    refresh();
+    return retval;
+}
 
 // Full refresh after a modal dialog blows away the screen
 void UI::RefreshAll()

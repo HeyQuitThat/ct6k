@@ -32,7 +32,7 @@ public:
     void ShowHelpWindow(); // called function gets keystroke and destroys window
     void ShowDisasmWindow(); // ditto
     bool InputBreakpoint(uint32_t &BP);
-    bool InputReg(uint32_t &RegNum, uint32_t &NewVal);
+    bool InputReg(uint8_t &RegNum, uint32_t &NewVal);
     bool InputMem(uint32_t &Addr, std::vector<uint32_t> &Data);
     bool InputMemAddr(uint32_t &Addr);
     bool ConfirmExit();
@@ -51,6 +51,7 @@ private:
     WINDOW *CreateWindow(int Height, int Width, int Y, int X);
     int RegCharTranslate(int Current);
     void HighlightFlagRow(int Row, bool On);
+    bool RegNumInput(int Row, int Col, uint8_t &Input);
     bool HexInput(int Row, int Col, uint32_t &Input);
     void RedrawRegWindow();
     void ClearMessageLine();
