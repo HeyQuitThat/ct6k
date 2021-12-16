@@ -341,10 +341,6 @@ bool UI::InputBreakpoint(uint32_t &BP)
     return retval;
 }
 
-bool UI::InputAssembly(uint32_t &Addr, std::string& Input)
-{
-    return false;
-}
 
 bool UI::InputReg(uint32_t &RegNum, uint32_t &NewVal)
 {

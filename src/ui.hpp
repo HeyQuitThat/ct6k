@@ -32,7 +32,6 @@ public:
     void ShowHelpWindow(); // called function gets keystroke and destroys window
     void ShowDisasmWindow(); // ditto
     bool InputBreakpoint(uint32_t &BP);
-    bool InputAssembly(uint32_t &Addr, std::string& Input);  // Does not actually assemble here
     bool InputReg(uint32_t &RegNum, uint32_t &NewVal);
     bool InputMem(uint32_t &Addr, std::vector<uint32_t> &Data);
     bool InputMemAddr(uint32_t &Addr);
