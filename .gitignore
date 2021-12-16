@@ -1,2 +1,4 @@
 *.o
 *.ct
+src/emu
+src/asm
