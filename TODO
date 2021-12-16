@@ -1,6 +1,5 @@
 TODO, in approximate order:
 - complete feature set in ncurses emulator
- - modify reg
  - disassembly window
  - reload program after reset?
  - live assembler ?
