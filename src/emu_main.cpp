@@ -222,8 +222,14 @@ int main(int argc, char *argv[0])
             case CT6K_KEY_MODE:
                 foil->ChangeDisplayState();
                 break;
-            case CT6K_KEY_MODREG:
-            // modify register
+            case CT6K_KEY_MODREG: {
+                uint32_t val;
+                uint8_t reg;
+                if (foil->InputReg(reg, val)) {
+                    ct6k->WriteReg(reg, val);
+                }
+                break;
+            }
             case CT6K_KEY_MODMEM: {
             // change memory
                 std::vector<uint32_t> values;
