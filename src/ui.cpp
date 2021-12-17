@@ -320,8 +320,35 @@ void UI::ShowHelpWindow()
     return;
 }
 
-void UI::ShowDisasmWindow()
+void UI::ShowDisasmWindow(std::vector<uint32_t>Addrs, std::vector<std::string>Instructions)
 {
+    WINDOW *asmwin;
+    int vpos {1};
+    auto curraddr = Addrs.begin();
+    auto currinst = Instructions.begin();
+
+    asmwin = CreateWindow(ASM_WIN_HEIGHT, ASM_WIN_WIDTH, ASM_WIN_Y, ASM_WIN_X);
+    wattron(asmwin, COLOR_PAIR(CP_BLUE));
+    // no range checking for the vectors - if we fall of the end of the window, it won't 
+    // print anything. But we expect 16 values.
+    while (1) {
+        wattron(asmwin, COLOR_PAIR(CP_BLUE));
+        mvwprintw(asmwin, vpos, 2, "%s: ", (boost::format("0x%08X") % (*curraddr)).str().c_str());
+        wattron(asmwin, COLOR_PAIR(CP_GREEN));
+        mvwprintw(asmwin, vpos++, 14, "%s", currinst->c_str());
+        curraddr++;
+        currinst++;
+        if (curraddr == Addrs.end())
+            break;
+    }
+    wrefresh(asmwin);
+    refresh();
+    getch();
+    wborder(asmwin, ' ', ' ', ' ',' ',' ',' ',' ',' ');
+    wrefresh(asmwin);
+    refresh();
+    delwin(asmwin);
+    RefreshAll();
     return;
 }
 
@@ -468,6 +495,7 @@ bool UI::ShowConfirmation(const char *Message)
     ClearMessageLine();
     return ((c == 'y') || (c == 'Y'));
 }
+
 bool UI::ConfirmExit()
 {
     return ShowConfirmation("Exit? Are you sure? (Y/N)");

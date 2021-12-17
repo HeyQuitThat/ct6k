@@ -50,6 +50,10 @@
 #define MEM_WIN_Y 3
 #define MEM_WIN_WIDTH 26
 #define MEM_WIN_HEIGHT 18
+#define ASM_WIN_X 20
+#define ASM_WIN_Y 3
+#define ASM_WIN_WIDTH 40
+#define ASM_WIN_HEIGHT 18
 
 
 #endif //__UI_PRIV_HPP

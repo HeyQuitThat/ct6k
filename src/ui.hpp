@@ -28,9 +28,9 @@ public:
     void DrawRunState(std::string State);
     void DrawNextInstr(std::string Instruction);
     void DrawMessage(std::string Message);
-    // Modal dialogs
-    void ShowHelpWindow(); // called function gets keystroke and destroys window
-    void ShowDisasmWindow(); // ditto
+    // Modal dialogs, called functions get a keystroke and destroy the window
+    void ShowHelpWindow();
+    void ShowDisasmWindow(std::vector<uint32_t>Addrs, std::vector<std::string>Instructions);
     bool InputBreakpoint(uint32_t &BP);
     bool InputReg(uint8_t &RegNum, uint32_t &NewVal);
     bool InputMem(uint32_t &Addr, std::vector<uint32_t> &Data);
