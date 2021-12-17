@@ -16,12 +16,15 @@
 #define SLOW_SLEEP 400000 // 400msec
 #define QUICK_SLEEP 100000 // 100msec
 
-// Print the instruction based upon the value(s) given.
-std::string FormatDisasm(uint32_t Val, uint32_t Val2)
+// Print the instruction based upon the value(s) given. If Count is specified, update the count of
+// words used for the instruction.
+std::string FormatDisasm(uint32_t Val, uint32_t Val2, uint32_t *Count)
 {
     std::string outstr;
     auto i = new Instruction(Val, Val2);
     i->Print(outstr);
+    if (Count != nullptr)
+        *Count = i->SizeInMemory();
     delete i;
     return outstr;
 }
@@ -147,7 +150,9 @@ int main(int argc, char *argv[0])
         }
 
         if (RS != RS_Full) {
-            tmp = FormatDisasm(ct6k->ReadMem(curr_state.Registers[REG_IP]), ct6k->ReadMem(curr_state.Registers[REG_IP]+1));
+            tmp = FormatDisasm(ct6k->ReadMem(curr_state.Registers[REG_IP]),
+                                             ct6k->ReadMem(curr_state.Registers[REG_IP]+1),
+                                             nullptr);
             foil->DrawNextInstr(tmp);
         }
         
@@ -239,9 +244,24 @@ int main(int argc, char *argv[0])
                         ct6k->WriteMem(addr++, i);
                 break;
             }
-            case CT6K_KEY_VIEWCODE:
+            case CT6K_KEY_VIEWCODE: {
             // show disassembly (code)
+                uint32_t addr;
+                if (foil->InputMemAddr(addr)) {
+                    std::vector<uint32_t> addrs;
+                    std::vector<std::string> ins;
+                    uint32_t count {0};
+                    for (int i = 0; i < 16; i++) {
+                        std::string tmp;
+                        tmp = FormatDisasm(ct6k->ReadMem(addr),ct6k->ReadMem(addr + 1), &count);
+                        addrs.push_back(addr);
+                        ins.push_back(tmp);
+                        addr += count;
+                    }
+                    foil->ShowDisasmWindow(addrs, ins);
+                }
                 break;
+            }
             case CT6K_KEY_VIEWMEM: {
                 // view memory
                 std::vector<uint32_t> values;
