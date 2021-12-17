@@ -63,6 +63,7 @@ public:
     bool IsDirectValInstr();
     bool IsDirectValPresent();
     uint32_t GetDirectVal();
+    uint32_t SizeInMemory();
 
 
 private:

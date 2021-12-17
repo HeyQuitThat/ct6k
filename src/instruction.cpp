@@ -339,6 +339,14 @@ uint32_t Instruction::GetDirectVal()
     return DirectVal;
 };
 
+uint32_t Instruction::SizeInMemory()
+{
+    if (DirectValInUse && DirectValProvided)
+        return 2;
+    else
+        return 1;
+}
+
 // Build binary register argument based on string input.
 // This function can throw an exception!
 uint8_t BuildReg(std::string RegArg)
