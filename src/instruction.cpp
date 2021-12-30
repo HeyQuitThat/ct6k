@@ -384,7 +384,7 @@ typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
 uint32_t BuildInstruction(std::string In, uint32_t& ExtraWord, bool& ExtraWordPresent)
 {
     tokenizer tok{In};
-    uint32_t retval;
+    uint32_t retval {0};
     tokenizer::iterator it;
     int num_tokens {0};
     OpMap *map;

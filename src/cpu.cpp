@@ -598,7 +598,8 @@ uint32_t CPU::ExecuteControlFlow()
 uint32_t CPU::Execute2SrcDest()
 {
     uint32_t faultval {FAULT_NO_FAULT};
-    uint32_t src1val, src2val, destval;
+    uint32_t src1val, src2val;
+    uint32_t destval {0};
     uint8_t opcode = CurrentInst->GetOpcode();
 
     faultval = GetFromReg(CurrentInst->GetSrc1Reg(), src1val);
