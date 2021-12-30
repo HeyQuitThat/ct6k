@@ -27,7 +27,7 @@ Data structures in memory:
 FHAP (Fault Handler Array Pointer)
    - Array of 16 dwords, addresses pointing to handler routines for faults
 IHAP (Interrupt Handler Array Pointer)
-   - Array of 64 dwords, addresses pointing to ISRs
+   - Array of 4 dwords, addresses pointing to ISRs
 
 Instructions:
 [ALU]
@@ -98,11 +98,11 @@ Stack starts at SP, builds up.
 Faults:
 0: Invalid Instruction
 1: Invalid Memory
+2: Stack Fault
 3: Double fault
 
 Interrupts:
 0: Clock
-1: Serial
 
 Flags:
 For CMP instruction, the CPU compares src1 and destination, and updates flags.
@@ -120,11 +120,17 @@ For math instructions, including INCR and DECR, the following flags are set:
 Both the OVER and UNDER flags behave appropriately based on whether or not signed arithmetic is
 being used.
 
+Interrupt Control:
+INTENA and INTDIS - Globally control interrupts. Individual interrupts can be enabled or disabled
+by toggling bits in the FLAGS register (R14).
+The interrupt enable flag in R14 should not be used to control global interrupts. Use the INTENA
+and INTDIS instructions instead.
+
 
 ISR/Fault handlers:
 Initialize tables with SFHAP and SIHAP, addr specified by src1.
 Note that FHAP and IHAP are initialized to 0, same as IP, so an early fault may cause issues.
-Machine state pushed to stack. Fault bit set if faulted. Interrupt/Fault indicated by bits in
+Machine state pushed to stack. Fault bit set if faulted. Interrupt/Fault indicated by bits
 in R0. Recursive faults and interrupts are NOT allowed. Interrupts are disabled by faults.
 A fault in an ISR, if handled, will be returned to the ISR.
 Double fault indicated by high bit set in R0 and HALT state.
@@ -250,8 +256,12 @@ TODO: preload a register with mem size?
 #define FLG_UNDER	0x00000002
 #define FLG_ZERO	0x00000008
 #define FLG_IN_INT	0x00000010
+#define FLG_INTEN0  0x00010000
+#define FLG_INTEN1  0x00020000
+#define FLG_INTEN2  0x00040000
+#define FLG_INTEN3  0x00080000
 #define FLG_SIGNED	0x20000000
-#define FLG_INTENA	0x40000000
+#define FLG_INTENA	0x40000000      // Global, controlled by INTENA and INTDIS
 #define	FLG_FAULT	0x80000000
 
 /* Fault codes */
@@ -268,7 +278,7 @@ TODO: preload a register with mem size?
 #define MIN_STATE_POP	(STATE_SIZE)
 #define FHAP_SIZE		16
 #define MAX_FHAP		(MAX_ADDR - FHAP_SIZE)
-#define IHAP_SIZE		64
+#define IHAP_SIZE		32
 #define MAX_IHAP		(MAX_ADDR - IHAP_SIZE)
 
 #endif /* !__ARCH_H__ */
