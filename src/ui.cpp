@@ -12,7 +12,7 @@ int UI::InitGui()
 {
 
     int ScrX, ScrY;
-    
+
     // Initialize the screen
     initscr();
 
@@ -33,7 +33,7 @@ int UI::InitGui()
     init_pair(CP_GREEN, COLOR_GREEN, COLOR_BLACK);
     init_pair(CP_RED, COLOR_RED, COLOR_BLACK);
     init_pair(CP_BLUE, COLOR_BLUE, COLOR_BLACK);
-  
+
     // Don't echo typed characters to the screen
     noecho();
     // Don't use line buffered input, respond to keypresses as they come in
@@ -154,7 +154,7 @@ void UI::DrawReg(uint32_t RegNum, uint32_t Value)
     std::string Tmp;
     int ZeroChar;
     int OneChar;
-    
+
     if (CurrentState == DS_Blinky) {
         ZeroChar = ZERO_BLINK;
         OneChar = ONE_BLINK;
@@ -188,7 +188,7 @@ void UI::HighlightFlagRow(int Row, bool On)
 // Update all flags on screen
 void UI::DrawFlags(uint32_t FlagsReg)
 {
-    // The flag text is already drawn on the screen, so we just need to change 
+    // The flag text is already drawn on the screen, so we just need to change
     // the attributes to make them bold or normal.
     HighlightFlagRow(FLG_OVER_ROW, (FlagsReg & FLG_OVER));
     HighlightFlagRow(FLG_UNDER_ROW, (FlagsReg & FLG_UNDER));
@@ -329,7 +329,7 @@ void UI::ShowDisasmWindow(std::vector<uint32_t>Addrs, std::vector<std::string>In
 
     asmwin = CreateWindow(ASM_WIN_HEIGHT, ASM_WIN_WIDTH, ASM_WIN_Y, ASM_WIN_X);
     wattron(asmwin, COLOR_PAIR(CP_BLUE));
-    // no range checking for the vectors - if we fall of the end of the window, it won't 
+    // no range checking for the vectors - if we fall of the end of the window, it won't
     // print anything. But we expect 16 values.
     while (1) {
         wattron(asmwin, COLOR_PAIR(CP_BLUE));
@@ -446,7 +446,7 @@ void UI::ShowDumpWin(uint32_t Addr, std::vector<uint32_t> Data, bool CountUp)
 
     memwin = CreateWindow(MEM_WIN_HEIGHT, MEM_WIN_WIDTH, MEM_WIN_Y, MEM_WIN_X);
     wattron(memwin, COLOR_PAIR(CP_BLUE));
-    // no range checking for the vector - if we fall of the end of the window, it won't 
+    // no range checking for the vector - if we fall of the end of the window, it won't
     // print anything. But we expect 16 values.
     for (auto i : Data) {
         wattron(memwin, COLOR_PAIR(CP_BLUE));
