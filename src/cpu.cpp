@@ -235,7 +235,7 @@ int CPU::PopWord(uint32_t &Word)
 uint32_t CPU::Execute()
 {
     uint32_t retval {FAULT_NO_FAULT};
-    
+
     if (CurrentInst->GetOpcode() == OP_INVALID) {
         return FAULT_BAD_INSTR;
     }
@@ -322,7 +322,7 @@ uint32_t CPU::GetFromReg(RegisterArg SrcReg, uint32_t &Value)
 // Returns fault status.
 uint32_t CPU::RetrieveDirectValue()
 {
-    
+
     uint32_t addr = ReadReg(REG_IP);
     uint32_t retval = ReadMem(addr);
     IncrIP();
@@ -363,7 +363,7 @@ uint32_t CPU::ExecuteNoArgs()
         }
         case OP_RETURN:
         {
-            uint32_t newIP;
+            uint32_t newIP {0};
             faultval = PopWord(newIP);
             WriteReg(REG_IP, newIP);
             break;
