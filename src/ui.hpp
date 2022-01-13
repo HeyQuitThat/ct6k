@@ -39,14 +39,18 @@ public:
     bool ConfirmReset();
     void ShowMemDump(uint32_t Addr, std::vector<uint32_t> Data);
     void ShowStackDump(uint32_t Addr, std::vector<uint32_t> Data); // Similar to mem dump but counts down
-
+    void AddPrinterOutput(std::string Line); // This does not draw absolutely, it just adds a line of text
+                                             // Only the printer window scrolls!
 
 private:
     // data
     WINDOW *RegWin;
     WINDOW *FlagWin;
     WINDOW *HAPsWin;
+    WINDOW *POTWin;
     DisplayState CurrentState;
+    bool PrinterEnabled {false};
+    int PrinterColor;
     // methods
     WINDOW *CreateWindow(int Height, int Width, int Y, int X);
     int RegCharTranslate(int Current);
@@ -58,7 +62,7 @@ private:
     void RefreshAll(); // must be called after destroying any modal window
     bool ShowConfirmation(const char *Message);
     void ShowDumpWin(uint32_t Addr, std::vector<uint32_t> Data, bool CountUp);
-
+    void ScrollPrinterWin();
 };
 
 #define CT6K_KEY_STEP 'S'

@@ -20,19 +20,29 @@ int UI::InitGui()
     getmaxyx(stdscr, ScrY, ScrX);
     if ((ScrY < SCREEN_Y_MIN) || (ScrX< SCREEN_X_MIN)) {
         endwin();
-        printf("Please run the Comp-o-Tron 6000 on a terminal with at least 80 columns and 25 rows\n");
+        printf("Please run the Comp-o-Tron 6000 on a terminal with at least 80 columns and 25 rows.\n");
+        printf("To see output from the Print-o-Tron XL, please allow at least 30 rows.\n");
         return -1;
     }
+    if (ScrY >= SCREEN_Y_POT) {
+        PrinterEnabled = true;
+        printf("Print-o-Tron XL emulation enabled\n");
+    }
+
     if (has_colors() == false) {
         endwin();
         printf("Please run the Comp-o-Tron 6000 on a color-capable terminal.\n");
         return -1;
     }
     start_color();
+    if (can_change_color())
+        init_color(COLOR_MAGENTA, 1000, 750, 793);
     init_pair(CP_DEFAULT, COLOR_CYAN, COLOR_BLACK);
     init_pair(CP_GREEN, COLOR_GREEN, COLOR_BLACK);
     init_pair(CP_RED, COLOR_RED, COLOR_BLACK);
     init_pair(CP_BLUE, COLOR_BLUE, COLOR_BLACK);
+    init_pair(CP_PB_PK, COLOR_BLACK, COLOR_MAGENTA);
+    init_pair(CP_PB_WH, COLOR_BLACK, COLOR_WHITE);
 
     // Don't echo typed characters to the screen
     noecho();
@@ -44,10 +54,12 @@ int UI::InitGui()
     curs_set(0);
     refresh();
 
-    // create register window
     RegWin = CreateWindow(REG_WIN_HEIGHT, REG_WIN_WIDTH, REG_WIN_Y, REG_WIN_X);
     FlagWin = CreateWindow(FLG_WIN_HEIGHT, FLG_WIN_WIDTH, FLG_WIN_Y, FLG_WIN_X);
     HAPsWin = CreateWindow(HAP_WIN_HEIGHT, HAP_WIN_WIDTH, HAP_WIN_Y, HAP_WIN_X);
+    if (PrinterEnabled) {
+        POTWin = CreateWindow(POT_WIN_HEIGHT, POT_WIN_WIDTH, POT_WIN_Y, POT_WIN_X);
+    }
 
     CurrentState = DS_Blinky;
     return 0;
@@ -117,6 +129,8 @@ void UI::DrawStaticElements()
     mvwprintw(HAPsWin, FHAP_ADDR_ROW, FHAP_ADDR_COL, "0x00000000");
     mvwprintw(HAPsWin, IHAP_ADDR_ROW, IHAP_ADDR_COL, "0x00000000");
     wrefresh(HAPsWin);
+    if (PrinterEnabled)
+        wrefresh(POTWin);
     refresh();
 }
 
@@ -642,6 +656,35 @@ bool UI::RegNumInput(int Row, int Col, uint8_t &Input)
     return retval;
 }
 
+// To keep ncurses from mangling our pretty box, scroll the box ourselves. Since it's only a few lines
+// there isn't a significant performance issue.
+void UI::ScrollPrinterWin()
+{
+    int current;
+    for (int y = 1; y < POT_WIN_OUT_LINE; y++) {
+        for (int x = 1; x < POT_WIN_WIDTH - 1; x++) {
+            current = mvwinch(POTWin, y+1, x);
+            mvwaddch(POTWin, y, x, current);
+        }
+    }
+}
+
+// Add a single line of printer output at the bottom of the box, alternating white and
+// green to simulate greenbar.
+void UI::AddPrinterOutput(std::string Line)
+{
+    ScrollPrinterWin();
+    wmove(POTWin, POT_WIN_OUT_LINE, 1);
+    PrinterColor = (PrinterColor == CP_PB_WH) ? CP_PB_PK : CP_PB_WH;
+    wattron(POTWin, COLOR_PAIR(PrinterColor));
+    for (int x = 1; x < POT_WIN_WIDTH - 1; x++)
+        waddch(POTWin, ' ');
+    wmove(POTWin, POT_WIN_OUT_LINE, 1);
+    waddstr(POTWin, Line.c_str());
+    wattroff(POTWin, COLOR_PAIR(PrinterColor));
+    wrefresh(POTWin);
+}
+
 // Full refresh after a modal dialog blows away the screen
 void UI::RefreshAll()
 {
@@ -653,5 +696,9 @@ void UI::RefreshAll()
     wrefresh(FlagWin);
     redrawwin(HAPsWin);
     wrefresh(HAPsWin);
+    if (PrinterEnabled) {
+        redrawwin(POTWin);
+        wrefresh(POTWin);
+    }
     // if in hex mode, refresh the stack window as well
 }

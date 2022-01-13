@@ -8,6 +8,9 @@
 #define CP_GREEN 2
 #define CP_RED 3
 #define CP_BLUE 4
+// Pinkbar colors for Print-o-Tron emulation.
+#define CP_PB_PK 5
+#define CP_PB_WH 6
 
 #define REG_WIN_Y 2
 #define REG_WIN_X 2
@@ -54,6 +57,12 @@
 #define ASM_WIN_Y 3
 #define ASM_WIN_WIDTH 40
 #define ASM_WIN_HEIGHT 18
+#define SCREEN_Y_POT 30
+#define POT_WIN_Y 25
+#define POT_WIN_X 0
+#define POT_WIN_WIDTH 80
+#define POT_WIN_HEIGHT 5
+#define POT_WIN_OUT_LINE 3
 
 
 #endif //__UI_PRIV_HPP
