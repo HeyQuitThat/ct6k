@@ -42,7 +42,7 @@
 // and it would assemble and work just fine. Keep in mind that symbols must be singular, so
 //      MOVE R0 -> R1  * don't do this!
 // will NOT work, but
-//      MOVE R0 > R1 
+//      MOVE R0 > R1
 // is just fine and still indicates direction.
 
 // TODO handle string data
@@ -69,7 +69,7 @@
 std::string ExtractSymbol(std::string Line, unsigned int Pos)
 {
     std::string retval;
-    
+
     while (isalpha(Line[Pos]))
         retval += Line[Pos];
 
@@ -140,12 +140,13 @@ int main(int argc, char *argv[0])
         bool extra_present;
         bool ret;
         size_t pos;
-        
+
         getline(infile, in_line);
         linenum++;
         // skip comment and blank lines
         if (in_line[0] == '*' || (in_line.length() == 0))
             continue;
+
         // check for symbol on a line
         pos = in_line.find('$');
         if (pos != std::string::npos) {
@@ -189,7 +190,6 @@ int main(int argc, char *argv[0])
             outbuf.push_back(extra_word);
             addr++;
         }
-        
     }
 
     // Fix up all of the symbols and make sure each reference actually points somewhere valid.
