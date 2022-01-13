@@ -5,6 +5,8 @@
 #include <cstdint>
 #include "memory.hpp"
 #include "instruction.hpp"
+#include "periph.hpp"
+#include "hw.h"
 
 // Passed to emulator for printing - allows a single function call to get info instead of 19.
 struct CPUInternalState {
@@ -12,6 +14,11 @@ struct CPUInternalState {
     bool Halted;
     uint32_t FHAP_Base; // coding style violation but FHAPBase looks bad
     uint32_t IHAP_Base;
+};
+
+struct IORegion {
+    PeriphMapEntry Entry;
+    Periph *Owner;
 };
 
 // Core class that actually executes instructions.
@@ -39,6 +46,8 @@ public:
     void Halt();
     bool IsHalted();
     void Reset();
+    bool AddDevice(Periph *Dev);
+    void RemoveDevice(Periph *Dev);
 
 private:
     Memory *Mem;
@@ -47,6 +56,7 @@ private:
     uint32_t FHAP_Addr {0}; // Fault Handler Pointer
     uint32_t IHAP_Addr {0}; // Interrupt Handler Pointer
     Instruction *CurrentInst;
+    IORegion Devices[PERIPH_MAP_SIZE] {{{0,}, nullptr,},};    // Allocate separately?
 
     uint32_t Execute(); // executes current instruction, returns fault value
     uint32_t RetrieveDirectValue();
@@ -60,6 +70,9 @@ private:
     uint32_t Execute2SrcDest();
     void IndicateZero(uint32_t);
     void IncrIP();
+    uint32_t ReadIO(uint32_t);
+    void WriteIO(uint32_t, uint32_t);
+    int FindPeriphTableEntry(Periph *Dev);
 };
 
 #endif // __CPU_HPP__

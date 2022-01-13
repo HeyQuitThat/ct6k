@@ -9,6 +9,7 @@
 #include "arch.h"
 #include "cpu.hpp"
 
+
 // Constructor, takes no arguments. If needed, we could take one to set the memory size.
 CPU::CPU()
 {
@@ -66,13 +67,21 @@ CPUInternalState CPU::DumpInternalState()
 // Passthrough to memory read function
 uint32_t CPU::ReadMem(uint32_t Address)
 {
-    return Mem->MemRead(Address);
+    if (Address < BASE_IO_MEM) {
+        return Mem->MemRead(Address);
+    } else {
+        return ReadIO(Address);
+    }
 };
 
 // Passthrough to memory write function. Intended for debug use.
 void CPU::WriteMem(uint32_t Address, uint32_t Value)
 {
-    Mem->MemWrite(Address, Value);
+    if (Address < BASE_IO_MEM) {
+        Mem->MemWrite(Address, Value);
+    } else {
+        WriteIO(Address, Value);
+    }
 };
 
 // Utility function to directly set a flag in the flag register. Does not check the state of the flag
@@ -661,3 +670,103 @@ uint32_t CPU::Execute2SrcDest()
     return faultval;
 }
 
+#define IOMEM_MAX 0xFFFF // 64k words
+#define IOMEM_DEV_BASE(_i) (BASE_IO_MEM + (((_i) + 1) << 16))
+#define IOMEM_INDEX(_a) ((((_a) & 0x000F0000) >> 16) - 1)
+#define IOMEM_OFFSET(_a) ((_a) & 0x0000FFFF)
+#define IOMEM_IS_TABLE(_a) (((_a) & 0xFFFF0000) == BASE_IO_MEM)
+// IO memory is hashed - index of entry + 1 is << 16 and added to BASE_IO_MEM
+// This gives 64k (words) per entry, which is plenty for devices designed in 1956.
+
+int CPU::FindPeriphTableEntry(Periph *Dev)
+{
+    for (int i = 0; i < PERIPH_MAP_SIZE; i++)
+        if (Devices[i].Owner == Dev)
+            return i;
+
+    // not found
+    return -1;
+}
+
+bool CPU::AddDevice(Periph *Dev)
+{
+    uint32_t memsize = Dev->GetMemSize();
+    int index;
+
+    if (FindPeriphTableEntry(Dev) >= 0)
+        return false;
+    if (memsize > IOMEM_MAX)
+        return false;
+    for (index = 0; index < PERIPH_MAP_SIZE; index++) {
+        if (Devices[index].Owner == nullptr)
+            break;
+    }
+    if (index == PERIPH_MAP_SIZE - 1)  // Max 15 devices
+        return false;
+
+    Devices[index].Owner = Dev;
+    Devices[index].Entry.DDN = Dev->GetDDN();
+    Devices[index].Entry.Base_Addr = IOMEM_DEV_BASE(index);
+    Devices[index].Entry.IOMemLen = memsize;
+    if (Dev->InterruptSupported())
+        Devices[index].Entry.Interrupt = index;
+    return true;
+}
+
+void CPU::RemoveDevice(Periph *Dev)
+{
+    int index = FindPeriphTableEntry(Dev);
+    if (index == -1)
+        return;
+    Devices[index].Owner = nullptr;
+    Devices[index].Entry.DDN = 0;
+    Devices[index].Entry.Base_Addr = 0;
+    Devices[index].Entry.IOMemLen = 0;
+    Devices[index].Entry.Interrupt = 0;
+}
+
+uint32_t CPU::ReadIO(uint32_t Address)
+{
+    uint32_t offset = IOMEM_OFFSET(Address);
+    uint32_t retval {0};
+    if (IOMEM_IS_TABLE(Address)) {
+        // read table
+        if (offset < (PERIPH_MAP_SIZE * PERIPH_MAP_ENTRIES)) {
+            unsigned int index = offset / PERIPH_MAP_ENTRIES;
+
+            switch (offset & 3) { // low two bits selects which field
+                case 0:
+                    retval = Devices[index].Entry.DDN;
+                    break;
+                case 1:
+                    retval = Devices[index].Entry.Base_Addr;
+                    break;
+                case 2:
+                    retval = Devices[index].Entry.IOMemLen;
+                    break;
+                case 3:
+                    retval = Devices[index].Entry.Interrupt;
+                    break;
+            }
+        }
+    } else {
+        uint32_t index = IOMEM_INDEX(Address); // this cannot overflow as the macro returns 4 bits
+        if (Devices[index].Owner != nullptr) {
+            retval = Devices[index].Owner->ReadIOMem(offset);
+        }
+    }
+    return retval;
+}
+void CPU::WriteIO(uint32_t Address, uint32_t Value)
+{   // don't allow writes to peripheral map
+    if (IOMEM_IS_TABLE(Address)) {
+        return;
+    } else {
+        uint32_t offset = IOMEM_OFFSET(Address);
+        uint32_t index = IOMEM_INDEX(Address);
+        if (Devices[index].Owner != nullptr) {
+            Devices[index].Owner->WriteIOMem(offset, Value);
+        }
+    }
+
+}
