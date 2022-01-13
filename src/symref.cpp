@@ -5,7 +5,11 @@
 
 bool SymbolTable::AddSymbol(std::string NewName, uint32_t Location, uint32_t LineNum)
 {
-    // First, see if the symbol has been seen before
+    // This checks for $ alone on a line, or followed by non-alpha character.
+    if (NewName.length() == 0)
+        return true;
+
+    // See if the symbol has been seen before
     auto it = std::find_if(HeadList.begin(), HeadList.end(),
                            [NewName](SymbolHead &r){return (r.Name == NewName);});
     if (it != HeadList.end()) {
@@ -25,9 +29,12 @@ bool SymbolTable::AddSymbol(std::string NewName, uint32_t Location, uint32_t Lin
     }
     return false;
 }
+
 bool SymbolTable::AddRef(std::string NewName, uint32_t Location, uint32_t LineNum)
 {
-    // First, see if the symbol has been defined
+    if (NewName.length() < 2)
+        return true;
+    // See if the symbol has been defined
     auto it = std::find_if(HeadList.begin(), HeadList.end(),
                            [NewName](SymbolHead &r){return (r.Name == NewName);});
     if (it == HeadList.end()) {
