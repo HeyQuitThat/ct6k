@@ -51,7 +51,7 @@ int ReadWord(std::ifstream& File, uint32_t& Word)
     return File.gcount();
 }
 // Load a program from a binary file. No checking is done at this point - if you load
-// garbage, it will attempt to execute garbage. 
+// garbage, it will attempt to execute garbage.
 void LoadProgram(char* File, CPU *C)
 {
     std::ifstream infile;
@@ -107,7 +107,7 @@ void UpdateScreen(CPUInternalState Current, CPUInternalState Previous, UI *Scree
     if ((Current.FHAP_Base != Previous.FHAP_Base) ||
         (Current.IHAP_Base != Previous.IHAP_Base))
         Screen->DrawHAPs(Current.FHAP_Base, Current.IHAP_Base);
-   
+
 }
 
 // The main loop. Create a CPU, read a binary file into memory, and step through until it halts.
@@ -155,7 +155,7 @@ int main(int argc, char *argv[0])
                                              nullptr);
             foil->DrawNextInstr(tmp);
         }
-        
+
         if (curr_state.Halted == true) {
             RS = RS_Halted;
             foil->DrawRunState("HALTED");
