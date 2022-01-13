@@ -1,7 +1,7 @@
 * example1.asm
 * very simple test file for ct6k
 
-    MOVE 10, R0
+    MOVE 10000, R0
     MOVE 1, R1
 $LOOP
     ADD R1, R2, R2
