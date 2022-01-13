@@ -115,11 +115,15 @@ int main(int argc, char *argv[0])
 {
     CPU *ct6k = new CPU();
     UI *foil = new UI();  // [n]curses, foiled again!
+    PrintOTron *POT = new PrintOTron();
     CPUInternalState curr_state, prev_state;
     RunState RS {RS_Step};
     int quitting {false};
     bool bp_active {false};
     uint32_t breakpoint {0};
+
+    // Connect printer to system so programs can write to it.
+    ct6k->AddDevice(POT);
 
     // Loading a program is optional, users can hand-assemble a bootstrap loader if they want.
     if (argc > 2)
@@ -129,7 +133,9 @@ int main(int argc, char *argv[0])
         LoadProgram(argv[1], ct6k);
     curr_state = ct6k->DumpInternalState(); // Just to prep
 
-    foil->InitGui();
+    if (foil->InitGui() == -1)
+        exit(1);
+
     foil->DrawStaticElements();
     foil->DrawRunState("STEPPING");
 
@@ -140,6 +146,11 @@ int main(int argc, char *argv[0])
         prev_state = curr_state;
         curr_state = ct6k->DumpInternalState();
         UpdateScreen(curr_state, prev_state, foil);
+        if (POT->IsOutputReady()) {
+            std::string tmpline = POT->GetOutputLine();
+            foil->AddPrinterOutput(tmpline);
+        }
+
 
         if (bp_active && (curr_state.Registers[REG_IP] == breakpoint))
         {
@@ -306,7 +317,8 @@ int main(int argc, char *argv[0])
                 break;
         }
     }
-    
+    ct6k->RemoveDevice(POT);
+    delete(POT);
     delete(foil); // will call endwin();
     delete(ct6k);
     return 0;
