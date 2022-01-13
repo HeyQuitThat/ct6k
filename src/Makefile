@@ -1,7 +1,7 @@
 # makefile for simple CPU emulator
 
 CXX = g++
-CPPFLAGS = -Wall -g -O2
+CPPFLAGS = -Wall -g -O2 -std=c++14
 COMMON_HEADERS = arch.h hw.h instruction.hpp
 
 all: emu asm

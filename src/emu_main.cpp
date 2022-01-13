@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <cstring>
 #include <vector>
+#include <chrono>
+#include <thread>
 #include "unistd.h"
 #include <ncurses.h>
 #include "arch.h"
@@ -176,10 +178,10 @@ int main(int argc, char *argv[0])
         // TODO check for breakpoint
         switch (RS) {
             case RS_Slow:
-                usleep(SLOW_SLEEP);
+                std::this_thread::sleep_for(std::chrono::microseconds(SLOW_SLEEP));
                 // fall through - do both delays to get 2Hz time
             case RS_Quick:
-                usleep(QUICK_SLEEP);
+                std::this_thread::sleep_for(std::chrono::microseconds(QUICK_SLEEP));
                 // fall through
             case RS_Full:
                 // we are in nodelay mode, just check for any key and keep rolling

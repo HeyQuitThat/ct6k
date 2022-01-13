@@ -12,7 +12,7 @@
 #include "cpu.hpp"
 #include "memory.hpp"
 
-using namespace std::string_literals;
+using namespace std::literals::string_literals;
 
 // Constructor for RegisterArg class
 // Takes a uint8 and decodes it into a register argument, ready for processing
@@ -68,10 +68,10 @@ void RegisterArg::Print(std::string &Out)
 {
     if (Type == rt_value) {
         Out += "R";
-        Out += std::__cxx11::to_string(RegNum);
+        Out += std::to_string(RegNum);
     } else if (Type == rt_indirect) {
         Out += "I";
-        Out += std::__cxx11::to_string(RegNum);
+        Out += std::to_string(RegNum);
     } else {
         Out += "ERROR";
     }
