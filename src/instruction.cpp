@@ -177,7 +177,7 @@ Instruction::Instruction(uint32_t Inst)
 };
 
 // Constructor with two words - used for disassembly and printing. The second word is provided
-// opportunistically, in case a direct value is required. 
+// opportunistically, in case a direct value is required.
 Instruction::Instruction(uint32_t Inst, uint32_t Prefetch)
 {
     Raw = Inst;
@@ -220,7 +220,7 @@ bool Instruction::IsValidInstruction()
             retval = Src1->IsValid();
             break;
         case op_src_dest:
-            retval = Dest->IsValid() && (Src1->IsValid() || 
+            retval = Dest->IsValid() && (Src1->IsValid() ||
                             (Src1->GetType() == rt_null && (Src2->GetType() == rt_null)));
             break;
         case op_dest_only:
@@ -266,7 +266,7 @@ void Instruction::Print(std::string &Out)
                     Out += (boost::format("0x%08X") % DirectVal).str();
                 else
                     Out += "<direct data>";
-            else    
+            else
                 Src1->Print(Out);
             Out += ", ";
             Dest->Print(Out);
@@ -280,7 +280,7 @@ void Instruction::Print(std::string &Out)
                     Out += (boost::format("0x%08X") % DirectVal).str();
                 else
                     Out += "<direct data>";
-            else    
+            else
                 Dest->Print(Out);
             break;
         case op_2src_dest:
@@ -363,7 +363,7 @@ uint8_t BuildReg(std::string RegArg)
     }
     if (!isdigit(RegArg[1]))
         throw("Invalid argument");
-        
+
     tmp = std::strtoul(&RegArg[1], nullptr, 10);
     if (tmp > 15)
         throw("Invalid argument");
