@@ -144,7 +144,7 @@ int main(int argc, char *argv[0])
         getline(infile, in_line);
         linenum++;
         // skip comment and blank lines
-        if (in_line[0] == '*' || (in_line.length() == 0))
+        if ((in_line[0] == '*') || (in_line[0] == '#') || (in_line.length() == 0))
             continue;
 
         // check for symbol on a line
