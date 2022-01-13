@@ -1,15 +1,11 @@
 TODO, in approximate order:
-- complete feature set in ncurses emulator
- - disassembly window
- - reload program after reset?
- - live assembler ?
-- non-hacky way to register peripherals' memory space
-- printer support
+- reload program after reset?
 - "serial" I/O (polling, hacky)
 - Add assembler test programs to test as many instructions/address modes as possible
+- User guide
     - could publish here
 - Interrupt support
-- Timer interrupt?
+  - Timer interrupt?
 - add assembler support for reg aliases (IP, SP, FLG)
 - gtk front-end
 - support .ORG statement
@@ -19,3 +15,4 @@ TODO, in approximate order:
 - linker (depends on multi-segment object files)
 - card reader/writer
 - random access storage?
+- live assembler (for gtk version)
