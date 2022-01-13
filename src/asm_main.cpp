@@ -71,7 +71,7 @@ std::string ExtractSymbol(std::string Line, unsigned int Pos)
     std::string retval;
 
     while (isalpha(Line[Pos]))
-        retval += Line[Pos];
+        retval += Line[Pos++];
 
     return retval;
 }
@@ -150,15 +150,15 @@ int main(int argc, char *argv[0])
         // check for symbol on a line
         pos = in_line.find('$');
         if (pos != std::string::npos) {
-            std::string tmpsym = ExtractSymbol(in_line, pos);
-            
+            std::string tmpsym = ExtractSymbol(in_line, pos + 1);
+
             if (pos > 0) { // symbol is a reference
                 ret = syms.AddRef(tmpsym, addr+1, linenum);
                 // for direct value instructions, the value comes after the instruction
                 // fix up source line so parser inserts a zero
                 if (!ret) {
-                    in_line.erase(pos);
-                    in_line += "0\n";
+                    in_line.erase(pos, tmpsym.length() + 1);
+                    in_line.insert(pos, "0 ");
                 }
             } else { // Symbol starts at position 0, it's a declaration.
                 ret = syms.AddSymbol(tmpsym, addr, linenum);
@@ -167,7 +167,7 @@ int main(int argc, char *argv[0])
             }
         }
         if (ret) { // error happened!
-            std::cout << "Error found, stopping\n";
+            std::cerr << "Fatal: invalid symbol on line " << linenum << ". Stopping.\n";
             infile.close();
             outfile.close();
             remove(argv[2]);
@@ -177,7 +177,7 @@ int main(int argc, char *argv[0])
         try {
             word = BuildInstruction(in_line, extra_word, extra_present);
         } catch (const char* msg) {
-            std::cerr << "Fatal: parse error, line " << in_line << ": " << msg << "\n";
+            std::cerr << "Fatal: parse error, line " << linenum << ": " << msg << "\n";
             infile.close();
             outfile.close();
             remove(argv[2]);
