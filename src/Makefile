@@ -4,7 +4,7 @@ CXX = g++
 CPPFLAGS = -Wall -g -O2 -std=c++14
 COMMON_HEADERS = arch.h hw.h instruction.hpp
 
-all: emu asm
+all: emu6k asm6k
 
 # The only common code between the assembler and the emulator is the Instruction class
 instruction.o: instruction.cpp $(COMMON_HEADERS)
@@ -27,12 +27,12 @@ asm_main.o: asm_main.cpp $(COMMON_HEADERS)
 EMU_OBJS = emu_main.o instruction.o memory.o cpu.o ui.o periph.o
 ASM_OBJS = asm_main.o instruction.o symref.o
 
-emu: $(EMU_OBJS)
-	g++ -o emu $(EMU_OBJS) -lncurses
+emu6k: $(EMU_OBJS)
+	g++ -o emu6k $(EMU_OBJS) -lncurses
 
-asm: $(ASM_OBJS)
-	g++ -o asm $(ASM_OBJS)
+asm6k: $(ASM_OBJS)
+	g++ -o asm6k $(ASM_OBJS)
 
 clean:
-	@rm -f *.o emu asm
+	@rm -f *.o emu6k asm6k
 
