@@ -168,9 +168,10 @@ void CPU::Fault(uint32_t Type)
         Halt();
         return;
     }
-    SetFlag(FLG_FAULT);
+    Reg[REG_IP]--;  // IP is pointing to the next instruction, so roll back to the failing one.
     PushState();
-    newIP = ReadMem(FHAP_Addr + Type);
+    SetFlag(FLG_FAULT);
+    newIP = ReadMem(FHAP_Addr + (Type - 1));
     WriteReg(REG_IP, newIP);
 };
 
@@ -378,7 +379,7 @@ uint32_t CPU::ExecuteNoArgs()
             break;
         }
         case OP_IRET:
-            faultval = PopState(); // IP restored to previous position
+            faultval = PopState(); // IP restored to previous position, fault flag cleared
             ClearFlag(FLG_IN_INT);
             break;
         case OP_SIGNED:
