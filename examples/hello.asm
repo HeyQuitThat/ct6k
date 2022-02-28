@@ -2,6 +2,7 @@
 * Prints "Hello, Edith" on the Print-o-Tron XL, if the printer is found.
 
 * Start by looking for the printer
+    MOVE 0x1000, R14    * set stack
     CALL $FINDPRT
     OR R0, R0, R0       * no effect but sets zero flag
     JZERO $END
