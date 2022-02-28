@@ -6,8 +6,8 @@
 
 /*
 Registers 32 bit wide, endianness in SW (i.e. no multi-word operations)
-R[0-15] (4 bit select) 12 are GP.
-Any register may be used as an index register. In the assembler these are
+R[0-15] (4 bit select) 13 are GP.
+Any register may be used as an indirect register. In the assembler these are
 indicated as I[0-15].
 Flags (R13) (R/0)
 	Bit 0: Carry/Overflow
@@ -81,9 +81,8 @@ Reg byte bits
 7: Value in reg
 
 For MOVE, if src1 and src2 bytes are 0xFFFF then the next 32bits is a direct value to be placed in destination.
-For math and bitwise ops, setting dest reg to Unused does the operation but only affects flags.
 SHIFTL and SHIFTR shift src1 by number of bits in src2, result in dest. Shift values > 31 generate overflow/underflow.
-SHIFTL zero-fills, SHIFTR fills with value in bit 31.
+Both SHIFTL and SHIFTR fill with zeros.
 
 For JMP and related control-flow instructions, setting src1, src2 and dest register bytes to 0xFFFFFF
 indicates a direct value for the jump destination. Otherwise, the address to which the CPU should jump
@@ -268,7 +267,7 @@ TODO: preload a register with mem size?
 #define FAULT_NO_FAULT	0		// used internally
 #define FAULT_BAD_INSTR	0x00000001
 #define FAULT_BAD_ADDR	0x00000002
-#define FAULT_STACK		0x00000004
+#define FAULT_STACK		0x00000003
 #define	FAULT_DOUBLE	0x80000000
 
 /* Convenience */
