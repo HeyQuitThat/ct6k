@@ -20,8 +20,6 @@
 //  - symbolic address declaration start with $ and MUST begin in the first column.
 //  - symbols MUST be alphnumeric ONLY, no punctuation
 //  - symbols are case-sensitive
-//  - symbolic address references may only be used by control-flow instructions (JMPs or CALL)
-//    and must begin with $.
 //
 // Example source file:
 //     * Simple loop to add numbers 1 to 10
