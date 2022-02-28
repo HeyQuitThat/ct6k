@@ -1,5 +1,5 @@
 * example1.asm
-* very simple test file for ct6k
+* very simple program for ct6k, counts from 10000 to zero
 
     MOVE 10000, R0
     MOVE 1, R1

@@ -1,5 +1,5 @@
 * checker.asm - test program to make a checkerboard of the registers
-* bonus difficulty - not allowed to just move all 5s or all As into registers
+* Extra challenge - not allowed to just move all 5s or all As into registers
 
     MOVE 15, R1
     MOVE 2, R2
