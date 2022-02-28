@@ -1,4 +1,4 @@
 *.o
-*.ct
-src/emu
-src/asm
+*.ct6
+src/emu6k
+src/asm6k
