@@ -668,9 +668,13 @@ uint32_t CPU::Execute2SrcDest()
                 break;
             case OP_SHIFTR:
                 destval = src1val >> src2val;
+                if (destval << src2val != src1val)
+                    SetFlag(FLG_UNDER);
                 break;
             case OP_SHIFTL:
                 destval = src1val << src2val;
+                if (destval >> src2val != src1val)
+                    SetFlag(FLG_OVER);
                 break;
             default:
                 faultval = FAULT_BAD_INSTR;
