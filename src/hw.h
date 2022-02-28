@@ -125,4 +125,8 @@ struct PeriphMapEntry {
 /* Disc-o-Tron random-access storage */
 #define DOT_DDN                 0x444F5400
 
+/* Tick-o-Tron MS */
+/* Millisecond-precision timer and real-time clock device with optional wet-cell battery backup. */
+#define TKOT_DDN                0x5549434B
+
 #endif /* !__HW_H__ */
