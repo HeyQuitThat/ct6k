@@ -1,18 +1,18 @@
 TODO, in approximate order:
-- reload program after reset?
-- "serial" I/O (polling, hacky)
-- Add assembler test programs to test as many instructions/address modes as possible
-- User guide
+- Logging of printer output
     - could publish here
-- Interrupt support
-  - Timer interrupt?
 - add assembler support for reg aliases (IP, SP, FLG)
+- add assembler support text, packed and unpacked
+- assembler option to dump symbol table
 - gtk front-end
+- card reader/writer
+- reload program after reset?
 - support .ORG statement
     - multi-segment object files
     - loader for multi-segment
-- support strings as static data in assembler (possible now but must be done by hand)
 - linker (depends on multi-segment object files)
-- card reader/writer
+- serial I/O for terminal
+- Interrupt support
+  - Timer interrupt?
 - random access storage?
 - live assembler (for gtk version)
