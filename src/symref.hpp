@@ -15,6 +15,9 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+// symref.hpp - declarations for the SymbolTable class and other dependent classes
+// This is the core of the assembler's symbol table.
+
 #ifndef __SYMREF_HPP__
 #define __SYMREF_HPP__
 
@@ -24,20 +27,23 @@
 #include <string>
 
 
-
+// A single symbol reference - includes the source line and the address in the output code
 struct SymbolRef {
     uint32_t RefAddr;
     uint32_t SrcLine;
 };
 
+// The head of a list of refs for a single symbol. This contains the name of the symbol
+// and information about where it's declared.
 struct SymbolHead {
-    std::string Name; // might need fixed-size char array
+    std::string Name;
     bool Known;
     uint32_t Addr;
     uint32_t SrcLine;
     std::vector<SymbolRef> Refs;
 };
 
+// The main SymbolTable class
 class SymbolTable {
 public:
     bool AddSymbol(std::string NewName, uint32_t Location, uint32_t LineNum);

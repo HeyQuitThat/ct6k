@@ -15,11 +15,17 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+// symref.cpp - contains function declarations for the symbol table object
+
 #include "symref.hpp"
 #include <algorithm>
 #include <iostream>
 
 
+// Add a new symbol to the table. If it's been seen before, there will be refs
+// without address information, so just update the head. Otherwise, add a new list
+// to the table.
+// Returns true if an error occurred.
 bool SymbolTable::AddSymbol(std::string NewName, uint32_t Location, uint32_t LineNum)
 {
     // This checks for $ alone on a line, or followed by non-alpha character.
@@ -47,6 +53,9 @@ bool SymbolTable::AddSymbol(std::string NewName, uint32_t Location, uint32_t Lin
     return false;
 }
 
+// Add a reference to a symbol. If the symbol has not been declared, start a
+// new list with this ref, it will (hopefully) be populated later.
+// Returns true on error.
 bool SymbolTable::AddRef(std::string NewName, uint32_t Location, uint32_t LineNum)
 {
     if (NewName.length() < 2)
@@ -62,6 +71,10 @@ bool SymbolTable::AddRef(std::string NewName, uint32_t Location, uint32_t LineNu
     it->Refs.push_back({Location, LineNum});
     return false;
 }
+
+// Update the fully-assembled executable in memory with all of the symbol
+// information in the table. This is where we check for missing declarations.
+// Returns true on error.
 bool SymbolTable::UpdateExecutable(std::vector<uint32_t> &Blob)
 {
     for (auto it : HeadList) {
