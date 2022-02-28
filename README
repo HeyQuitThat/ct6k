@@ -10,22 +10,23 @@ To build:
 $ cd src
 $ make
 
-Write your code with any editor - see arch.h for the instruction set
-and system architecture basics.
+Write your code with any editor - see arch.h for the instruction set and
+system architecture basics.
 
 To assemble your code:
 $ cd src
-$ ./asm <input file> <output file>
+$ ./asm6k <input file> <output file>
 
 By convention, the input file has the extension .asm, and the output file
-has the extension .ct6k. But you can use whatever you want!
+has the extension .ct6. But you can use whatever you want!
 
 To run your code:
 $ cd src
-$ ./emu <binary file>
+$ ./emu6k <binary file>
 
 
-What is the Comp-o-Tron 6000? Short answer: it's a toy.
+What is the Comp-o-Tron 6000? Short answer: it's a learning tool and a toy
+for nerds.
 
 Long answer:
 
@@ -58,32 +59,35 @@ mean, it's OK. Just stick with the assembler.)
 
 Really long and boring answer:
 
-Many years ago, I was involved in writing some BIOS code for PCs. Since BIOS
-code is super hard to debug, I was given access to a very expensive piece
-of equipment called an ICE, or In-Circuit Emulator. (Sometimes you'll see
-references to an ITP or In-circuit Target Probe. Ours may have actually been
-an ITP, but we called it an ICE because that's what we were used to. And it's
-easier to say.)
+Many years ago, I was involved in writing some BIOS code for PCs. Since
+BIOS code is super hard to debug, I was given access to a very expensive
+piece of equipment called an ICE, or In-Circuit Emulator. (Sometimes you'll
+see references to an ITP or In-circuit Target Probe. Ours may have actually
+been an ITP, but we called it an ICE because that's what we were used to.
+And it's easier to say.)
 
-The ICE was great because you could click a button, stop the CPU, and see the
-state of every single register and flag. You could read memory, you could write
-memory, you could disassemble code, you could single-step, or set breakpoints...
-all of the things you would expect a debugger to do. And it was HARDWARE, which
-meant you could trace what the CPU did from the very beginning - as soon as it
-came out of reset.
+The ICE was great because you could click a button, stop the CPU, and see
+the state of every single register and flag. You could read memory, you
+could write memory, you could disassemble code, you could single-step, or
+set breakpoints... all of the things you would expect a debugger to do. And
+it was HARDWARE, which meant you could trace what the CPU did from the very
+beginning - as soon as it came out of reset.
 
 You didn't need an OS, or any software at all (at least, not on the target
-machine). It was great! Not only was it a powerful tool, it was super fascin-
-ating to see the machine running at that level.
+machine). It was great! Not only was it a powerful tool, it was super
+fascinating to see the machine running at that level.
 
 That view of the machine's internals is something that we as engineers - as
-nerds - have lost. That's why so many of us have a love for archaic hardware.
-It's not just that these machines are big and hot and (sometimes) dangerous.
-It's also that they are comprehensible - those with the appropriate knowledge
-can look at the control panel and easily see what's happening INSIDE the machine.
+nerds - have lost. That's why so many of us have a love for archaic
+hardware. It's not just that these machines are big and hot and (sometimes)
+dangerous. It's also that they are comprehensible - those with the
+appropriate knowledge can look at the control panel and easily see what's
+happening INSIDE the machine.
 
 And let's face it - everyone likes blinky lights.
 
 The Comp-o-Tron 6000 is a re-imagining of those classic early computers, in
 software.
 
+This software is licensed under the GPL version 2.0. Refer to the file
+COPYING for more information.
