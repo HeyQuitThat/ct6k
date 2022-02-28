@@ -437,12 +437,23 @@ uint32_t CPU::ExecuteSrcDest()
         if (faultval == FAULT_NO_FAULT)
             faultval = GetFromReg(CurrentInst->GetDestReg(), destval);
         if (faultval == FAULT_NO_FAULT) {
-            if (srcval == destval)
-                SetFlag(FLG_ZERO);
-            else if (srcval < destval)
-                SetFlag(FLG_UNDER);
-            else
-                SetFlag(FLG_OVER);
+            if (IsFlagSet(FLG_SIGNED)) {
+                int32_t sv = srcval;
+                int32_t dv = destval;
+                if (sv == dv)
+                    SetFlag(FLG_ZERO);
+                else if (sv < dv)
+                    SetFlag(FLG_UNDER);
+                else
+                    SetFlag(FLG_OVER);
+            } else { // unsigned
+                if (srcval == destval)
+                    SetFlag(FLG_ZERO);
+                else if (srcval < destval)
+                    SetFlag(FLG_UNDER);
+                else
+                    SetFlag(FLG_OVER);
+            }
         }
     }
 
