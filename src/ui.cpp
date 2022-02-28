@@ -220,6 +220,7 @@ void UI::DrawHAPs(uint32_t FHAPAddr, uint32_t IHAPAddr)
 {
     mvwaddstr(HAPsWin, FHAP_ADDR_ROW, FHAP_ADDR_COL, (boost::format("0x%08X") % FHAPAddr).str().c_str());
     mvwaddstr(HAPsWin, IHAP_ADDR_ROW, IHAP_ADDR_COL, (boost::format("0x%08X") % IHAPAddr).str().c_str());
+    wrefresh(HAPsWin);
 }
 
 // Update the right side of the status line with the run state, formatted right.
