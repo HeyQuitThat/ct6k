@@ -153,7 +153,7 @@ int main(int argc, char *argv[0])
     while (!infile.eof()) {
         uint32_t word, extra_word;
         bool extra_present;
-        bool ret;
+        bool ret {false};
         size_t pos;
 
         getline(infile, in_line);
