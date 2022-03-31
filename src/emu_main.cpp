@@ -29,7 +29,6 @@
 #include <ncurses.h>
 #include "arch.h"
 #include "cpu.hpp"
-#include <boost/format.hpp>
 #include "ui.hpp"
 
 #define SLOW_SLEEP 400000 // 400msec
