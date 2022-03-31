@@ -72,7 +72,7 @@ private:
     bool Running {true};
     uint32_t FHAP_Addr {0}; // Fault Handler Pointer
     uint32_t IHAP_Addr {0}; // Interrupt Handler Pointer
-    Instruction *CurrentInst;
+    Instruction *CurrentInst {nullptr};
     IORegion Devices[PERIPH_MAP_SIZE] {{{0,}, nullptr,},};    // Allocate separately?
 
     uint32_t Execute(); // executes current instruction, returns fault value
