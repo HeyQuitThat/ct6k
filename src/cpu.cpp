@@ -698,8 +698,10 @@ uint32_t CPU::Execute2SrcDest()
                 break;
         }
     }
-    IndicateZero(destval);
-    faultval = PutToDest(destval);
+    if (faultval == FAULT_NO_FAULT) {
+        IndicateZero(destval);
+        faultval = PutToDest(destval);
+    }
     return faultval;
 }
 
