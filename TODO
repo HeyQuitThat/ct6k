@@ -1,12 +1,12 @@
 TODO, in approximate order:
+- Printer support for GUI
+- card reader/writer
+- visual improvements for gui
 - Logging of printer output
     - could publish here
+- add assembler support for text, packed and unpacked
 - add assembler support for reg aliases (IP, SP, FLG)
-- add assembler support text, packed and unpacked
 - assembler option to dump symbol table
-- gtk front-end
-- card reader/writer
-- reload program after reset?
 - support .ORG statement
     - multi-segment object files
     - loader for multi-segment
@@ -15,4 +15,13 @@ TODO, in approximate order:
 - Interrupt support
   - Timer interrupt?
 - random access storage?
-- live assembler (for gtk version)
+- live assembler (for qt version)
+- self-hosted assembler
+- COBOL-ish compiler (depends on punch card I/O)
+
+
+Pie in the sky:
+- page table support
+- kernel/user mode
+- direct-access storage
+- some sort of OS
