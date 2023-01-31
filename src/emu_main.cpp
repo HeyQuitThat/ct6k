@@ -129,7 +129,7 @@ void UpdateScreen(CPUInternalState Current, CPUInternalState Previous, UI *Scree
 }
 
 // The main loop. Create a CPU, read a binary file into memory, and step through until it halts.
-int main(int argc, char *argv[0])
+int main(int argc, char *argv[])
 {
     CPU *ct6k = new CPU();
     UI *foil = new UI();  // [n]curses, foiled again!
