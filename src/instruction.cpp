@@ -26,8 +26,6 @@
 #include <iostream>
 #include "arch.h"
 #include "instruction.hpp"
-#include "cpu.hpp"
-#include "memory.hpp"
 
 using namespace std::literals::string_literals;
 
@@ -101,7 +99,7 @@ void RegisterArg::Print(std::string &Out)
 // Because of this, and because it's a short, static list, we will open-code the search functions
 // and just use fixed-length C strings.
 
-OpMap opcode_map[] ={
+OpMap opcode_map[] = {
 {"MOVE", OP_MOVE, op_src_dest},
 {"CMP", OP_CMP, op_src_dest},
 {"ADD", OP_ADD, op_2src_dest},
