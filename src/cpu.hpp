@@ -20,6 +20,7 @@
 #define __CPU_HPP__
 
 #include <cstdint>
+#include "arch.h"
 #include "memory.hpp"
 #include "instruction.hpp"
 #include "periph.hpp"
