@@ -6,9 +6,12 @@ Basic directions:
 This package includes source for the emulator and an assembler, along with
 some example assembly files.
 
-To build:
+To build console tools, including the assembler and text UI:
 $ cd src
 $ make
+
+To build the GUI, install the QT libraries version 6.x and open the file
+CMakeLists.txt in the QT Creator tool.
 
 Write your code with any editor - see arch.h for the instruction set and
 system architecture basics.
@@ -91,3 +94,6 @@ software.
 
 This software is licensed under the GPL version 2.0. Refer to the file
 COPYING for more information.
+
+The Cabin font is icensed under the SIL Open Font License. Refer to the
+file OFL.txt for more information.
