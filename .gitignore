@@ -2,3 +2,6 @@
 *.ct6
 src/emu6k
 src/asm6k
+build-ct6k-gui-Desktop-Debug/
+src/cov-int/
+ug.md
