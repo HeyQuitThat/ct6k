@@ -15,21 +15,33 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-// First code executed January 22, 2023.
+// dword.hpp - defintions for the DWord class
+#ifndef DWORD_H
+#define DWORD_H
+#include <cstdint>
+#include "indicator.hpp"
+#include <QHBoxLayout>
+#include <QString>
 
-#include "mainwindow.hpp"
-#include <QObject>
-#include <QApplication>
-// main() is just a template created by QT Creator. A lot of examples
-// show setup code here in main(), but nearly all of that code belongs
-// in the constructor for MainWindow, which owns all of the widgets.
-// You could put the init stuff for core logic here, but moving it
-// to MainWindow makes it a lot easier to set up signal/slot connections.
-int main(int argc, char *argv[])
+// DWord class - displays/inputs individual bits of a 32-bit word using
+// the Indicator class for each bit.
+class DWord : public QWidget
 {
-    QApplication a(argc, argv);
-    MainWindow w;
+    Q_OBJECT
+public:
+    explicit DWord(QWidget *Parent = nullptr, QString Name = "");
+    uint32_t GetValue();
+    void SetValue(uint32_t NewVal);
+    void Lock();
+    void Unlock();
+    void EnableBitmaps(QPixmap *OffPic, QPixmap *OnPic);
 
-    w.show();
-    return a.exec();
-}
+    // No paint event for this widget! The individual bits paint themselves.
+private:
+    uint32_t Value;
+    bool Locked;
+    QHBoxLayout *LeLay;
+    Indicator *Bits[32];
+};
+
+#endif // DWORD_H

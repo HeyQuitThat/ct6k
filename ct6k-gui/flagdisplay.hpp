@@ -15,21 +15,35 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-// First code executed January 22, 2023.
+// flagdisplay.hpp - declarations for the FlagDisplay class
+#ifndef FLAGDISPLAY_H
+#define FLAGDISPLAY_H
 
-#include "mainwindow.hpp"
-#include <QObject>
-#include <QApplication>
-// main() is just a template created by QT Creator. A lot of examples
-// show setup code here in main(), but nearly all of that code belongs
-// in the constructor for MainWindow, which owns all of the widgets.
-// You could put the init stuff for core logic here, but moving it
-// to MainWindow makes it a lot easier to set up signal/slot connections.
-int main(int argc, char *argv[])
+#include <QWidget>
+#include <QLabel>
+#include <cstdint>
+#include "indicator.hpp"
+#include <QVBoxLayout>
+
+#define NUM_FLAGS 7
+
+// FlagDisplay class - a vertically-oriented display panel indicating the
+// status of processor flags. Read-only.
+class FlagDisplay : public QWidget
 {
-    QApplication a(argc, argv);
-    MainWindow w;
+    Q_OBJECT
+public:
+    explicit FlagDisplay(QWidget *parent = nullptr);
+    void SetValue(uint32_t NewVal);
+    void EnableBitmaps(QPixmap *OffPic, QPixmap *OnPic);
 
-    w.show();
-    return a.exec();
-}
+signals:
+
+private:
+    QVBoxLayout *VL;
+    uint32_t Value;
+    Indicator *Flags[NUM_FLAGS];
+    QLabel *Titles[NUM_FLAGS];
+};
+
+#endif // FLAGDISPLAY_H

@@ -15,8 +15,20 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
-        mainwindow.h
+        mainwindow.hpp
         mainwindow.ui
+        indicator.cpp indicator.hpp
+        dword.cpp dword.hpp
+        controlpanel.cpp controlpanel.hpp
+        registerset.cpp registerset.hpp
+        ../src/instruction.cpp ../src/instruction.hpp
+        ../src/cpu.cpp ../src/cpu.hpp ../src/hw.h ../src/arch.h
+        ../src/memory.cpp ../src/memory.hpp
+        flagdisplay.cpp flagdisplay.hpp
+        cpuworker.cpp cpuworker.hpp
+        cpuspinner.cpp cpuspinner.hpp
+        ct6k-info.h
+        ct6k.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

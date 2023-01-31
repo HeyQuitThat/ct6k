@@ -15,21 +15,29 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-// First code executed January 22, 2023.
+// registerset.hpp - declarations for the RegisterSet class.
+#ifndef REGISTERSET_H
+#define REGISTERSET_H
+#include "dword.hpp"
+#include "../src/arch.h"
 
-#include "mainwindow.hpp"
-#include <QObject>
-#include <QApplication>
-// main() is just a template created by QT Creator. A lot of examples
-// show setup code here in main(), but nearly all of that code belongs
-// in the constructor for MainWindow, which owns all of the widgets.
-// You could put the init stuff for core logic here, but moving it
-// to MainWindow makes it a lot easier to set up signal/slot connections.
-int main(int argc, char *argv[])
+// RegisterSet class - controls the layout and display/input of 16 DWord
+// objects representing the 16 registers of the CPU.
+class RegisterSet : public QWidget
 {
-    QApplication a(argc, argv);
-    MainWindow w;
+    Q_OBJECT
+public:
+    explicit RegisterSet(QWidget *Parent = nullptr);
+    uint32_t GetValue(int Index);
+    void SetValue(int Index, uint32_t NewVal);
+    void Lock();
+    void Unlock();
+    void EnableBitmaps(QPixmap *OffPic, QPixmap *OnPic);
+    // No paint event for this widget!
+private:
+    bool Locked;
+    QVBoxLayout *VL;
+    DWord *Regs[NUMREGS];
+};
 
-    w.show();
-    return a.exec();
-}
+#endif // REGISTERSET_H
