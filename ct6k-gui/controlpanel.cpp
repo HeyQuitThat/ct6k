@@ -27,6 +27,12 @@ ControlPanel::ControlPanel(QWidget *parent)
     : QWidget{parent}
 {
     Q_UNUSED(parent);
+    BG = new QFrame(this);
+    BG->setStyleSheet("background-color:#78B5C6;");
+    BG->setAutoFillBackground(true);
+    BG->setFixedSize(1509, 1011);
+    BG->move(0,0);
+
     // RHL is Register Horizontal Layout, puts the register set and flags at the top
     // of the panel, with flags on the right.
     RHL = new QHBoxLayout;
@@ -69,6 +75,7 @@ void ControlPanel::UpdateFromCPU(CPUInternalState *NewState)
     // register set, but in practice it's just too complicated to deal
     // with.
     FD->SetValue(NewState->Registers[REG_FLG]);
+    FD->SetHaltedState(NewState->Halted);
     LastIHAP = NewState->IHAP_Base;
     LastFHAP = NewState->FHAP_Base;
 }

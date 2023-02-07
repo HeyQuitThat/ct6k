@@ -23,6 +23,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QFrame>
 #include "registerset.hpp"
 #include "flagdisplay.hpp"
 #include "../src/cpu.hpp"
@@ -43,6 +44,7 @@ public slots:
     void UpdateFromCPU(CPUInternalState *NewState);
 
 private:
+    QFrame *BG;       // background color
     QVBoxLayout *VL;  // overarching vertical layout
     QHBoxLayout *RHL; // registers and flags
     QHBoxLayout *BHL; // buttons

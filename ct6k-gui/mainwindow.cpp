@@ -42,9 +42,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    // Set background color before the setupUI() is called.
-    setStyleSheet("background-color:#78B5C6;");
-    setAutoFillBackground( true );
     ui->setupUi(this);
 
     // Load resources from resource file
