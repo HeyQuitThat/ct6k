@@ -25,7 +25,7 @@
 #include "indicator.hpp"
 #include <QVBoxLayout>
 
-#define NUM_FLAGS 7
+#define NUM_FLAGS 8
 
 // FlagDisplay class - a vertically-oriented display panel indicating the
 // status of processor flags. Read-only.
@@ -36,6 +36,8 @@ public:
     explicit FlagDisplay(QWidget *parent = nullptr);
     void SetValue(uint32_t NewVal);
     void EnableBitmaps(QPixmap *OffPic, QPixmap *OnPic);
+    void SetHaltedState(bool State);
+
 
 signals:
 

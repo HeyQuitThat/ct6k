@@ -36,8 +36,10 @@ FlgMap flag_map[] = {
     {"SIGNED", FLG_SIGNED},
     {"INT_ENA", FLG_INTENA},
     {"FAULT", FLG_FAULT},
+    {"HALTED", 0}, // special case, must be last
     {"", 0},
 };
+#define HALT_FLAG (NUM_FLAGS - 1)
 
 // Constructor. All Indicators and Lables are added to a single
 // vertical layout.
@@ -56,11 +58,14 @@ FlagDisplay::FlagDisplay(QWidget *parent)
 
         Flags[i] = new Indicator(nullptr);
         VL->addWidget(Flags[i]);
+        VL->setAlignment(Flags[i], Qt::AlignHCenter);
         Titles[i] = new QLabel;
         Titles[i]->setText(flag_map[i].Name);
         VL->addWidget(Titles[i]);
+        VL->setAlignment(Titles[i], Qt::AlignHCenter);
     }
     setLayout(VL);
+
 }
 
 // Update the indicator bits.
@@ -79,3 +84,9 @@ void FlagDisplay::EnableBitmaps(QPixmap *OffPic, QPixmap *OnPic)
     }
 
 }
+
+void FlagDisplay::SetHaltedState(bool State)
+{
+    Flags[HALT_FLAG]->SetState(State);
+}
+
