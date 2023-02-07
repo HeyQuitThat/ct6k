@@ -44,19 +44,16 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // Load resources from resource file
-    QFontDatabase fontDB;
-    fontDB.addApplicationFont(":/ct6k/Cabin-Regular.otf");
-    fontDB.addApplicationFont(":/ct6k/Cabin-Bold.otf");
-    // TODO fonts are not correct - we get Cabin, but not bold or 12 pt
-    CabinB = new QFont("Cabin", 12, QFont::Bold);
     PW = new PrinterWindow(this);
     OffImg = new QPixmap(":/ct6k/ib-off.jpg");
     OnImg = new QPixmap(":/ct6k/ib-on.jpg");
 
     // Create and configure the Control Panel
     CP = new ControlPanel(this);
-    CP->setFont(*CabinB);
+    CP->setStyleSheet("font-family: \"Cabin Bold\";"
+                      "color: white;"
+                      "font-size: 12pt;");
+
     CP->RS->EnableBitmaps(OffImg, OnImg);
     CP->FD->EnableBitmaps(OffImg, OnImg);
     setCentralWidget(CP);

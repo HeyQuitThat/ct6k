@@ -72,7 +72,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QFont *CabinB;
     QPixmap *OffImg;
     QPixmap *OnImg;
     QPixmap *TriImg;
