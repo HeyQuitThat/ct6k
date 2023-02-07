@@ -53,8 +53,15 @@
     <addaction name="actionCaution"/>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuDevices">
+    <property name="title">
+     <string>Devices</string>
+    </property>
+    <addaction name="actionPrint_O_Tron_XL"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDebug"/>
+   <addaction name="menuDevices"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -133,6 +140,17 @@
    </property>
    <property name="shortcut">
     <string>Shift+F1</string>
+   </property>
+  </action>
+  <action name="actionPrint_O_Tron_XL">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Print-O-Tron XL</string>
+   </property>
+   <property name="toolTip">
+    <string>Print-O-Tron XL</string>
    </property>
   </action>
  </widget>

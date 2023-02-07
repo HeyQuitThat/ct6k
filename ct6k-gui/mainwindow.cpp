@@ -53,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     fontDB.addApplicationFont(":/ct6k/Cabin-Bold.otf");
     // TODO fonts are not correct - we get Cabin, but not bold or 12 pt
     CabinB = new QFont("Cabin", 12, QFont::Bold);
+    PW = new PrinterWindow(this);
     OffImg = new QPixmap(":/ct6k/ib-off.jpg");
     OnImg = new QPixmap(":/ct6k/ib-on.jpg");
 
@@ -81,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent)
 // Destructor. Destroys all of the widgets and their offspring.
 MainWindow::~MainWindow()
 {
+    delete PW; // might not need this
     delete ui;
 }
 
@@ -330,5 +332,15 @@ void MainWindow::on_actionCaution_triggered()
     MB.setText(OutBuf);
     MB.exec();
 
+}
+
+
+
+void MainWindow::on_actionPrint_O_Tron_XL_triggered(bool checked)
+{
+    if (checked == true)
+        PW->Show();
+    else
+        PW->Hide();
 }
 

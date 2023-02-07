@@ -24,9 +24,11 @@ set(PROJECT_SOURCES
         ../src/instruction.cpp ../src/instruction.hpp
         ../src/cpu.cpp ../src/cpu.hpp ../src/hw.h ../src/arch.h
         ../src/memory.cpp ../src/memory.hpp
+        ../src/periph.cpp ../src/periph.hpp
         flagdisplay.cpp flagdisplay.hpp
         cpuworker.cpp cpuworker.hpp
         cpuspinner.cpp cpuspinner.hpp
+        printerwindow.hpp printerwindow.cpp
         ct6k-info.h
         ct6k.qrc
 )

@@ -21,7 +21,9 @@
 #include <QThread>
 #include <QMutex>
 #include <QWaitCondition>
+#include <QString>
 #include "../src/cpu.hpp"
+#include "../src/periph.hpp"
 
 // Run state of CPU Spinner thread. Set by buttons on the UI, checked by the spinner thread
 // each time through the loop.
@@ -43,12 +45,13 @@ class CPUSpinner : public QThread
 {
     Q_OBJECT
 public:
-    CPUSpinner(QObject *parent = nullptr, CPU *CT6K = nullptr);
+    CPUSpinner(QObject *parent = nullptr, CPU *CT6K = nullptr, PrintOTron *POT = nullptr);
     ~CPUSpinner();
     void ChangeState(CPURunState NewState);
 
 signals:
     void UpdatePanel(CPUInternalState *state);
+    void UpdatePrinterWindow(QString OutLine);
 
 protected:
     void run() override;
@@ -60,6 +63,7 @@ private:
     QWaitCondition WaitCondition;
     CPUInternalState CurrentState;
     CPU *MyCPU;
+    PrintOTron *MyPOT;
     void RunThenWait(int msec);
 
 };

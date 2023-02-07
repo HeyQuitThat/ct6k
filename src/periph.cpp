@@ -35,6 +35,11 @@ bool Periph::InterruptActive()
     return false;
 }
 
+void Periph::PowerOnReset()
+{
+    return;
+}
+
 // Get the required IO memory size. Used during registration to make sure we have enough space.
 // (In real life, this is ignored by the CPU which always gives 64k words.)
 uint32_t PrintOTron::GetMemSize()
@@ -77,7 +82,9 @@ void PrintOTron::WriteIOMem(uint32_t Offset, uint32_t Value)
                 LineRelease = true;
             }
             if (Value & POT_CONTROL_PAGE_RELEASE) {
-                OutputBuffer.clear();
+                Status = POT_STATUS_BUSY;
+                OutputBuffer = "\f";
+                LineRelease = true;
             }
             break;
         default:
@@ -89,14 +96,17 @@ void PrintOTron::WriteIOMem(uint32_t Offset, uint32_t Value)
 // Defines how the device responds to memory reads by applications.
 uint32_t PrintOTron::ReadIOMem(uint32_t Offset)
 {
+    if (Offset != 0)
+        return 0xFFFFFFFF;
     return Status;
 }
 
 // Called by the main loop to determine when ouput is ready to be put on-screen.
 bool PrintOTron::IsOutputReady()
 {
-    if (Status == POT_STATUS_NO_PAPER)
+    if (Status == POT_STATUS_NO_PAPER) {
         Status = POT_STATUS_OK;
+    }
     return LineRelease;
 
 }
@@ -108,11 +118,18 @@ std::string PrintOTron::GetOutputLine()
     std::string retval;
 
     if (!LineRelease)
-        return nullptr;
+        return "";
 
     retval = OutputBuffer;
     LineRelease = false;
     Status = POT_STATUS_OK;
     OutputBuffer.clear();
     return retval;
+}
+
+// Reset the device as though a power cycle had happened.
+void PrintOTron::PowerOnReset()
+{
+    OutputBuffer.clear();
+    Status = POT_STATUS_NO_PAPER; // Will change to ready when UI initializes.
 }

@@ -23,6 +23,7 @@
 #include <QFont>
 #include "cpuworker.hpp"
 #include "controlpanel.hpp"
+#include "printerwindow.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -40,6 +41,7 @@ public:
     ~MainWindow();
     CPUWorker *Worker;
     ControlPanel *CP;
+    PrinterWindow *PW;
 
 private slots:
     void on_actionExit_triggered();
@@ -65,6 +67,8 @@ private slots:
     void on_actionAbout_triggered();
 
     void on_actionCaution_triggered();
+
+    void on_actionPrint_O_Tron_XL_triggered(bool checked);
 
 private:
     Ui::MainWindow *ui;

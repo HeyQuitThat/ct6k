@@ -25,7 +25,8 @@
 
 #include <string>
 #include <cstdint>
-
+#ifndef __PERIPH_HPP__
+#define __PERIPH_HPP__
 enum DeviceClass {
     DC_PRINTER,     // Print-o-Tron XL full-width matrix imager
     DC_TAPE,        // Tape-o-Tron 1200
@@ -48,6 +49,7 @@ public:
     virtual bool InterruptSupported();
     virtual bool InterruptActive(); // Level triggered, will drop once interrupt has been serviced.
     virtual void DoBackground();
+    virtual void PowerOnReset();
 
     // Interface on UI side varies based on device, so the derived classes will add those functions.
 private:
@@ -64,6 +66,7 @@ public:
     uint32_t GetDDN();
     bool IsOutputReady();
     std::string GetOutputLine();
+    void PowerOnReset();
 private:
     std::string OutputBuffer;
     bool LineRelease {false};
@@ -71,3 +74,4 @@ private:
 };
 
 
+#endif  // __PERIPH_HPP__

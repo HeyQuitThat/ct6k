@@ -22,6 +22,7 @@
 #include <QThread>
 #include <cstdint>
 #include "../src/cpu.hpp"
+// cpu.hpp includes periph.hpp
 #include "cpuspinner.hpp"
 
 // CPUWorker class - control interface to CPU Spinner and the CPU from the UI.
@@ -51,6 +52,7 @@ public slots:
 
 private:
     CPU *CT6K;
+    PrintOTron *POT;
     CPUSpinner *Spinner;
 };
 

@@ -19,9 +19,12 @@
 
 #include "cpuworker.hpp"
 #include "mainwindow.hpp"
+#include "printerwindow.hpp"
 #include <QPushButton>
 #include <QObject>
+#include <QString>
 #include "../src/cpu.hpp"
+#include "qobjectdefs.h"
 
 // Constructor. This instantiates the CPU as well as the Spinner to run it in
 // a separate thread.
@@ -30,9 +33,13 @@ CPUWorker::CPUWorker(QObject *parent)
 {
     MainWindow *M = (MainWindow *)parent;
     ControlPanel *P = (ControlPanel *)M->centralWidget();
+    PrinterWindow *PW = (PrinterWindow *)M->PW;
     CT6K = new CPU(); // default mem size
-    Spinner = new CPUSpinner(this, CT6K);
+    POT = new PrintOTron();
+    CT6K->AddDevice(POT);
+    Spinner = new CPUSpinner(this, CT6K, POT);
     QObject::connect(Spinner, SIGNAL(UpdatePanel(CPUInternalState*)), P, SLOT(UpdateFromCPU(CPUInternalState*)));
+    QObject::connect(Spinner, SIGNAL(UpdatePrinterWindow(QString)), PW, SLOT(UpdatePrinterWindow(QString)));
     Spinner->start();
 }
 
@@ -81,6 +88,7 @@ void CPUWorker::ResetCPU()
 {
     Quiesce();
     CT6K->Reset();
+    POT->PowerOnReset();
     MainWindow *M = (MainWindow *)this->parent();
     ControlPanel *P = (ControlPanel *)M->centralWidget();
     CPUInternalState State = CT6K->DumpInternalState();
@@ -139,10 +147,12 @@ void CPUWorker::Quiesce()
 void CPUWorker::Go()
 {
     if (Spinner == nullptr) {
-        Spinner = new CPUSpinner(this, CT6K);
+        Spinner = new CPUSpinner(this, CT6K, POT);
         MainWindow *M = (MainWindow *)this->parent();
         ControlPanel *P = (ControlPanel *)M->centralWidget();
+        PrinterWindow *PW = (PrinterWindow *)M->PW;
         QObject::connect(Spinner, SIGNAL(UpdatePanel(CPUInternalState*)), P, SLOT(UpdateFromCPU(CPUInternalState*)));
+        QObject::connect(Spinner, SIGNAL(UpdatePrinterWindow(QString)), PW, SLOT(UpdatePrinterWindow(QString)));
         Spinner->start();
     }
 }
