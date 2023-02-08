@@ -30,6 +30,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    a.setWindowIcon(QIcon(QPixmap(":/ct6k/ib-on.jpg")));
+
     // Load resources from resource file
     QFontDatabase fontDB;
     fontDB.addApplicationFont(":/ct6k/Cabin-Regular.otf");
