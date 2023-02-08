@@ -20,8 +20,9 @@
 #ifndef __HW_H__
 #define __HW_H__
 
-/* The DDN is the Digital Device Name - a unique identifier for each device */
+#include <cstdint>
 
+/* The DDN is the Digital Device Name - a unique identifier for each device */
 #define BASE_IO_MEM 0xFFF00000  // Reserve 20 bits or 1MB for IO space
 
 /* The peripheral map is a sixteen-entry array of the PeriphMapEntry structure,
