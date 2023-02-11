@@ -300,7 +300,7 @@ void MainWindow::on_actionInstructions_triggered()
     QString OutBuf = INSTRUCTION_TEXT;
     QMessageBox MB;
     MB.setText(OutBuf);
-    MB.setText(OutBuf);
+    MB.setWindowTitle("Comp-o-Tron 6000 Help");
     MB.exec();
 }
 
@@ -311,7 +311,7 @@ void MainWindow::on_actionAbout_triggered()
     QString OutBuf = INFO_TEXT VERSION_MAJOR "." VERSION_MINOR "." VERSION_SUBMINOR VERSION_EXTRA;
     QMessageBox MB;
     MB.setText(OutBuf);
-    MB.setText(OutBuf);
+    MB.setWindowTitle("About The Comp-o-Tron 6000 Emulator");
     MB.exec();
 
 }
@@ -323,7 +323,7 @@ void MainWindow::on_actionCaution_triggered()
     QString OutBuf = WARNING_TEXT;
     QMessageBox MB;
     MB.setText(OutBuf);
-    MB.setText(OutBuf);
+    MB.setWindowTitle("Achtung!!");
     MB.exec();
 
 }
