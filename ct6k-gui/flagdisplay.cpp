@@ -18,6 +18,7 @@
 // flagdisplay.cpp - function definitions for the FlagDisplay class
 
 #include <QFrame>
+#include <QSpacerItem>
 #include "flagdisplay.hpp"
 #include "../src/arch.h"
 
@@ -48,12 +49,14 @@ FlagDisplay::FlagDisplay(QWidget *parent)
 {
     VL = new QVBoxLayout;
     for (int i = 0; i < NUM_FLAGS; i++) {
+        VL->addSpacing(10);
         if (i > 0) {
             QFrame *tmpFrame = new QFrame;
             tmpFrame->setFrameShape(QFrame::HLine);
             tmpFrame->setFrameShadow(QFrame::Plain);
             tmpFrame->setLineWidth(3);
             VL->addWidget(tmpFrame);
+            VL->addSpacing(16);
         }
 
         Flags[i] = new Indicator(nullptr);
@@ -65,7 +68,6 @@ FlagDisplay::FlagDisplay(QWidget *parent)
         VL->setAlignment(Titles[i], Qt::AlignHCenter);
     }
     setLayout(VL);
-
 }
 
 // Update the indicator bits.
