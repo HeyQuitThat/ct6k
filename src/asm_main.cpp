@@ -121,7 +121,7 @@ void WriteBlob(std::vector<uint32_t>& Blob, std::ofstream &File)
 
 // Main function of the assembler. Most of the work is done in the BuildInstruction() function, and in
 // the SymbolTable class.
-int main(int argc, char *argv[0])
+int main(int argc, char *argv[])
 {
     std::ifstream infile;
     std::vector<uint32_t> outbuf;
