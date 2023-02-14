@@ -27,7 +27,7 @@
 PrinterWindow::PrinterWindow(QObject *parent)
     : QObject{parent}
 {
-    DMF = new QFont("Enhanced Dot Digital-7", 14, QFont::Normal);
+    DMF = new QFont("Merchant Copy", 14, QFont::Normal);
     POTBox = new QDialog();
     POTBox->setWindowFlags(Qt::Window);
     POTBox->setModal(false);
@@ -36,11 +36,11 @@ PrinterWindow::PrinterWindow(QObject *parent)
     // Style sheets for the labels, one for pink, one for white background
     QString SSP = "color:black;"
                   "background-color:#de93e6;"
-                  "font-family: \"Enhanced Dot Digital-7\";"
+                  "font-family: \"Merchant Copy\";"
                   "font-size: 14pt";
     QString SSW = "color:black;"
                   "background-color:white;"
-                  "font-family: \"Enhanced Dot Digital-7\";"
+                  "font-family: \"Merchant Copy\";"
                   "font-size: 14pt";
     for (int i = 0; i < NUM_VISIBLE_LINES; i++) {
         Pinkbar[i] = new QLabel(POTBox, Qt::Widget);

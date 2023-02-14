@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     QFontDatabase fontDB;
     fontDB.addApplicationFont(":/ct6k/Cabin-Regular.otf");
     fontDB.addApplicationFont(":/ct6k/Cabin-Bold.otf");
-    fontDB.addApplicationFont(":/ct6k/enhanced_dot_digital-7.ttf");
+    fontDB.addApplicationFont(":/ct6k/Merchant Copy.ttf");
 
     MainWindow w;
 
