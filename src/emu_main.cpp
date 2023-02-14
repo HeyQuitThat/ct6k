@@ -30,6 +30,7 @@
 #include "arch.h"
 #include "cpu.hpp"
 #include "ui.hpp"
+#include "printotron.hpp"
 
 #define SLOW_SLEEP 400000 // 400msec
 #define QUICK_SLEEP 100000 // 100msec

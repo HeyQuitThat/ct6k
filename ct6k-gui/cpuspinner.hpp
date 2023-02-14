@@ -23,7 +23,7 @@
 #include <QWaitCondition>
 #include <QString>
 #include "../src/cpu.hpp"
-#include "../src/periph.hpp"
+#include "../src/printotron.hpp"
 
 // Run state of CPU Spinner thread. Set by buttons on the UI, checked by the spinner thread
 // each time through the loop.

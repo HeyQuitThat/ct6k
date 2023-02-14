@@ -15,27 +15,31 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-// periph.cpp
+// printotron.cpp - class declaration for Print-o-Tron XL.
+
+#ifndef __PRINTOTRON_HPP__
+#define __PRINTOTRON_HPP__
+#include <string>
+#include <cstdint>
 #include "periph.hpp"
-#include "hw.h"
 
-// function definitions for the abstract class Periph - these do nothing but make the compiler happy
-void Periph::DoBackground()
-{
-    return;
-}
+class PrintOTron: public Periph {
+public:
+    PrintOTron();
+    ~PrintOTron() {};
+    uint32_t GetMemSize(); // should be called before setting base
+    void WriteIOMem(uint32_t Offset, uint32_t Value);
+    uint32_t ReadIOMem(uint32_t Offset);
+    DeviceClass GetDeviceClass();
+    uint32_t GetDDN();
+    bool IsOutputReady();
+    std::string GetOutputLine();
+    void PowerOnReset();
+private:
+    std::string OutputBuffer;
+    bool LineRelease {false};
+    uint32_t Status;
+};
 
-bool Periph::InterruptSupported()
-{
-    return false;
-}
 
-bool Periph::InterruptActive()
-{
-    return false;
-}
-
-void Periph::PowerOnReset()
-{
-    return;
-}
+#endif  // __PRINTOTRON_HPP__

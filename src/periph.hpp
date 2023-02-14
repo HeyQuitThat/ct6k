@@ -55,23 +55,5 @@ public:
 private:
 };
 
-class PrintOTron: public Periph {
-public:
-    PrintOTron();
-    ~PrintOTron() {};
-    uint32_t GetMemSize(); // should be called before setting base
-    void WriteIOMem(uint32_t Offset, uint32_t Value);
-    uint32_t ReadIOMem(uint32_t Offset);
-    DeviceClass GetDeviceClass();
-    uint32_t GetDDN();
-    bool IsOutputReady();
-    std::string GetOutputLine();
-    void PowerOnReset();
-private:
-    std::string OutputBuffer;
-    bool LineRelease {false};
-    uint32_t Status;
-};
-
 
 #endif  // __PERIPH_HPP__

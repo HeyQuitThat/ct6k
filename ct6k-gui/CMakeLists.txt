@@ -25,6 +25,7 @@ set(PROJECT_SOURCES
         ../src/cpu.cpp ../src/cpu.hpp ../src/hw.h ../src/arch.h
         ../src/memory.cpp ../src/memory.hpp
         ../src/periph.cpp ../src/periph.hpp
+        ../src/printotron.cpp ../src/printotron.hpp
         flagdisplay.cpp flagdisplay.hpp
         cpuworker.cpp cpuworker.hpp
         cpuspinner.cpp cpuspinner.hpp

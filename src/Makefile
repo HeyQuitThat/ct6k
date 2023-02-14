@@ -19,12 +19,14 @@ ui.o: ui.cpp ui.hpp ui-priv.hpp arch.h
 
 periph.o: periph.cpp periph.hpp hw.h
 
+printotron.o: printotron.cpp printotron.hpp periph.hpp hw.h
+
 emu_main.o: emu_main.cpp cpu.hpp ui.hpp periph.hpp $(COMMON_HEADERS)
 
 asm_main.o: asm_main.cpp $(COMMON_HEADERS)
 
 # nucurses emulator
-EMU_OBJS = emu_main.o instruction.o memory.o cpu.o ui.o periph.o
+EMU_OBJS = emu_main.o instruction.o memory.o cpu.o ui.o periph.o printotron.o
 ASM_OBJS = asm_main.o instruction.o symref.o
 
 emu6k: $(EMU_OBJS)

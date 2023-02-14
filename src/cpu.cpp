@@ -25,6 +25,7 @@
 #include <climits>
 #include "arch.h"
 #include "cpu.hpp"
+#include "periph.hpp"
 
 
 // Constructor, takes no arguments. If needed, we could take one to set the memory size.
