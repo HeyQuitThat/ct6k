@@ -338,3 +338,12 @@ void MainWindow::on_actionPrint_O_Tron_XL_triggered(bool checked)
         PW->Hide();
 }
 
+
+void MainWindow::on_actionLog_Printer_Output_triggered(bool checked)
+{
+    if (checked == true)
+        PW->StartLog();
+    else
+        PW->StopLog();
+}
+

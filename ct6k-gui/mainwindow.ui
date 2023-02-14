@@ -58,6 +58,7 @@
      <string>Devices</string>
     </property>
     <addaction name="actionPrint_O_Tron_XL"/>
+    <addaction name="actionLog_Printer_Output"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDebug"/>
@@ -147,10 +148,18 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Print-O-Tron XL</string>
+    <string>Print-o-Tron XL</string>
    </property>
    <property name="toolTip">
-    <string>Print-O-Tron XL</string>
+    <string>Print-o-Tron XL</string>
+   </property>
+  </action>
+  <action name="actionLog_Printer_Output">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Log Printer Output</string>
    </property>
   </action>
  </widget>

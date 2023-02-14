@@ -22,8 +22,11 @@
 #include <QObject>
 #include <QLabel>
 #include <QDialog>
+#include <fstream>
 
 #define NUM_VISIBLE_LINES 24
+#define OUTFILE_NAME "Print-o-Tron_XL.log"
+#define LINE_HEIGHT 22
 
 class PrinterWindow : public QObject
 {
@@ -33,6 +36,8 @@ public:
     ~PrinterWindow();
     void Show();
     void Hide();
+    void StartLog();
+    void StopLog();
 
 public slots:
     void UpdatePrinterWindow(QString OutLine);
@@ -43,6 +48,7 @@ private:
     int BottomIndex;
     QFont *DMF; // Dot Matrix Font
     void ScrollUp();
+    std::ofstream PrinterLog;
 };
 
 #endif // PRINTERWINDOW_HPP

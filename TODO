@@ -1,10 +1,10 @@
 TODO, in approximate order:
-- Logging of printer output
 - card reader/writer
 - visual improvements for gui (this is more of a continuous task)
     - could publish here
 - add assembler support for text, packed and unpacked
 - add assembler support for reg aliases (IP, SP, FLG)
+- assembler support for include - or - multiple input files
 - assembler option to dump symbol table
 - support .ORG statement
     - multi-segment object files

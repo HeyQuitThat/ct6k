@@ -45,30 +45,19 @@ public:
 
 private slots:
     void on_actionExit_triggered();
-
     void on_actionLoad_Binary_triggered();
-
     void on_actionReset_triggered();
-
     void on_actionShow_FHAP_triggered();
-
     void on_actionShow_IHAP_triggered();
-
     void on_actionDump_Memory_triggered();
-
     void on_actionDisassemble_triggered();
-
     void on_actionModify_Registers_triggered(bool checked);
-
     void on_actionModify_Memory_triggered();
-
     void on_actionInstructions_triggered();
-
     void on_actionAbout_triggered();
-
     void on_actionCaution_triggered();
-
     void on_actionPrint_O_Tron_XL_triggered(bool checked);
+    void on_actionLog_Printer_Output_triggered(bool checked);
 
 private:
     Ui::MainWindow *ui;

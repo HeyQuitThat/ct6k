@@ -17,11 +17,9 @@
 
 // printerwindow.cpp - declarations for class PrinterWindow
 #include "printerwindow.hpp"
-#include <QDebug>
+#include <QMessageBox>
 
-#define LINE_HEIGHT 22
-
-// Print-O-Tron XL standard pinkbar pink is color 0xee86eb
+// Print-o-Tron XL standard pinkbar pink is color 0xee86eb
 
 // Constructor
 PrinterWindow::PrinterWindow(QObject *parent)
@@ -61,6 +59,8 @@ PrinterWindow::~PrinterWindow()
     POTBox->hide();
     delete DMF;
     delete POTBox;
+    if (PrinterLog.is_open())
+        PrinterLog.close();
 }
 
 // Slots from the menu to show and hide the window
@@ -74,15 +74,39 @@ void PrinterWindow::Hide()
     POTBox->hide();
 }
 
+// Start logging to file Print-o-Tron_XL.log
+// Appends to existing file
+void PrinterWindow::StartLog()
+{
+    try {
+        PrinterLog.open(OUTFILE_NAME, std::ios::out | std::ios::app);
+    } catch (const char* msg) {
+        QMessageBox MB;
+        MB.setText("Error opening log file:");
+        MB.setDetailedText(msg);
+        MB.setIcon(QMessageBox::Warning);
+        MB.exec();
+    }
+
+}
+
+// Stop logging
+void PrinterWindow::StopLog()
+{
+    PrinterLog.close();
+}
+
 // We always print at the bottom and scroll up like a printer.
 // The Comp-O-Tron Corporation specifies pinkbar paper for all
 // Print-O-Tron models.
 void PrinterWindow::UpdatePrinterWindow(QString OutLine)
 {
 
-    qDebug() << OutLine;
     ScrollUp();
     Pinkbar[BottomIndex]->setText(OutLine);
+    if (PrinterLog.is_open())
+        PrinterLog << OutLine.toStdString() << std::endl;
+
 }
 
 
