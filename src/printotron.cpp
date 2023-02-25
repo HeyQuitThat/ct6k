@@ -80,7 +80,7 @@ uint32_t PrintOTron::ReadIOMem(uint32_t Offset)
     return Status;
 }
 
-// Called by the main loop to determine when ouput is ready to be put on-screen.
+// Called by the main loop to determine when output is ready to be put on-screen.
 bool PrintOTron::IsOutputReady()
 {
     if (Status == POT_STATUS_NO_PAPER) {
