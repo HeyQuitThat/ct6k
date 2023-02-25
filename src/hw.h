@@ -23,7 +23,7 @@
 #include <cstdint>
 
 /* The DDN is the Digital Device Name - a unique identifier for each device */
-#define BASE_IO_MEM 0xFFF00000  // Reserve 20 bits or 1MB for IO space
+#define BASE_IO_MEM 0xFFF00000  // Reserve 20 bits or 1M words for IO space
 
 /* The peripheral map is a sixteen-entry array of the PeriphMapEntry structure,
  * located at BASE_IO_MEM. It's hard-wired via plugboard and must be updated by a
@@ -99,12 +99,12 @@ struct PeriphMapEntry {
  * page release with multiple line releases.
  */
 
-/* Card-o-Tron 3CS (reader half) */
-#define COTR_DDN                0x33435352
-#define COTR_MEM_SIZE           43
-#define COTR_REG_STATUS         0x0
-#define COTR_STATUS_READY       0x00000001
-#define COTR_STATUS_HOLL        0x00000002  // If set, using Hollerith cards, otherwise COT cards
+/* Card-o-Tron 3CS (scanner half) */
+#define COTS_DDN                0x33435352
+#define COTS_MEM_SIZE           43
+#define COTS_REG_STATUS         0x0
+#define COTS_STATUS_READY       0x00000001
+#define COTS_STATUS_HOLL        0x00000002  // If set, using Hollerith cards, otherwise COT cards
                                             // Hollerith cards read 24 bits into 40 words, data is
                                             // not otherwise translated. Significant software work
                                             // may be needed to interpret these cards.
@@ -114,29 +114,100 @@ struct PeriphMapEntry {
                                             // bits. If card were written on a Comp-o-Tron Model 3,
                                             // some software work may be required to interpret them
                                             // from their original format of 64 words of 16 bits.
-#define COTR_STATUS_EMPTY       0x00000004  // Card reader is empty.
-#define CORT_STATUS_READING     0x00000008  // Read in progress
-#define CORT_STATUS_COMPLETE    0x00000010  // Read complete, data is valid
-#define COTR_STATUS_ERR_CSUM    0x80000000  // Checksum error on Comp-o-Tron card
-#define COTR_STATUS_ERR_MECH    0x40000000  // Device has jammed or card has failed to feed
-#define COTR_REG_COMMAND        0x1
-#define COTR_CMD_READ           0x00000001  // Read next card
-#define COTR_CMD_ABORT          0x80000000  // Abort job, unload all cards
-#define COTR_REG_READ_BUF       0x2
-#define COTR_REG_READ_LEN       40          // 40 words, 32 used for COT cards
+#define COTS_STATUS_EMPTY       0x00000004  // Card reader is empty.
+#define COTS_STATUS_READING     0x00000008  // Read in progress
+#define COTS_STATUS_COMPLETE    0x00000010  // Read complete, data is valid
+#define COTS_STATUS_ERR_CSUM    0x80000000  // Checksum error on Comp-o-Tron card
+#define COTS_STATUS_ERR_MECH    0x40000000  // Device has jammed or card has failed to feed
+#define COTS_REG_COMMAND        0x1
+#define COTS_CMD_READ           0x00000001  // Read next card
+#define COTS_CMD_ABORT          0x80000000  // Abort job, unload all cards
+#define COTS_REG_CARD_INFO      0x2         // Card type, decoded from the card itself
+#define COTS_INFO_LEN_MASK      0x0000003f  // Number of words read from card
+#define COTS_INFO_BIN           0x00000100  // General data, no encoding
+#define COTS_INFO_TXTU          0x00000200  // Unpacked text, one char per word, low octet
+#define COTS_INFO_TXTPL         0x00000800  // Packed text, least significant octet first
+#define COTS_INFO_TXTPM         0x00001000  // Packed text, most significant octet first
+#define COTS_INFO_CODE          0x00002000  // Binary program data. First word is destination address
+#define COTS_REG_READ_BUF       0x3
+#define COTS_READ_BUF_LEN       40          // 40 words, 32 used for COT cards
 
-/* Card-o-Tron 3CS (writer half) */
-#define COTW_DDN                0x33435357
-#define COTW_MEM_SIZE           35
-#define COTW_REG_STATUS         0x0
-#define COTW_STATUS_READY       0x00000001  // Ready to punch, cards loaded
-#define COTW_STATUS_EMPTY       0x00000004  // no cards in hopper to punch
-#define COTW_STATUS_ERR_DATA    0x80000000  // card failed readback verification
-#define COTW_STATUS_ERR_MECH    0x40000000  // Device has jammed or card has failed to feed
-#define COTW_REG_COMMAND        0x1
-#define COTW_CMD_WRITE          0x00000001  // Write contents of write buffer to card
-#define COTW_REG_WRITE_BUF      0x2
-#define COTW_REG_WRITE_LEN      32          // 32 words
+/* Card-o-Tron 3CS (punch half) */
+#define COTP_DDN                0x33435357
+#define COTP_MEM_SIZE           36
+#define COTP_REG_STATUS         0x0
+#define COTP_STATUS_READY       0x00000001  // Ready to punch, cards loaded
+#define COTP_STATUS_BUSY        0x00000002  // Device is currently punching a card
+#define COTP_STATUS_EMPTY       0x00000004  // no cards in hopper to punch
+#define COTP_STATUS_ERR_DATA    0x80000000  // card failed readback verification
+#define COTP_STATUS_ERR_MECH    0x40000000  // Device has jammed or card has failed to feed
+#define COTP_REG_COMMAND        0x1
+#define COTP_CMD_WRITE          0x00000001  // Write contents of write buffer to card
+#define COTP_CMD_FLUSH          0x00000010  // Job complete, drop written cards to output hopper
+#define COTP_REG_CARD_INFO      0x2         // Card information, must be set before issuing write command
+#define COTP_INFO_LEN_MASK      0x0000003f  // Number of words to punch
+#define COTP_INFO_BIN           0x00000100  // General data, no encoding
+#define COTP_INFO_TXTU          0x00000200  // Unpacked text, one char per word, low octet
+#define COTP_INFO_TXTPL         0x00000400  // Packed text, least significant octet first
+#define COTP_INFO_TXTPM         0x00000800  // Packed text, most significant octet first
+#define COTP_INFO_CODE          0x00001000  // Binary program data. First word is destination address
+#define COTP_INFO_TYPE_MASK     0x00001f00
+#define COTP_REG_WRITE_BUF      0x3
+#define COTP_WRITE_BUF_LEN      32          // 32 words
+
+/* The Card-o-Tron 3CS combination card scanner/puncher is actually two devices in one!
+ * The scanner half is a high-speed device (600CPM) that can read both Hollerith and Comp-o
+ * Tron cards, and will automatically detect the type of card read.
+ *
+ * The punch side of the device can punch Comp-o-Tron cards at a speedy 300CPM under software
+ * control. (Unfortunately, the device cannot punch Hollerith cards due to some pesky patents
+ * held by our competition. Sorry. We tried.)
+ *
+ * Each side of the device operates independently, though both are powered by the same drive-
+ * train. We've provided an ample 6 Horsepower 3-phase motor to handle the machine, and it
+ * provides plenty of power to both scan and punch at the same time. (N.B. there is currently
+ * no software support for this type of operation. But we didn't want hold our customers back.)
+ *
+ * To scan cards with the Card-o-Tron, first read the scanner's status register. If the returned
+ * value is 1 or 3, the device has been loaded with cards and is ready to scan.
+ * Write a 1 to the command register, then poll the status register until the "complete" bit is
+ * set. This will take approximately 100 millseconds, during which time other processing may take
+ * place. Once the status register indicates that data is ready, you may read and decode the info
+ * register and read the card data from the data buffer. The data buffer will remain valid until
+ * another read command has been issued.
+ *
+ * Once you have read the data, repeat the process, starting with a read of the status register.
+ * When the status register reads "empty", the job is complete; no more cards remain to be read.
+ *
+ * To punch cards with the Card-o-Tron, first read the punch's status register. If the returned
+ * value is 1, the device has been loaded with blank cards and is ready to punch.
+ * Begin by writing data to the write buffer, then program the info register with the appropriate
+ * size and data type. Finally, write a 1 to the command register. Poll the status register until
+ * the busy bit is no longer set (approximately 200ms), the repeat the process for the next card
+ * to be punched.
+ *
+ * When complete, write the flush bit in the command register to end the job and drop the punched
+ * cards into the output hopper.
+ *
+ * N.B. For the emulator, obviously we don't use actual cards. Instead, we use text files.
+ * The format is:
+ * <type> length: words
+ * Type is:
+ *  B - Binary
+ *  U - Unpacked text, one ASCII character per word
+ *  L - Packed text, LSB first
+ *  M - Packed text, MSB first
+ *  C - Code, first word is the address for the remaining data.
+ *
+ * Length is a decimal number from 1-32 (zero length would be a blank card, not supported)
+ * Words may be decimal or hexadecimal if preceded by 0x. Words are written or read as-is
+ * and no formatting or adjustment is done.
+ * Whitespace is ignored except as a separator. Data for a single card may span multiple
+ * lines.
+ * Formatting errors on read will set the ERR_MECH bit in the status register.
+ */
+
+
 
 /* Tape-o-Tron 1200 */
 #define TOT_DDN                 0x544F5412
