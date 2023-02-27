@@ -22,6 +22,18 @@
 #include "../src/arch.h"
 #include "../src/cpu.hpp"
 
+// These values are determined by checking window geometry after show() is called.
+#define CP_FIXED_WIDTH 1509
+#define CP_FIXED_HEIGHT 1011
+
+// Button and icon geometry
+#define CP_ICON_X 200
+#define CP_ICON_Y 50
+// Border in pixels, have to add it twice for top/bottom and left/right
+#define CP_BUTTON_BORDER 3
+#define CP_BUTTON_X (CP_ICON_X + (CP_BUTTON_BORDER * 2))
+#define CP_BUTTON_Y (CP_ICON_Y + (CP_BUTTON_BORDER * 2))
+
 // Constructor. Does the meat of laying out items on the screen.
 ControlPanel::ControlPanel(QWidget *parent)
     : QWidget{parent}
@@ -30,7 +42,7 @@ ControlPanel::ControlPanel(QWidget *parent)
     BG = new QFrame(this);
     BG->setStyleSheet("background-color:#78B5C6;");
     BG->setAutoFillBackground(true);
-    BG->setFixedSize(1509, 1039);
+    BG->setFixedSize(CP_FIXED_WIDTH, CP_FIXED_HEIGHT);
     BG->move(0,0);
 
     // RHL is Register Horizontal Layout, puts the register set and flags at the top
@@ -48,48 +60,48 @@ ControlPanel::ControlPanel(QWidget *parent)
     BtnStopImg = new QIcon(":/ct6k/STOP.png");
     BtnStop = new QPushButton();
     BtnStop->setIcon(*BtnStopImg);
-    BtnStop->setIconSize(QSize(200, 50));
-    BtnStop->setFixedSize(QSize(212, 62));
+    BtnStop->setIconSize(QSize(CP_ICON_X, CP_ICON_Y));
+    BtnStop->setFixedSize(QSize(CP_BUTTON_X, CP_BUTTON_Y));
     BtnStop->setAutoFillBackground(true);
     BHL->addWidget(BtnStop);
 
     BtnStepImg = new QIcon(":/ct6k/STEP.png");
     BtnStep = new QPushButton();
     BtnStep->setIcon(*BtnStepImg);
-    BtnStep->setIconSize(QSize(200, 50));
-    BtnStep->setFixedSize(QSize(212, 62));
+    BtnStep->setIconSize(QSize(CP_ICON_X, CP_ICON_Y));
+    BtnStep->setFixedSize(QSize(CP_BUTTON_X, CP_BUTTON_Y));
     BtnStep->setAutoFillBackground(true);
     BHL->addWidget(BtnStep);
 
     Btn1HzImg = new QIcon(":/ct6k/SLOW.png");
     Btn1Hz= new QPushButton();
     Btn1Hz->setIcon(*Btn1HzImg);
-    Btn1Hz->setIconSize(QSize(200, 50));
-    Btn1Hz->setFixedSize(QSize(212, 62));
+    Btn1Hz->setIconSize(QSize(CP_ICON_X, CP_ICON_Y));
+    Btn1Hz->setFixedSize(QSize(CP_BUTTON_X, CP_BUTTON_Y));
     Btn1Hz->setAutoFillBackground(true);
     BHL->addWidget(Btn1Hz);
 
     Btn10HzImg = new QIcon(":/ct6k/QUICK.png");
     Btn10Hz= new QPushButton();
     Btn10Hz->setIcon(*Btn10HzImg);
-    Btn10Hz->setIconSize(QSize(200, 50));
-    Btn10Hz->setFixedSize(QSize(212, 62));
+    Btn10Hz->setIconSize(QSize(CP_ICON_X, CP_ICON_Y));
+    Btn10Hz->setFixedSize(QSize(CP_BUTTON_X, CP_BUTTON_Y));
     Btn10Hz->setAutoFillBackground(true);
     BHL->addWidget(Btn10Hz);
 
     Btn60HzImg = new QIcon(":/ct6k/FAST.png");
     Btn60Hz= new QPushButton();
     Btn60Hz->setIcon(*Btn60HzImg);
-    Btn60Hz->setIconSize(QSize(200, 50));
-    Btn60Hz->setFixedSize(QSize(212, 62));
+    Btn60Hz->setIconSize(QSize(CP_ICON_X, CP_ICON_Y));
+    Btn60Hz->setFixedSize(QSize(CP_BUTTON_X, CP_BUTTON_Y));
     Btn60Hz->setAutoFillBackground(true);
     BHL->addWidget(Btn60Hz);
 
     BtnFullImg = new QIcon(":/ct6k/RUN.png");
     BtnFull= new QPushButton();
     BtnFull->setIcon(*BtnFullImg);
-    BtnFull->setIconSize(QSize(200, 50));
-    BtnFull->setFixedSize(QSize(212, 62));
+    BtnFull->setIconSize(QSize(CP_ICON_X, CP_ICON_Y));
+    BtnFull->setFixedSize(QSize(CP_BUTTON_X, CP_BUTTON_Y));
     BtnFull->setAutoFillBackground(true);
     BHL->addWidget(BtnFull);
 

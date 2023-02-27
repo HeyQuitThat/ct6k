@@ -42,7 +42,6 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     w.show();
-
     // Size needs to set after show() is called so we know how big it is.
     w.setFixedSize(w.width(), w.height());
 

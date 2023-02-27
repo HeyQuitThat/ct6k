@@ -28,6 +28,7 @@ PrinterWindow::PrinterWindow(QObject *parent)
     DMF = new QFont("Merchant Copy", 14, QFont::Normal);
     POTBox = new QDialog();
     POTBox->setWindowFlags(Qt::Window);
+    POTBox->setWindowTitle("Print-o-Tron XL");
     POTBox->setModal(false);
     POTBox->setSizeGripEnabled(false);
     POTBox->setFixedSize(1100, LINE_HEIGHT * NUM_VISIBLE_LINES); // width is pure guesswork

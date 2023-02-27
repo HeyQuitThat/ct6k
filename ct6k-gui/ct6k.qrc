@@ -5,5 +5,12 @@
         <file>ib-on.jpg</file>
         <file>ib-off.jpg</file>
         <file>Merchant Copy.ttf</file>
+        <file>STOP.png</file>
+        <file>FAST.png</file>
+        <file>QUICK.png</file>
+        <file>RUN.png</file>
+        <file>SLOW.png</file>
+        <file>STEP.png</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>
