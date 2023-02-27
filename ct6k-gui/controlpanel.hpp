@@ -59,6 +59,12 @@ public: // buttons are public so we can hook up the signals they emit easily
     QPushButton *Btn10Hz;
     QPushButton *Btn60Hz;
     QPushButton *BtnFull;
+    QIcon *BtnStopImg;
+    QIcon *BtnStepImg;
+    QIcon *Btn1HzImg;
+    QIcon *Btn10HzImg;
+    QIcon *Btn60HzImg;
+    QIcon *BtnFullImg;
     uint32_t getLastIHAP() const;
     uint32_t getLastFHAP() const;
 };

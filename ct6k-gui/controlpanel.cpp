@@ -30,7 +30,7 @@ ControlPanel::ControlPanel(QWidget *parent)
     BG = new QFrame(this);
     BG->setStyleSheet("background-color:#78B5C6;");
     BG->setAutoFillBackground(true);
-    BG->setFixedSize(1509, 1011);
+    BG->setFixedSize(1509, 1039);
     BG->move(0,0);
 
     // RHL is Register Horizontal Layout, puts the register set and flags at the top
@@ -40,21 +40,59 @@ ControlPanel::ControlPanel(QWidget *parent)
     FD = new FlagDisplay(this);
     RHL->addWidget(RS);
     RHL->addWidget(FD);
+
     // BHL is Button Horizontal Layout. These go in a horizontal line at the
     // bottom of the panel
     BHL = new QHBoxLayout;
-    BtnStop = new QPushButton("STOP");
+
+    BtnStopImg = new QIcon(":/ct6k/STOP.png");
+    BtnStop = new QPushButton();
+    BtnStop->setIcon(*BtnStopImg);
+    BtnStop->setIconSize(QSize(200, 50));
+    BtnStop->setFixedSize(QSize(212, 62));
+    BtnStop->setAutoFillBackground(true);
     BHL->addWidget(BtnStop);
-    BtnStep = new QPushButton("STEP");
+
+    BtnStepImg = new QIcon(":/ct6k/STEP.png");
+    BtnStep = new QPushButton();
+    BtnStep->setIcon(*BtnStepImg);
+    BtnStep->setIconSize(QSize(200, 50));
+    BtnStep->setFixedSize(QSize(212, 62));
+    BtnStep->setAutoFillBackground(true);
     BHL->addWidget(BtnStep);
-    Btn1Hz= new QPushButton("SLOW");
+
+    Btn1HzImg = new QIcon(":/ct6k/SLOW.png");
+    Btn1Hz= new QPushButton();
+    Btn1Hz->setIcon(*Btn1HzImg);
+    Btn1Hz->setIconSize(QSize(200, 50));
+    Btn1Hz->setFixedSize(QSize(212, 62));
+    Btn1Hz->setAutoFillBackground(true);
     BHL->addWidget(Btn1Hz);
-    Btn10Hz= new QPushButton("QUICK");
+
+    Btn10HzImg = new QIcon(":/ct6k/QUICK.png");
+    Btn10Hz= new QPushButton();
+    Btn10Hz->setIcon(*Btn10HzImg);
+    Btn10Hz->setIconSize(QSize(200, 50));
+    Btn10Hz->setFixedSize(QSize(212, 62));
+    Btn10Hz->setAutoFillBackground(true);
     BHL->addWidget(Btn10Hz);
-    Btn60Hz= new QPushButton("FAST");
+
+    Btn60HzImg = new QIcon(":/ct6k/FAST.png");
+    Btn60Hz= new QPushButton();
+    Btn60Hz->setIcon(*Btn60HzImg);
+    Btn60Hz->setIconSize(QSize(200, 50));
+    Btn60Hz->setFixedSize(QSize(212, 62));
+    Btn60Hz->setAutoFillBackground(true);
     BHL->addWidget(Btn60Hz);
-    BtnFull= new QPushButton("RUN");
+
+    BtnFullImg = new QIcon(":/ct6k/RUN.png");
+    BtnFull= new QPushButton();
+    BtnFull->setIcon(*BtnFullImg);
+    BtnFull->setIconSize(QSize(200, 50));
+    BtnFull->setFixedSize(QSize(212, 62));
+    BtnFull->setAutoFillBackground(true);
     BHL->addWidget(BtnFull);
+
     // Vertical Layout, Registers/Flags on top, buttons below. This is the outermost
     // layout for the widget.
     VL = new QVBoxLayout;
