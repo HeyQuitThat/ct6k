@@ -119,6 +119,8 @@ void CardOTronScan::PowerOnReset()
     StatusReg = COTS_STATUS_EMPTY;
 }
 
+// Get a ref to the input file. The must already be open for
+// reading and must be positioned at the start.
 void CardOTronScan::SetInFile(std::ifstream *File)
 {
     if ((File != nullptr) && File->is_open())
