@@ -113,7 +113,7 @@ void CardOTronScan::WriteIOMem(uint32_t Offset, uint32_t Value)
 // Reset the device as though a power cycle had happened.
 void CardOTronScan::PowerOnReset()
 {
-    if (InFile->is_open())
+    if ((InFile != nullptr) && InFile->is_open())
         InFile->close();
     Reading = false;
     StatusReg = COTS_STATUS_EMPTY;
