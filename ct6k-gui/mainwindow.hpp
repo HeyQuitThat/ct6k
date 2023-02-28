@@ -56,7 +56,7 @@ private slots:
     void on_actionInstructions_triggered();
     void on_actionAbout_triggered();
     void on_actionCaution_triggered();
-    void on_actionPrint_O_Tron_XL_triggered(bool checked);
+    void on_actionPrint_O_Tron_XL_triggered();
     void on_actionLog_Printer_Output_triggered(bool checked);
 
 private:

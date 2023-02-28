@@ -143,9 +143,6 @@
    </property>
   </action>
   <action name="actionPrint_O_Tron_XL">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="text">
     <string>Print-o-Tron XL</string>
    </property>

@@ -330,12 +330,9 @@ void MainWindow::on_actionCaution_triggered()
 
 
 
-void MainWindow::on_actionPrint_O_Tron_XL_triggered(bool checked)
+void MainWindow::on_actionPrint_O_Tron_XL_triggered()
 {
-    if (checked == true)
-        PW->Show();
-    else
-        PW->Hide();
+    PW->Show();
 }
 
 
