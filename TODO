@@ -1,26 +1,34 @@
 TODO, in approximate order:
-- card reader/writer
-- visual improvements for gui (this is more of a continuous task)
+Short term:
+- card reader/writer test programs
     - could publish here
+
 - add assembler support for text, packed and unpacked
-- add assembler support for reg aliases (IP, SP, FLG)
+- add assembler support for punch card output
+- add assembler support for reg aliases (IP, SP, FLG) (nice to have)
+- support .ORG statement
+- boot loader firmware
+
 - assembler support for include - or - multiple input files
 - assembler option to dump symbol table
-- support .ORG statement
-    - multi-segment object files
-    - loader for multi-segment
+- multi-segment object files
+- loader for multi-segment
 - linker (depends on multi-segment object files)
+
 - serial I/O for terminal
+- WAIT opcode for interrupt-driven I/O
 - Interrupt support
   - Timer interrupt?
 - random access storage?
-- live assembler (for qt version)
 - self-hosted assembler
 - COBOL-ish compiler (depends on punch card I/O)
 
 
 Pie in the sky:
+- live assembler (for qt version)
 - page table support
 - kernel/user mode
-- direct-access storage
 - some sort of OS
+
+CONSTANT/FOREVER
+- visual improvements for gui (this is more of a continuous task)
