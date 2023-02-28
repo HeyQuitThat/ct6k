@@ -59,6 +59,8 @@
     </property>
     <addaction name="actionPrint_O_Tron_XL"/>
     <addaction name="actionLog_Printer_Output"/>
+    <addaction name="separator"/>
+    <addaction name="actionCard_o_Tron_3CS"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDebug"/>
@@ -156,6 +158,11 @@
    </property>
    <property name="text">
     <string>Log Printer Output</string>
+   </property>
+  </action>
+  <action name="actionCard_o_Tron_3CS">
+   <property name="text">
+    <string>Card-o-Tron 3CS</string>
    </property>
   </action>
  </widget>

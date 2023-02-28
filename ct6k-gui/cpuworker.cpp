@@ -20,6 +20,7 @@
 #include "cpuworker.hpp"
 #include "mainwindow.hpp"
 #include "printerwindow.hpp"
+#include "cotwindow.hpp"
 #include <QPushButton>
 #include <QObject>
 #include <QString>
@@ -34,12 +35,18 @@ CPUWorker::CPUWorker(QObject *parent)
     MainWindow *M = (MainWindow *)parent;
     ControlPanel *P = (ControlPanel *)M->centralWidget();
     PrinterWindow *PW = (PrinterWindow *)M->PW;
+    COTWindow *COTW = (COTWindow *)M->CW;
     CT6K = new CPU(); // default mem size
     POT = new PrintOTron();
     CT6K->AddDevice(POT);
-    Spinner = new CPUSpinner(this, CT6K, POT);
+    COTP = new CardOTronPunch();
+    CT6K->AddDevice(COTP);
+    COTS = new CardOTronScan();
+    CT6K->AddDevice(COTS);
+    Spinner = new CPUSpinner(this, CT6K, POT, COTP, COTS);
     QObject::connect(Spinner, SIGNAL(UpdatePanel(CPUInternalState*)), P, SLOT(UpdateFromCPU(CPUInternalState*)));
     QObject::connect(Spinner, SIGNAL(UpdatePrinterWindow(QString)), PW, SLOT(UpdatePrinterWindow(QString)));
+    QObject::connect(Spinner, SIGNAL(UpdateCOTBlinkyLights(bool,bool)), COTW, SLOT(UpdateBlinkyLights(bool,bool)));
     Spinner->start();
 }
 
@@ -49,6 +56,9 @@ CPUWorker::~CPUWorker()
 {
     delete Spinner;
     delete CT6K;
+    delete POT;
+    delete COTS;
+    delete COTP;
 }
 
 // The next six functions are wired into the UI and send signals to the spinner.
@@ -89,12 +99,24 @@ void CPUWorker::ResetCPU()
     Quiesce();
     CT6K->Reset();
     POT->PowerOnReset();
+    COTS->PowerOnReset();
+    COTP->PowerOnReset();
     MainWindow *M = (MainWindow *)this->parent();
     ControlPanel *P = (ControlPanel *)M->centralWidget();
     CPUInternalState State = CT6K->DumpInternalState();
     // Directly call the Control Panel update slot
     P->UpdateFromCPU(&State);
     Go();
+}
+
+void CPUWorker::SetCOTSInput(std::ifstream *InFile)
+{
+    COTS->SetInFile(InFile);
+}
+
+void CPUWorker::SetCOTPOutput(std::ofstream *OutFile)
+{
+    COTP->SetOutFile(OutFile);
 }
 
 
@@ -151,8 +173,10 @@ void CPUWorker::Go()
         MainWindow *M = (MainWindow *)this->parent();
         ControlPanel *P = (ControlPanel *)M->centralWidget();
         PrinterWindow *PW = (PrinterWindow *)M->PW;
+        COTWindow *COTW = (COTWindow *)M->CW;
         QObject::connect(Spinner, SIGNAL(UpdatePanel(CPUInternalState*)), P, SLOT(UpdateFromCPU(CPUInternalState*)));
         QObject::connect(Spinner, SIGNAL(UpdatePrinterWindow(QString)), PW, SLOT(UpdatePrinterWindow(QString)));
+        QObject::connect(Spinner, SIGNAL(UpdateCOTBlinkyLights(bool,bool)), COTW, SLOT(UpdateBlinkyLights(bool,bool)));
         Spinner->start();
     }
 }

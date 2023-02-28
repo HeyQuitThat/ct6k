@@ -24,6 +24,7 @@
 #include <QString>
 #include "../src/cpu.hpp"
 #include "../src/printotron.hpp"
+#include "../src/cardotron.hpp"
 
 // Run state of CPU Spinner thread. Set by buttons on the UI, checked by the spinner thread
 // each time through the loop.
@@ -45,13 +46,15 @@ class CPUSpinner : public QThread
 {
     Q_OBJECT
 public:
-    CPUSpinner(QObject *parent = nullptr, CPU *CT6K = nullptr, PrintOTron *POT = nullptr);
+    CPUSpinner(QObject *parent = nullptr, CPU *CT6K = nullptr, PrintOTron *POT = nullptr,
+               CardOTronPunch *COTP = nullptr, CardOTronScan *COTS = nullptr);
     ~CPUSpinner();
     void ChangeState(CPURunState NewState);
 
 signals:
     void UpdatePanel(CPUInternalState *state);
     void UpdatePrinterWindow(QString OutLine);
+    void UpdateCOTBlinkyLights(bool Writing, bool Reading);
 
 protected:
     void run() override;
@@ -64,6 +67,8 @@ private:
     CPUInternalState CurrentState;
     CPU *MyCPU;
     PrintOTron *MyPOT;
+    CardOTronPunch *MyCOTP;
+    CardOTronScan *MyCOTS;
     void RunThenWait(int msec);
 
 };

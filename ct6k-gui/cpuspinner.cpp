@@ -33,11 +33,13 @@
 
 // Constructor. This does not start the thread; this is done by the owner
 // of this object when it calls inherited function start().
-CPUSpinner::CPUSpinner(QObject *parent, CPU *CT6K, PrintOTron *POT)
+CPUSpinner::CPUSpinner(QObject *parent, CPU *CT6K, PrintOTron *POT, CardOTronPunch *COTP, CardOTronScan *COTS)
 {
     setParent(parent);
     MyCPU = CT6K;
     MyPOT = POT;
+    MyCOTS = COTS;
+    MyCOTP = COTP;
     RunState = CR_STOPPED;
 
 }
@@ -119,6 +121,9 @@ void CPUSpinner::run()
         if ((MyPOT != nullptr) && MyPOT->IsOutputReady())
             emit UpdatePrinterWindow(MyPOT->GetOutputLine().c_str());
 
+        // Update Card-o-Tron. Assume that if we have a puncher, we also have a scanner.
+        if (MyCOTP != nullptr)
+            emit UpdateCOTBlinkyLights(MyCOTP->IsPunching(), MyCOTS->IsReading());
         // Update run state if needed, check if we are done.
         Mutex.lock();
         if (RunState == CR_EXITING) {

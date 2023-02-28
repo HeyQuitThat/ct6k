@@ -26,10 +26,12 @@ set(PROJECT_SOURCES
         ../src/memory.cpp ../src/memory.hpp
         ../src/periph.cpp ../src/periph.hpp
         ../src/printotron.cpp ../src/printotron.hpp
+        ../src/cardotron.cpp ../src/cardotron.hpp
         flagdisplay.cpp flagdisplay.hpp
         cpuworker.cpp cpuworker.hpp
         cpuspinner.cpp cpuspinner.hpp
         printerwindow.hpp printerwindow.cpp
+        cotwindow.hpp cotwindow.cpp
         ct6k-info.h
         ct6k.qrc
 )

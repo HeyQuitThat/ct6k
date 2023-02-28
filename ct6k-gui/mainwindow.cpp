@@ -45,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     PW = new PrinterWindow(this);
+    CW = new COTWindow(this);
     OffImg = new QPixmap(":/ct6k/ib-off.jpg");
     OnImg = new QPixmap(":/ct6k/ib-on.jpg");
 
@@ -70,6 +71,8 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(CP->Btn10Hz, SIGNAL(clicked()), Worker, SLOT(Run10Hz()));
     QObject::connect(CP->Btn60Hz, SIGNAL(clicked()), Worker, SLOT(Run60Hz()));
     QObject::connect(CP->BtnFull, SIGNAL(clicked()), Worker, SLOT(RunFull()));
+    QObject::connect (CW, SIGNAL(SetCOTSInput(std::ifstream*)), Worker, SLOT(SetCOTSInput(std::ifstream*)));
+    QObject::connect (CW, SIGNAL(SetCOTPOutput(std::ofstream*)), Worker, SLOT(SetCOTPOutput(std::ofstream*)));
     RegistersLocked = true;
 }
 
@@ -77,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete PW; // might not need this
+    delete CW;
     delete ui;
 }
 
@@ -342,5 +346,11 @@ void MainWindow::on_actionLog_Printer_Output_triggered(bool checked)
         PW->StartLog();
     else
         PW->StopLog();
+}
+
+
+void MainWindow::on_actionCard_o_Tron_3CS_triggered()
+{
+    CW->Show();
 }
 

@@ -24,6 +24,7 @@
 #include "cpuworker.hpp"
 #include "controlpanel.hpp"
 #include "printerwindow.hpp"
+#include "cotwindow.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -42,6 +43,7 @@ public:
     CPUWorker *Worker;
     ControlPanel *CP;
     PrinterWindow *PW;
+    COTWindow *CW;
 
 private slots:
     void on_actionExit_triggered();
@@ -58,6 +60,7 @@ private slots:
     void on_actionCaution_triggered();
     void on_actionPrint_O_Tron_XL_triggered();
     void on_actionLog_Printer_Output_triggered(bool checked);
+    void on_actionCard_o_Tron_3CS_triggered();
 
 private:
     Ui::MainWindow *ui;

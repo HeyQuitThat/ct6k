@@ -21,9 +21,11 @@
 #include <QObject>
 #include <QThread>
 #include <cstdint>
+#include <iostream>
 #include "../src/cpu.hpp"
 // cpu.hpp includes periph.hpp
 #include "cpuspinner.hpp"
+#include "../src/cardotron.hpp"
 
 // CPUWorker class - control interface to CPU Spinner and the CPU from the UI.
 // This is the class that actually instantiates the CPU and owns it, along
@@ -40,6 +42,8 @@ public:
     void WriteReg(uint8_t Index, uint32_t Value);
     void Quiesce();
     void Go();
+    CardOTronPunch *COTP;
+    CardOTronScan *COTS;
 
 public slots:
     void StepOnce();
@@ -49,6 +53,8 @@ public slots:
     void RunFull();
     void Pause();
     void ResetCPU();
+    void SetCOTSInput(std::ifstream *InFile);
+    void SetCOTPOutput(std::ofstream *OutFile);
 
 private:
     CPU *CT6K;
