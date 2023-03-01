@@ -28,6 +28,7 @@ asm_main.o: asm_main.cpp $(COMMON_HEADERS)
 # nucurses emulator
 EMU_OBJS = emu_main.o instruction.o memory.o cpu.o ui.o periph.o printotron.o
 ASM_OBJS = asm_main.o instruction.o symref.o
+PUNCH_OBJS = cardpunch.o
 
 emu6k: $(EMU_OBJS)
 	g++ -o emu6k $(EMU_OBJS) -lncurses
@@ -35,6 +36,8 @@ emu6k: $(EMU_OBJS)
 asm6k: $(ASM_OBJS)
 	g++ -o asm6k $(ASM_OBJS)
 
+punch: $(PUNCH_OBJS)
+
 clean:
-	@rm -f *.o emu6k asm6k
+	@rm -f *.o emu6k asm6k punch
 
