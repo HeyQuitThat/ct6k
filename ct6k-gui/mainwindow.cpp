@@ -79,7 +79,9 @@ MainWindow::MainWindow(QWidget *parent)
 // Destructor. Destroys all of the widgets and their offspring.
 MainWindow::~MainWindow()
 {
-    delete PW; // might not need this
+    PW->Hide();
+    delete PW;
+    CW->Hide();
     delete CW;
     delete ui;
 }

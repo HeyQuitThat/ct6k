@@ -103,9 +103,11 @@ void CPUWorker::ResetCPU()
     COTP->PowerOnReset();
     MainWindow *M = (MainWindow *)this->parent();
     ControlPanel *P = (ControlPanel *)M->centralWidget();
+    COTWindow *COTW = (COTWindow *)M->CW;
     CPUInternalState State = CT6K->DumpInternalState();
     // Directly call the Control Panel update slot
     P->UpdateFromCPU(&State);
+    COTW->UpdateBlinkyLights(false, false);
     Go();
 }
 
@@ -169,7 +171,7 @@ void CPUWorker::Quiesce()
 void CPUWorker::Go()
 {
     if (Spinner == nullptr) {
-        Spinner = new CPUSpinner(this, CT6K, POT);
+        Spinner = new CPUSpinner(this, CT6K, POT, COTP, COTS);
         MainWindow *M = (MainWindow *)this->parent();
         ControlPanel *P = (ControlPanel *)M->centralWidget();
         PrinterWindow *PW = (PrinterWindow *)M->PW;
