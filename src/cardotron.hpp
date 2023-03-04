@@ -24,7 +24,6 @@
 #include <string>
 #include <chrono>
 #include "periph.hpp"
-#include "hw.h"
 
 #define MAX_CARD_LEN 32
 #define SCAN_MSEC 100
