@@ -138,7 +138,6 @@ bool CardOTronScan::IsReading()
 
 void CardOTronScan::ReadNextCard()
 {
-
     if ((StatusReg & COTS_STATUS_READY) != COTS_STATUS_READY)
         return;
     ReadStart = std::chrono::steady_clock::now();
@@ -152,7 +151,7 @@ void CardOTronScan::ReadNextCard()
         Reading = false;
         if (InFile->eof()) {
             // this is OK, we're out of cards
-            StatusReg = COTS_STATUS_COMPLETE;
+            StatusReg = COTS_STATUS_EMPTY;
             return;
         } else {
             StatusReg = COTS_STATUS_ERR_MECH;
