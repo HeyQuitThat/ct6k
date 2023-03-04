@@ -220,7 +220,7 @@ void MainWindow::on_actionDisassemble_triggered()
         uint32_t Count = 0;
         Worker->Quiesce();
         for (int i = 0; i < 16 ; i++) {
-            OutBuf += HexVal(Base + i) + ": ";
+            OutBuf += HexVal(Base) + ": ";
             OutBuf += FormatDisasm(Worker->ReadMem(Base),Worker->ReadMem(Base + 1), &Count);
             OutBuf += "<br>";
             Base += Count;
