@@ -1,3 +1,20 @@
+/*
+    The Comp-o-Tron 6000 software is Copyright (C) 2022-2023 Mitch Williams.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 2 as
+    published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -46,9 +63,9 @@ uint32_t PackLSB(const char *Input)
 void Punch(char Mode, std::string Line)
 {
     std::cout << '<' << Mode << "> ";
-    std::cout << std::dec << Line.length() << '\n';
-    std::cout << std::hex;
     if (Mode == 'U') {
+        std::cout << std::dec << Line.length() << '\n';
+        std::cout << std::hex;
         for (unsigned int i = 0; i < Line.length(); i++) {
             std::cout << (uint32_t)*(Line.data() + i);
             if ((i > 0) && ((i % 8) == 0))
@@ -57,6 +74,11 @@ void Punch(char Mode, std::string Line)
                 std::cout << ' ';
         }
     } else if ((Mode == 'M') || (Mode == 'L')) {
+        auto PunchLen = Line.length() / 4;
+        if ((Line.length() % 4) != 0)
+            PunchLen++;
+        std::cout << std::dec << PunchLen << '\n';
+        std::cout << std::hex;
         for (unsigned int i = 0; i < Line.length(); i += 4) {
             uint32_t Word = (Mode == 'M' ?
                              PackMSB(Line.data() + i) :
