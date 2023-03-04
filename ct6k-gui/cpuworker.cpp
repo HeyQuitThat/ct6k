@@ -62,34 +62,42 @@ CPUWorker::~CPUWorker()
 }
 
 // The next six functions are wired into the UI and send signals to the spinner.
+// We need to check the spinner pointer as it may be invalid during some debug
+// activities.
 void CPUWorker::StepOnce()
 {
-    Spinner->ChangeState(CR_STEP);
+    if (Spinner != nullptr)
+        Spinner->ChangeState(CR_STEP);
 }
 
 void CPUWorker::Run1Hz()
 {
-    Spinner->ChangeState(CR_1HZ);
+    if (Spinner != nullptr)
+        Spinner->ChangeState(CR_1HZ);
 }
 
 void CPUWorker::Run10Hz()
 {
-    Spinner->ChangeState(CR_10HZ);
+    if (Spinner != nullptr)
+        Spinner->ChangeState(CR_10HZ);
 }
 
 void CPUWorker::Run60Hz()
 {
-    Spinner->ChangeState(CR_60HZ);
+    if (Spinner != nullptr)
+        Spinner->ChangeState(CR_60HZ);
 }
 
 void CPUWorker::RunFull()
 {
-    Spinner->ChangeState(CR_FULL);
+    if (Spinner != nullptr)
+        Spinner->ChangeState(CR_FULL);
 }
 
 void CPUWorker::Pause()
 {
-    Spinner->ChangeState(CR_STOPPED);
+    if (Spinner != nullptr)
+        Spinner->ChangeState(CR_STOPPED);
 }
 
 // Resetting the CPU is easy, but we need to kill and reinstantiate
