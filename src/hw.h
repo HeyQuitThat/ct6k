@@ -126,9 +126,9 @@ struct PeriphMapEntry {
 #define COTS_INFO_LEN_MASK      0x0000003f  // Number of words read from card
 #define COTS_INFO_BIN           0x00000100  // General data, no encoding
 #define COTS_INFO_TXTU          0x00000200  // Unpacked text, one char per word, low octet
-#define COTS_INFO_TXTPL         0x00000800  // Packed text, least significant octet first
-#define COTS_INFO_TXTPM         0x00001000  // Packed text, most significant octet first
-#define COTS_INFO_CODE          0x00002000  // Binary program data. First word is destination address
+#define COTS_INFO_TXTPL         0x00000400  // Packed text, least significant octet first
+#define COTS_INFO_TXTPM         0x00000800  // Packed text, most significant octet first
+#define COTS_INFO_CODE          0x00001000  // Binary program data. First word is destination address
 #define COTS_REG_READ_BUF       0x3
 #define COTS_READ_BUF_LEN       40          // 40 words, 32 used for COT cards
 
