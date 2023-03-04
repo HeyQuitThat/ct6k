@@ -59,10 +59,6 @@
 // will NOT work, but
 //      MOVE R0 > R1
 // is just fine and still indicates direction.
-
-// TODO handle string data
-// TODO handle .ORG statement for relocatable files.
-
 //
 // Basic scheme for symbol table handling is a linked list of linked lists.
 // First list contains the name of each symbol and (when known) its location, along with the head

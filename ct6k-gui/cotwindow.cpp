@@ -1,10 +1,28 @@
+/*
+    The Comp-o-Tron 6000 software is Copyright (C) 2022-2023 Mitch Williams.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 2 as
+    published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
+// cotwindow.cpp - Function definitions for COTWindow class
 #include "cotwindow.hpp"
 #include "indicator.hpp"
 #include <QLabel>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QDebug>
 
+// Constructor, sets up all of the visual aspcects of the window
 COTWindow::COTWindow(QObject *parent)
     : QObject{parent}
 {
@@ -75,6 +93,7 @@ COTWindow::COTWindow(QObject *parent)
     QObject::connect(PBS, SIGNAL(clicked()), this, SLOT(OpenInputFile()));
 }
 
+// Destructor
 COTWindow::~COTWindow()
 {
     if ((PunchOut != nullptr) && PunchOut->is_open())
@@ -87,6 +106,7 @@ COTWindow::~COTWindow()
     delete OnImg;
 }
 
+// Show and hide methods are called from the menu in the main window
 void COTWindow::Show()
 {
     COTBox->show();
@@ -97,6 +117,7 @@ void COTWindow::Hide()
     COTBox->hide();
 }
 
+// Slot for the CPU Spinner to call in order to...
 void COTWindow::UpdateBlinkyLights(bool Writing, bool Reading)
 {
     IndS->SetState(Reading);
@@ -105,6 +126,7 @@ void COTWindow::UpdateBlinkyLights(bool Writing, bool Reading)
     EmptyS->SetState((ScanIn == nullptr) || !ScanIn->is_open());
 }
 
+// Open text file for reading as a card deck.
 void COTWindow::OpenInputFile()
 {
     QString Filename = QFileDialog::getOpenFileName(nullptr, tr("Open Card Deck File"), ".", tr("CT6K Cards (*.ctc *.txt)"));
@@ -124,6 +146,7 @@ void COTWindow::OpenInputFile()
     EmptyS->SetState((ScanIn == nullptr) || !ScanIn->is_open());
 }
 
+// Open empty file to be written as card deck
 void COTWindow::OpenOutputFile()
 {
     QString Filename = QFileDialog::getSaveFileName(nullptr, tr("Save Card Deck File"), ".", tr("CT6K Cards (*.ctc *.txt)"));
