@@ -184,7 +184,7 @@ Instruction::Instruction(uint32_t Inst)
     Dest = new RegisterArg(GET_DEST(Inst));
     // Check for direct value. This will fault when executed if opcode doesn't support direct data.
     // Actual direct value to be retrieved later when executed or printed.
-    if (Opcode == OP_MOVE)
+    if ((Opcode == OP_MOVE) || (Opcode == OP_CMP))
         DirectValInUse = (Src1->GetType() == rt_null) && (Src2->GetType() == rt_null);
     else
         DirectValInUse = (Map->Type == op_control_flow) && (Dest->GetType() == rt_null);
@@ -203,7 +203,7 @@ Instruction::Instruction(uint32_t Inst, uint32_t Prefetch)
     Src2 = new RegisterArg(GET_SRC2(Inst));
     Dest = new RegisterArg(GET_DEST(Inst));
     // Check for direct value. This will fault when executed if opcode doesn't support direct data.
-    if (Opcode == OP_MOVE)
+    if ((Opcode == OP_MOVE) || (Opcode == OP_CMP))
         DirectValInUse = (Src1->GetType() == rt_null) && (Src2->GetType() == rt_null);
     else
         DirectValInUse = (Map->Type == op_control_flow) && (Dest->GetType() == rt_null);
@@ -477,6 +477,8 @@ uint32_t BuildInstruction(std::string In, uint32_t& ExtraWord, bool& ExtraWordPr
         // Leaving the code in place anyway just in case another compiler does it differently.
         if (errno == ERANGE)
             throw("Invalid numeric value");
+    } else {
+        throw("No valid instruction found");
     }
     return retval;
 };

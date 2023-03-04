@@ -432,9 +432,6 @@ uint32_t CPU::ExecuteSrcDest()
     uint32_t faultval {FAULT_NO_FAULT};
     uint8_t opcode = CurrentInst->GetOpcode();
 
-    if ((opcode != OP_MOVE) && CurrentInst->IsDirectValInstr())
-        return FAULT_BAD_INSTR;
-
     // There are only two instructions with this pattern, so no need to bother with a switch.
     if (opcode == OP_MOVE) {
         // First, the special case: MOV 0x000ff000, R0
@@ -451,7 +448,10 @@ uint32_t CPU::ExecuteSrcDest()
         uint32_t srcval, destval;
 
         ClearMathFlags();
-        faultval = GetFromReg(CurrentInst->GetSrc1Reg(), srcval);
+        if (!CurrentInst->IsDirectValInstr())
+            faultval = GetFromReg(CurrentInst->GetSrc1Reg(), srcval);
+        else
+            srcval = RetrieveDirectValue();
         if (faultval == FAULT_NO_FAULT)
             faultval = GetFromReg(CurrentInst->GetDestReg(), destval);
         if (faultval == FAULT_NO_FAULT) {
