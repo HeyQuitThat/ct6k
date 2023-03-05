@@ -1,19 +1,30 @@
 TODO, in approximate order:
-Short term:
-- card reader/writer test programs
-    - could publish here
+BUGS:
 
+ANNOYANCES:
+- Close button on title bar does not close all windows
+
+FEATURES:
+(Easy)
+- hotkeys
+- register arg for mem dump/disassem
+(Medium)
+- test on 1080p and adjust spacing if needed
+(Hard but not too hard)
+- BRK instruction for debug support
+- Breakpoint in emulator
 - add assembler support for text, packed and unpacked
 - add assembler support for punch card output
 - add assembler support for reg aliases (IP, SP, FLG) (nice to have)
+(Hard)
 - support .ORG statement
 - boot loader firmware
-
 - assembler support for include - or - multiple input files
 - assembler option to dump symbol table
 - multi-segment object files
 - loader for multi-segment
 - linker (depends on multi-segment object files)
+- Mac OSX support
 
 - serial I/O for terminal
 - WAIT opcode for interrupt-driven I/O
@@ -21,11 +32,13 @@ Short term:
   - Timer interrupt?
 - random access storage?
 - self-hosted assembler
-- COBOL-ish compiler (depends on punch card I/O)
+- COBOL-ish compiler or BASIC-ish interpreter
 
 
 Pie in the sky:
 - live assembler (for qt version)
+- multiple breakpoints for emulator (performance?)
+- break on register value / change for emulator
 - page table support
 - kernel/user mode
 - some sort of OS
