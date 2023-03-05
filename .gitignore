@@ -3,6 +3,7 @@
 src/emu6k
 src/asm6k
 src/punch
+src/*.exe
 build-*/
 src/cov-int/
 ug.md
