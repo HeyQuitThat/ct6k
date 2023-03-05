@@ -3,6 +3,6 @@
 src/emu6k
 src/asm6k
 src/punch
-build-ct6k-gui-Desktop-Debug/
+build-*/
 src/cov-int/
 ug.md
