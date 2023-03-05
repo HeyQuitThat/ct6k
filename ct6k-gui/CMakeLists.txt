@@ -34,6 +34,7 @@ set(PROJECT_SOURCES
         cotwindow.hpp cotwindow.cpp
         ct6k-info.h
         ct6k.qrc
+        ct6k-gui.rc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
