@@ -6,12 +6,19 @@ Basic directions:
 This package includes source for the emulator and an assembler, along with
 some example assembly files.
 
+Prerequisites: C++ compiler supporting C++14 or newer, and latest Boost libraries.
+On Windows you MUST use the Visual Studio compiler and not MINGW.
+
 To build console tools, including the assembler and text UI:
 $ cd src
 $ make
 
 To build the GUI, install the QT libraries version 6.x and open the file
 CMakeLists.txt in the QT Creator tool.
+
+NOTE: In Windows, depending on the location and version of your Boost libraries,
+you may need to edit project build settings and change your include paths.
+(Click the little wrench icon in the QT Creator GUI.)
 
 Write your code with any editor - see arch.h for the instruction set and
 system architecture basics.
@@ -23,10 +30,12 @@ $ ./asm6k <input file> <output file>
 By convention, the input file has the extension .asm, and the output file
 has the extension .ct6. But you can use whatever you want!
 
-To run your code:
+To run your code in text mode (deprecated):
 $ cd src
 $ ./emu6k <binary file>
 
+To run your code in the GUI (new hotness):
+Start the GUI application, then click the file menu to load your binary file.
 
 What is the Comp-o-Tron 6000? Short answer: it's a learning tool and a toy
 for nerds.
