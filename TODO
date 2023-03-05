@@ -10,6 +10,7 @@ FEATURES:
 - register arg for mem dump/disassem
 (Medium)
 - test on 1080p and adjust spacing if needed
+- write a REAL user guide for the GUI
 (Hard but not too hard)
 - BRK instruction for debug support
 - Breakpoint in emulator
