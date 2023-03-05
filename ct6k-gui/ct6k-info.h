@@ -22,7 +22,7 @@
 #define WINDOW_TITLE "Comp-o-Tron 6000"
 
 #define VERSION_MAJOR "0"
-#define VERSION_MINOR "5"
+#define VERSION_MINOR "9"
 #define VERSION_SUBMINOR "0"
 #define VERSION_EXTRA
 
@@ -30,7 +30,7 @@
 // The version text from above is appended.
 #define INFO_TEXT "The Comp-o-Tron 6000 software is Copyright (C) 2022-2023 Mitch Williams.<br>" \
 "<br>" \
-"Built using QT libraries and QT Creator.<br><br>" \
+"Built using QT libraries, QT Creator, and Boost libraries.<br><br>" \
 "Version "
 
 // Text displayed when the Help/Instructions menu option is triggered.
