@@ -1,0 +1,34 @@
+# nmake makefile for ct6k assembler and card punch on MSVC
+
+CC = cl
+CL_OPTS = /c /O2 /EHs /Fo /IC:\local\boost_1_81_0
+COMMON_HEADERS = arch.h hw.h instruction.hpp
+LINKER = link
+LINKER_OPTS = /LIBPATH:C:\local\boost_1_81_0\libs
+
+all:asm6k.exe punch.exe
+
+.cpp.obj:
+  $(CC) $(CL_OPTS) $*.cpp
+
+instruction.obj: instruction.cpp $(COMMON_HEADERS)
+
+symref.obj: symref.cpp symref.hpp
+
+asm_main.obj: asm_main.cpp $(COMMON_HEADERS)
+
+cardpunch.obj: cardpunch.cpp
+
+ASM_OBJS = asm_main.obj instruction.obj symref.obj
+PUNCH_OBJS = cardpunch.obj
+
+
+asm6k.exe: $(ASM_OBJS)
+  $(LINKER) $(LINKER_OPTS) /OUT:asm6k.exe $(ASM_OBJS)
+
+punch.exe: $(PUNCH_OBJS)
+  $(LINKER) $(LINKER_OPTS) /OUT:punch.exe $(PUNCH_OBJS)
+
+clean:
+  del *.obj asm6k.exe punch.exe
+
