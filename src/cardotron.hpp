@@ -50,7 +50,7 @@ private:
     uint8_t ReadBufSize;
     bool Reading;
     std::chrono::time_point<std::chrono::steady_clock> ReadStart;
-    std::ifstream *InFile;
+    std::ifstream *InFile {nullptr};
     void ReadNextCard();
     void CheckReadTimer();
 };
@@ -75,7 +75,7 @@ private:
     uint32_t InfoReg;
     bool Writing;
     std::chrono::time_point<std::chrono::steady_clock> WriteStart;
-    std::ofstream *OutFile; // file should be open before calling SetOutFile
+    std::ofstream *OutFile {nullptr}; // file should be open before calling SetOutFile
     void WriteCard();
     void CheckWriteTimer();
 };
