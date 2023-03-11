@@ -151,6 +151,7 @@ QString HexVal(uint32_t Value)
     retval += QString("%1").arg(Value,8,16, QChar('0')).toUpper();
     return retval;
 }
+
 // Menu item slot Debug/Show FHAP
 void MainWindow::on_actionShow_FHAP_triggered()
 {
@@ -180,7 +181,7 @@ void MainWindow::on_actionShow_IHAP_triggered()
 void MainWindow::on_actionDump_Memory_triggered()
 {
     bool OK;
-    uint32_t Base = GetValFromUser("Memory Dump", "Enter Start Address:", "0", &OK);
+    uint32_t Base = GetAddrFromUser("Memory Dump", "Enter Start Address or Register:", "0", &OK);
     if (OK) {
         QString OutBuf = "<tt>";
         Worker->Quiesce();
@@ -214,7 +215,7 @@ QString FormatDisasm(uint32_t Val, uint32_t Val2, uint32_t *Count)
 void MainWindow::on_actionDisassemble_triggered()
 {
     bool OK;
-    uint32_t Base = GetValFromUser("Disassembly", "Enter Start Address:", "0", &OK);
+    uint32_t Base = GetAddrFromUser("Disassembly", "Enter Start Address or Register:", "0", &OK);
     if (OK) {
         QString OutBuf = "<tt>";
         uint32_t Count = 0;
@@ -292,6 +293,48 @@ uint32_t MainWindow::GetValFromUser(QString Title, QString Message, QString Seed
     QString RawText = QInputDialog::getText(this, Title, Message, QLineEdit::Normal, Seed, &OK);
     if (OK && !RawText.isEmpty()) {
         uint32_t RawVal = RawText.toULong(&OK, 0);
+        *Success = OK;
+        return RawVal;
+    } else {
+        *Success = false;
+        return 0;
+    }
+}
+
+#define NO_REG 0xFF
+uint8_t RegName(QString Input)
+{
+    uint8_t retval = NO_REG;
+    if (Input.compare("IP", Qt::CaseInsensitive) == 0)
+        retval = REG_IP;
+    if (Input.compare("SP", Qt::CaseInsensitive) == 0)
+        retval = REG_SP;
+    if (Input.compare("FLG", Qt::CaseInsensitive) == 0)
+        retval = REG_FLG;
+    if (Input.startsWith('R', Qt::CaseInsensitive)) {
+        Input.remove(0,1); // Strip first char
+        bool OK;
+        retval = Input.toUShort(&OK, 0);
+        if ((retval > REG_IP) || !OK)
+            retval = NO_REG;
+    }
+    return retval;
+}
+
+// Convenience function to display an input dialog and parse a uint32 value from it.
+// This variation allows a regsiter argument, i.e. the user can type R10 or PC
+uint32_t MainWindow::GetAddrFromUser(QString Title, QString Message, QString Seed, bool *Success)
+{
+    bool OK;
+
+    QString RawText = QInputDialog::getText(this, Title, Message, QLineEdit::Normal, Seed, &OK);
+    if (OK && !RawText.isEmpty()) {
+        uint32_t RawVal {0};
+        uint8_t Reg = RegName(RawText);
+        if (Reg == NO_REG)
+            RawVal = RawText.toULong(&OK, 0);
+        else
+            RawVal = Worker->ReadReg(Reg);
         *Success = OK;
         return RawVal;
     } else {

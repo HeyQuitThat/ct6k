@@ -69,6 +69,7 @@ private:
     QPixmap *TriImg;
     bool RegistersLocked;
     uint32_t GetValFromUser(QString Title, QString Message, QString Seed, bool *Success);
+    uint32_t GetAddrFromUser(QString Title, QString Message, QString Seed, bool *Success);
 
 };
 #endif // MAINWINDOW_H

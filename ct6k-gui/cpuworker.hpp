@@ -39,6 +39,7 @@ public:
     void ProgramBinary(uint32_t *Buffer, int Len);
     uint32_t ReadMem(uint32_t Address);
     void WriteMem(uint32_t Address, uint32_t Value);
+    uint32_t ReadReg(uint8_t Index);
     void WriteReg(uint8_t Index, uint32_t Value);
     void Quiesce();
     void Go();

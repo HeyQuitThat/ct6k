@@ -155,6 +155,14 @@ void CPUWorker::WriteMem(uint32_t Address, uint32_t Value)
     CT6K->WriteMem(Address, Value);
 }
 
+uint32_t CPUWorker::ReadReg(uint8_t Index)
+{
+    if (Index < NUMREGS)
+        return CT6K->ReadReg(Index);
+    else
+        return 0;
+}
+
 // Note that ReadReg is not needed, the Control Panel knows the current value.
 // This used when the user changes register values via the UI.
 void CPUWorker::WriteReg(uint8_t Index, uint32_t Value)
