@@ -29,7 +29,7 @@ class DWord : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DWord(QWidget *Parent = nullptr, QString Name = "");
+    explicit DWord(QWidget *Parent = nullptr, QString Name = "", bool SmallScreen = false);
     uint32_t GetValue();
     void SetValue(uint32_t NewVal);
     void Lock();

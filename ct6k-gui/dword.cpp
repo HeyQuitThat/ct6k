@@ -22,7 +22,7 @@
 #include <QFrame>
 
 // Constructor
-DWord::DWord(QWidget *Parent, QString Name)
+DWord::DWord(QWidget *Parent, QString Name, bool SmallScreen)
 {
     Q_UNUSED(Parent)
     Value = 0;
@@ -34,7 +34,7 @@ DWord::DWord(QWidget *Parent, QString Name)
     setLayout(LeLay);
     // This loop runs from high to low so the most-signifcant bit is on the left.
     for (int i = 31; i >= 0; i--) {
-        Bits[i] = new Indicator(nullptr);
+        Bits[i] = new Indicator(nullptr, SmallScreen);
         LeLay->addWidget(Bits[i]); // sets parent pointer
         if ((i > 0) && ((i & 0x3) == 0)) {
             QFrame *Spacer = new QFrame(nullptr);

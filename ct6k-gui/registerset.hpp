@@ -27,7 +27,7 @@ class RegisterSet : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RegisterSet(QWidget *Parent = nullptr);
+    explicit RegisterSet(QWidget *Parent = nullptr, bool SmallScreen = false);
     uint32_t GetValue(int Index);
     void SetValue(int Index, uint32_t NewVal);
     void Lock();

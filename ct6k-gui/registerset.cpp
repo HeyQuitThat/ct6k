@@ -21,13 +21,13 @@
 #include <QString>
 
 // Constructor, sets up 16 DWords in a vertical layout
-RegisterSet::RegisterSet(QWidget *Parent) : QWidget{Parent}
+RegisterSet::RegisterSet(QWidget *Parent, bool SmallScreen) : QWidget{Parent}
 {
     Locked = true;
     VL = new QVBoxLayout;
     setLayout(VL);
     for (int i = 0; i < NUMREGS; i++) {
-        DWord *Rtmp = new DWord(nullptr, QString("R%1").arg(i));
+        DWord *Rtmp = new DWord(nullptr, QString("R%1").arg(i), SmallScreen);
         Regs[i] = Rtmp;
         VL->addWidget(Rtmp); // this sets parent for the Indicator objects
     }

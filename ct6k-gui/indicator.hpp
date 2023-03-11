@@ -22,6 +22,7 @@
 #include <QWidget>
 
 #define BASE_INDICATOR_SIZE 32
+#define SMALL_INDICATOR_SIZE 24
 
 // Indicator class - displays and controls the status of an individual bit
 // using either a colored box or a bitmap. The bitmap is passed in at runtime.
@@ -29,7 +30,7 @@ class Indicator : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Indicator(QWidget *Parent = nullptr);
+    explicit Indicator(QWidget *Parent = nullptr, bool SmallScreen = false);
     bool GetState();
     void SetState(bool NewState);
     void Lock();

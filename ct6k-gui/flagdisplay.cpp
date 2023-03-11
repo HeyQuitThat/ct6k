@@ -44,7 +44,7 @@ FlgMap flag_map[] = {
 
 // Constructor. All Indicators and Lables are added to a single
 // vertical layout.
-FlagDisplay::FlagDisplay(QWidget *parent)
+FlagDisplay::FlagDisplay(QWidget *parent, bool SmallScreen)
     : QWidget{parent}
 {
     VL = new QVBoxLayout;
@@ -59,7 +59,7 @@ FlagDisplay::FlagDisplay(QWidget *parent)
             VL->addSpacing(16);
         }
 
-        Flags[i] = new Indicator(nullptr);
+        Flags[i] = new Indicator(nullptr, SmallScreen);
         VL->addWidget(Flags[i]);
         VL->setAlignment(Flags[i], Qt::AlignHCenter);
         Titles[i] = new QLabel;

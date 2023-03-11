@@ -33,7 +33,7 @@ class FlagDisplay : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FlagDisplay(QWidget *parent = nullptr);
+    explicit FlagDisplay(QWidget *parent = nullptr, bool SmallScreen = true);
     void SetValue(uint32_t NewVal);
     void EnableBitmaps(QPixmap *OffPic, QPixmap *OnPic);
     void SetHaltedState(bool State);

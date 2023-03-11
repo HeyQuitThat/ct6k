@@ -21,14 +21,17 @@
 #include <QPainter>
 
 // Constructor
-Indicator::Indicator(QWidget *parent)
+Indicator::Indicator(QWidget *parent, bool SmallScreen)
     : QWidget{parent}
 {
     OffImage = nullptr;
     OnImage = nullptr;
     State = false;
     IsLocked = true;
-    setFixedSize(BASE_INDICATOR_SIZE, BASE_INDICATOR_SIZE);
+    if (SmallScreen)
+        setFixedSize(SMALL_INDICATOR_SIZE, SMALL_INDICATOR_SIZE);
+    else
+        setFixedSize(BASE_INDICATOR_SIZE, BASE_INDICATOR_SIZE);
 }
 
 // Return state of this bit. Used after an unlock/lock cycle to update

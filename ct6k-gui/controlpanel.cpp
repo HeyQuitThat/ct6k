@@ -18,13 +18,15 @@
 // controlpanel.ccp - function definitions for ControlPanel class
 
 #include <QObject>
+#include <QScreen>
 #include "controlpanel.hpp"
 #include "../src/arch.h"
 #include "../src/cpu.hpp"
+#include <QApplication>
 
-// These values are determined by checking window geometry after show() is called.
-#define CP_FIXED_WIDTH 1509
-#define CP_FIXED_HEIGHT 1011
+// These values can be oversized - the background will be clipped
+#define CP_FIXED_WIDTH 1600
+#define CP_FIXED_HEIGHT 1100
 
 // Button and icon geometry
 #define CP_ICON_X 200
@@ -38,6 +40,7 @@
 ControlPanel::ControlPanel(QWidget *parent)
     : QWidget{parent}
 {
+    DetermineScreenSize();
     Q_UNUSED(parent);
     BG = new QFrame(this);
     BG->setStyleSheet("background-color:#78B5C6;");
@@ -48,8 +51,8 @@ ControlPanel::ControlPanel(QWidget *parent)
     // RHL is Register Horizontal Layout, puts the register set and flags at the top
     // of the panel, with flags on the right.
     RHL = new QHBoxLayout;
-    RS = new RegisterSet(this);
-    FD = new FlagDisplay(this);
+    RS = new RegisterSet(this, SmallScreen);
+    FD = new FlagDisplay(this, SmallScreen);
     RHL->addWidget(RS);
     RHL->addWidget(FD);
 
@@ -128,6 +131,14 @@ void ControlPanel::UpdateFromCPU(CPUInternalState *NewState)
     FD->SetHaltedState(NewState->Halted);
     LastIHAP = NewState->IHAP_Base;
     LastFHAP = NewState->FHAP_Base;
+}
+
+void ControlPanel::DetermineScreenSize()
+{
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect  screenGeometry = screen->geometry();
+    int height = screenGeometry.height();
+    SmallScreen = (height < 1440);
 }
 
 // Called by method in mainwindow class in response to a menu click.

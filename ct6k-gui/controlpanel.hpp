@@ -44,12 +44,14 @@ public slots:
     void UpdateFromCPU(CPUInternalState *NewState);
 
 private:
+    void DetermineScreenSize();
     QFrame *BG;       // background color
     QVBoxLayout *VL;  // overarching vertical layout
     QHBoxLayout *RHL; // registers and flags
     QHBoxLayout *BHL; // buttons
     uint32_t LastIHAP; // IHAP and FHAP values from CPU, cached for display
     uint32_t LastFHAP;
+    bool SmallScreen {false};
 
 
 public: // buttons are public so we can hook up the signals they emit easily
