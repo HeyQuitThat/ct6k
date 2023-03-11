@@ -2,21 +2,23 @@ TODO, in approximate order:
 BUGS:
 
 ANNOYANCES:
-- Close button on title bar does not close all windows
+- Close button on title bar does not close all windows (File/Exit does)
 
 FEATURES:
 (Easy)
-- hotkeys
-- register arg for mem dump/disassem
+- Done!
+
 (Medium)
-- test on 1080p and adjust spacing if needed
 - write a REAL user guide for the GUI
+
 (Hard but not too hard)
 - BRK instruction for debug support
 - Breakpoint in emulator
 - add assembler support for text, packed and unpacked
 - add assembler support for punch card output
-- add assembler support for reg aliases (IP, SP, FLG) (nice to have)
+- add assembler support for reg aliases (IP, SP, FLG)
+- Mac OSX support
+
 (Hard)
 - support .ORG statement
 - boot loader firmware
@@ -25,8 +27,9 @@ FEATURES:
 - multi-segment object files
 - loader for multi-segment
 - linker (depends on multi-segment object files)
-- Mac OSX support
+- file I/O in separate thread
 
+Later:
 - serial I/O for terminal
 - WAIT opcode for interrupt-driven I/O
 - Interrupt support
