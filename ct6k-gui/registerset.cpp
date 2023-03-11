@@ -27,7 +27,23 @@ RegisterSet::RegisterSet(QWidget *Parent, bool SmallScreen) : QWidget{Parent}
     VL = new QVBoxLayout;
     setLayout(VL);
     for (int i = 0; i < NUMREGS; i++) {
-        DWord *Rtmp = new DWord(nullptr, QString("R%1").arg(i), SmallScreen);
+        QString Title;
+        switch (i) {
+        case REG_IP:
+            Title = "R15/IP";
+            break;
+        case REG_SP:
+            Title = "R13/SP";
+            break;
+        case REG_FLG:
+            Title = "R14/FLG";
+            break;
+        default:
+            Title = QString("R%1").arg(i);
+            break;
+        }
+
+        DWord *Rtmp = new DWord(nullptr, Title, SmallScreen);
         Regs[i] = Rtmp;
         VL->addWidget(Rtmp); // this sets parent for the Indicator objects
     }

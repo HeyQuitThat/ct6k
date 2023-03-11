@@ -31,6 +31,7 @@ DWord::DWord(QWidget *Parent, QString Name, bool SmallScreen)
     QLabel *Title = new QLabel; // No need to hang on to this, the layout will own it.
     Title->setText(Name);
     LeLay->addWidget(Title);
+    LeLay->addSpacing(10);
     setLayout(LeLay);
     // This loop runs from high to low so the most-signifcant bit is on the left.
     for (int i = 31; i >= 0; i--) {
