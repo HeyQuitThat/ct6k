@@ -89,20 +89,24 @@
    <property name="text">
     <string>Modify Memory</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
   </action>
   <action name="actionDump_Memory">
    <property name="text">
     <string>Dump Memory</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
    </property>
   </action>
   <action name="actionDisassemble">
    <property name="text">
     <string>Disassemble</string>
    </property>
-  </action>
-  <action name="actionSave_Memory_Dump">
-   <property name="text">
-    <string>Save Memory Dump</string>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
    </property>
   </action>
   <action name="actionShow_FHAP">
@@ -121,6 +125,9 @@
    </property>
    <property name="text">
     <string>Modify Registers</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionInstructions">
