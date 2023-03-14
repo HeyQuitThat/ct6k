@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Comp-o-Tron 6000 Emulator</Name>
+    <Version>0.9.1</Version>
+    <Title>Comp-o-Tron 6000 Installer</Title>
+    <Publisher>Mitch Williams</Publisher>
+    <StartMenuDir>Comp-o-Tron 6000</StartMenuDir>
+    <TargetDir>@HomeDir@/ct6k</TargetDir>
+</Installer>
