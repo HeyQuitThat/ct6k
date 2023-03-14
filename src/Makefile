@@ -42,5 +42,5 @@ punch: $(PUNCH_OBJS)
 	g++ -o punch $(PUNCH_OBJS)
 
 clean:
-	@rm -f *.o emu6k asm6k punch
+	@rm -f *.o *.obj emu6k asm6k punch
 
