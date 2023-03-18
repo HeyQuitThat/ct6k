@@ -1,0 +1,26 @@
+[Desktop Entry]
+##  The name of the application ##
+Name=Comp-o-Tron 6000 Emulator
+GenericName=Comp-o-Tron 6000
+
+## A comment which act as a tooltip ##
+Comment=A completely accurate replica of the historic Comp-o-Tron 6000 computer from 1956.
+
+## The executable of the application with optional args ##
+## You can state full path too ##
+Exec=ct6k-gui
+
+## State the name of the icon that will be used to display this entry ##
+Icon=ct6k-gui
+
+## Is it a terminal app? For example htop will be set as Terminal=True ##
+## Then default terminal app will be used to open the 'htop' ##
+Terminal=false
+
+##  The type as listed  ##
+Type=Application
+
+## States the categories in which this entry should be shown menu ##
+Categories=Development
+
+X-Ubuntu-Gettext-Domain=ct6k-gui
