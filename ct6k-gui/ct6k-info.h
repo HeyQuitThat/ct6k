@@ -23,7 +23,7 @@
 
 #define VERSION_MAJOR "0"
 #define VERSION_MINOR "9"
-#define VERSION_SUBMINOR "1"
+#define VERSION_SUBMINOR "2"
 #define VERSION_EXTRA ""
 
 // Text displayed when the Help/About menu option is triggered.
