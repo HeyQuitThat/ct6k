@@ -1,15 +1,18 @@
 TODO, in approximate order:
 BUGS:
+User guide does not show instruction boxes after conversion to .md
 
 ANNOYANCES:
 - Close button on title bar does not close all windows (File/Exit does)
 
 FEATURES:
 (Easy)
-- Done!
+- Man pages
 
 (Medium)
 - write a REAL user guide for the GUI
+- rearrange source tree with a single Makefile at the top level
+- move resources and scripts to separate directory.
 
 (Hard but not too hard)
 - BRK instruction for debug support
