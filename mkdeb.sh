@@ -51,7 +51,7 @@ cat > "$DEBNAME/usr/share/doc/ct6k/copyright" << LEOF
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 LEOF
 cp COPYING OFL.txt README HISTORY TODO "$DEBNAME/usr/share/doc/ct6k/"
-pandoc -o "$DEBNAME/usr/share/doc/ct6k/ug.md" "Comp-o-Tron 6000 User Guide.odt"
+pandoc -t gfm -o "$DEBNAME/usr/share/doc/ct6k/ug.md" "Comp-o-Tron 6000 User Guide.odt"
 cat > "$DEBNAME/DEBIAN/postinst" << PIEOF
 #!/bin/sh
 desktop-file-install --dir /usr/share/applications --delete-original /tmp/ct6k.desktop
