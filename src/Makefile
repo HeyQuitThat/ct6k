@@ -4,7 +4,7 @@ CXX = g++
 CPPFLAGS = -Wall -g -O2 -std=c++14
 COMMON_HEADERS = arch.h hw.h instruction.hpp
 
-all: emu6k asm6k punch
+all: asm6k punch
 
 # The only common code between the assembler and the emulator is the Instruction class
 instruction.o: instruction.cpp $(COMMON_HEADERS)
@@ -14,6 +14,8 @@ memory.o: memory.cpp memory.hpp $(COMMON_HEADERS)
 cpu.o: cpu.cpp cpu.hpp memory.hpp $(COMMON_HEADERS)
 
 symref.o: symref.cpp symref.hpp
+
+segment.o: segment.cpp segment.hpp
 
 ui.o: ui.cpp ui.hpp ui-priv.hpp arch.h
 
@@ -29,7 +31,7 @@ cardpunch.o: cardpunch.cpp
 
 # nucurses emulator
 EMU_OBJS = emu_main.o instruction.o memory.o cpu.o ui.o periph.o printotron.o
-ASM_OBJS = asm_main.o instruction.o symref.o
+ASM_OBJS = asm_main.o instruction.o symref.o segment.o
 PUNCH_OBJS = cardpunch.o
 
 emu6k: $(EMU_OBJS)

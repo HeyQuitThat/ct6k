@@ -25,12 +25,14 @@
 #include <cstdint>
 #include <forward_list>
 #include <string>
+#include "segment.hpp"
 
 
 // A single symbol reference - includes the source line and the address in the output code
 struct SymbolRef {
-    uint32_t RefAddr;
+    uint32_t SegOffset;
     uint32_t SrcLine;
+    CodeSegment *Seg;
 };
 
 // The head of a list of refs for a single symbol. This contains the name of the symbol
@@ -38,19 +40,24 @@ struct SymbolRef {
 struct SymbolHead {
     std::string Name;
     bool Known;
-    uint32_t Addr;
+    bool IsValue;   // not an address but a value set in the program
+    uint32_t Offset;
     uint32_t SrcLine;
+    CodeSegment *Seg;
     std::vector<SymbolRef> Refs;
 };
 
 // The main SymbolTable class
 class SymbolTable {
 public:
-    bool AddSymbol(std::string NewName, uint32_t Location, uint32_t LineNum);
-    bool AddRef(std::string NewName, uint32_t Location, uint32_t LineNum);
-    bool UpdateExecutable(std::vector<uint32_t> &Blob);
+    bool AddSymbol(std::string NewName, uint32_t Location, uint32_t LineNum, CodeSegment *Seg);
+    bool AddValue(std::string NewName, uint32_t Location, uint32_t LineNum, CodeSegment *Seg);
+    bool AddRef(std::string NewName, uint32_t Location, uint32_t LineNum, CodeSegment *Seg);
+    bool IsTableCorrect();
+    bool UpdateSegment(CodeSegment *Segment);
 private:
     std::forward_list<SymbolHead> HeadList;
+    bool AddDef(std::string NewName, uint32_t Location, uint32_t LineNum, CodeSegment *Seg, bool IsValue);
 };
 
 #endif // __SYMREF_HPP__
