@@ -2,9 +2,15 @@
 *.ct6
 src/emu6k
 src/asm6k
+src/asm6k.*
 src/punch
 src/*.exe
 src/*.obj
+src/.cproject
+src/.project
+src/.qtc_clangd/
+src/.settings/
 build-*/
 src/cov-int/
 ug.md
+
