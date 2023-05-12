@@ -1,6 +1,5 @@
 TODO, in approximate order:
 BUGS:
-User guide does not show instruction boxes after conversion to .md
 
 ANNOYANCES:
 - Close button on title bar does not close all windows (File/Exit does)
@@ -17,19 +16,14 @@ FEATURES:
 (Hard but not too hard)
 - BRK instruction for debug support
 - Breakpoint in emulator
-- add assembler support for text, packed and unpacked
-- add assembler support for punch card output
 - add assembler support for reg aliases (IP, SP, FLG)
-- Mac OSX support
+- Mac OSX support (works but widget spacing is weird)
+- Write a programming guide, not just an instruction reference
 
 (Hard)
-- support .ORG statement
 - boot loader firmware
-- assembler support for include - or - multiple input files
 - assembler option to dump symbol table
-- multi-segment object files
 - loader for multi-segment
-- linker (depends on multi-segment object files)
 - file I/O in separate thread
 
 Later:
