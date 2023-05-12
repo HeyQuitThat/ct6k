@@ -1,11 +1,17 @@
-* swabcards.asm
+* swabcards cta
 * Reads a deck of cards from the Card-o-Tron Scanner, then changes
 * them from TXTPM to TXTPL or vice-versa. The modified cards are then
 * punched with the Card-o-Tron Puncher
+*
+* devs.cta
+* finddev.cta
+* readcard.cta
+* punchbuf.cta
+* wait.cta
 
     MOVE 0x1000, R14    * set stack
 * Start by looking for the punch
-    MOVE 0x33435357, R0 * DDN of Comp-o-Tron Punch
+    MOVE $COTP_DDN, R0  * DDN of Comp-o-Tron Punch
     CALL $FINDDEV
     OR R0, R0, R0       * no effect but sets zero flag
     JZERO $END
@@ -15,7 +21,7 @@
     JNZERO $END         * Printer error or not ready
 
 * Now find the card reader
-    MOVE 0x33435352, R0
+    MOVE $COTS_DDN, R0  * Comp-o-Tron Scanner
     CALL $FINDDEV
     OR R0, R0, R0
     JZERO $END
@@ -76,54 +82,6 @@ $END
     INCR R10            * R10 now points to punch command reg
     MOVE 0x10, I10      * Send flush command to end job
     HALT
-
-
-
-* FINDDEV - find a device in the peripheral map.
-* DDN is passed in R0, if found, base address returned in R0
-$FINDDEV
-    SSTATE
-    MOVE 0xFFF00000, R8     * Peripheral map table location
-    MOVE 0xF, R9            * Table size
-    MOVE 0x4, R10           * Entry size
-$FDLP
-    MOVE I8, R7             * Get DDN
-    CMP  R7, R0
-    JZERO $FDFOUND
-    ADD R10, R8, R8
-    DECR R9
-    JNZERO $FDLP
-* fell out, not found
-    MOVE 0x0, R0
-    LSTATE
-    RETURN
-
-$FDFOUND
-    INCR R8             * move to base address in table entry
-    MOVE I8, R0         * store memory base address in R0 for return
-    LSTATE
-    RETURN
-
-* READCARD - copy data from card to buffer
-* Address of buffer in R0. Base address of scanner in R11
-* Upon return, length read is in R0
-$READCARD
-    SSTATE
-    MOVE 0xFF, R2
-    AND R5, R2, R1      * R1 now has size in words
-    MOVE R1, R2         * Stash in R2
-    INCR R12            * R11 now points to the first data word
-$RCLOOP
-    MOVE I12, I0
-    INCR R12
-    INCR R0
-    DECR R1
-    JNZERO $RCLOOP
-$RCDONE
-    MOVE R2, R0         * Return buffer length
-    LSTATE
-    RETURN
-
 
 * SWAB - swap bytes from LSB to MSB (or vice-versa)
 * RO - address of source buffer
@@ -188,54 +146,3 @@ $SWFIN
     RETURN
 
 
-* PUNCHBUF - send buffer of words to card punch
-* R0 - buffer address
-* R1 - card info reg, including length
-$PUNCHBUF
-    SSTATE
-    MOVE I10, R2        * Read status register
-    MOVE 1, R3
-    AND R2, R3, R3
-    JZERO $PBFAIL       * Punch not ready
-    INCR R10            * R10 now points to command reg
-    MOVE R10, R12
-    INCR R12            * R12 now points to card info reg
-
-    MOVE R1, I12        * set card info
-    MOVE 0xFF, R2
-    AND R1, R2, R2      * R2 now contains length
-
-$PUNCHLOOP
-    INCR R12
-    MOVE I0, I12        * program next word
-    INCR R0
-    DECR R2
-    OR R2, R2, R2
-    JZERO $PUNCHIT
-    JMP $PUNCHLOOP
-
-$PUNCHIT
-    MOVE 1, I10         * Punch the card
-    JMP $PBEND
-
-$PBFAIL
-    MOVE 0, R0
-$PBEND
-    LSTATE
-    RETURN
-
-* WAIT - delay execution for approximately 10ms
-* No register effects, R0 unchanged
-$WAIT
-    SSTATE
-    MOVE 1000, R6
-$WAITLOOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    DECR R6
-    JNZERO $WAITLOOP
-    LSTATE
-    RETURN

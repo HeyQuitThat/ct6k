@@ -1,4 +1,4 @@
-* example1.asm
+* example1.cta
 * very simple program for ct6k, counts from 10000 to zero
 
     MOVE 10000, R0

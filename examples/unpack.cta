@@ -1,0 +1,36 @@
+* UNPACK - unpack MSB data into single words
+* RO - address of source buffer
+* R1 - address of destination buffer
+* R2 - length of buffer (words) (trailing null added)
+* On return, R0 contains number of words in buffer
+$UNPACK
+    SSTATE
+    MOVE 24, R3         * shift distance for top byte
+    MOVE 16, R4         * shift distance for 2nd byte
+    MOVE 8, R5          * shift distance for 3rd byte, no shift for final byte
+    MOVE 0xFF, R6       * Mask for single byte
+    MOVE R1, R7         * Save off buffer address
+$UPLOOP
+    MOVE I0, R8         * Packed word
+    SHIFTR R8, R3, R9   * move high byte into R9
+    AND R9, R6, R9      * mask off
+    MOVE R9, I1         * save
+    INCR R1
+    SHIFTR R8, R4, R9   * second byte
+    AND R9, R6, R9      * mask off
+    MOVE R9, I1         * save
+    INCR R1
+    SHIFTR R8, R5, R9   * third byte
+    AND R9, R6, R9      * mask off
+    MOVE R9, I1         * save
+    INCR R1
+    AND R8, R6, R8      * final byte
+    MOVE R8, I1
+    INCR R1
+    INCR R0
+    DECR R2
+    JNZERO $UPLOOP
+    SUB R1, R7, R0       * Calculate count and return
+    LSTATE
+    RETURN
+

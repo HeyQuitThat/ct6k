@@ -1,0 +1,25 @@
+* FINDDEV - find a device in the peripheral map.
+* DDN is passed in R0, if found, base address returned in R0
+* assemble with devs.cta
+$FINDDEV
+    SSTATE
+    MOVE $BASEIO, R8     * Peripheral map table location
+    MOVE 0xF, R9            * Table size
+    MOVE 0x4, R10           * Entry size
+$FDLP
+    MOVE I8, R7             * Get DDN
+    CMP  R7, R0
+    JZERO $FDFOUND
+    ADD R10, R8, R8
+    DECR R9
+    JNZERO $FDLP
+* fell out, not found
+    MOVE 0x0, R0
+    LSTATE
+    RETURN
+
+$FDFOUND
+    INCR R8             * move to base address in table entry
+    MOVE I8, R0         * store memory base address in R0 for return
+    LSTATE
+    RETURN

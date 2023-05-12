@@ -1,4 +1,4 @@
-* checker.asm - test program to make a checkerboard of the registers
+* checker.cta - test program to make a checkerboard of the registers
 * Extra challenge - not allowed to just move all 5s or all As into registers
 
     MOVE 15, R1

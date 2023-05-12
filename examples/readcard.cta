@@ -1,0 +1,20 @@
+* READCARD - copy data from card to buffer
+* Address of buffer in R0.
+* Base address of scanner in R11
+* Upon return, length read is in R0
+$READCARD
+    SSTATE
+    MOVE 0xFF, R2
+    AND R5, R2, R1      * R1 now has size in words
+    MOVE R1, R2         * Stash in R2
+    INCR R12            * R11 now points to the first data word
+$RCLOOP
+    MOVE I12, I0
+    INCR R12
+    INCR R0
+    DECR R1
+    JNZERO $RCLOOP
+$RCDONE
+    MOVE R2, R0         * Return buffer length
+    LSTATE
+    RETURN

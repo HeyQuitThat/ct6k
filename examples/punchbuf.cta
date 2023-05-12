@@ -1,0 +1,37 @@
+* PUNCHBUF - send buffer of words to card punch
+* R0 - buffer address
+* R1 - card info reg, including length
+* R10 - base address of card punch
+
+$PUNCHBUF
+    SSTATE
+    MOVE I10, R2        * Read status register
+    MOVE 1, R3
+    AND R2, R3, R3
+    JZERO $PBFAIL       * Punch not ready
+    INCR R10            * R10 now points to command reg
+    MOVE R10, R12
+    INCR R12            * R12 now points to card info reg
+
+    MOVE R1, I12        * set card info
+    MOVE 0xFF, R2
+    AND R1, R2, R2      * R2 now contains length
+
+$PUNCHLOOP
+    INCR R12
+    MOVE I0, I12        * program next word
+    INCR R0
+    DECR R2
+    OR R2, R2, R2
+    JZERO $PUNCHIT
+    JMP $PUNCHLOOP
+
+$PUNCHIT
+    MOVE 1, I10         * Punch the card
+    JMP $PBEND
+
+$PBFAIL
+    MOVE 0, R0
+$PBEND
+    LSTATE
+    RETURN

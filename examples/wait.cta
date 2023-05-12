@@ -1,0 +1,15 @@
+* WAIT - delay execution for approximately 10ms
+* No register effects, R0 unchanged
+$WAIT
+    SSTATE
+    MOVE 1000, R6
+$WAITLOOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    DECR R6
+    JNZERO $WAITLOOP
+    LSTATE
+    RETURN

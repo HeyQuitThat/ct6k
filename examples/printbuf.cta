@@ -1,0 +1,33 @@
+* PRINTBUF - send buffer of unpacked chars to printer
+* R0 - buffer address
+* R1 - length (also stops on null buffer)
+* R10 - base address of printer
+* On return, R0 contains number of characters printed
+$PRINTBUF
+    SSTATE
+    MOVE I10, R3        * Read status register
+    OR R3, R3, R3
+    JNZERO $PBFAIL      * Printer error or not ready
+    MOVE R10, R11
+    INCR R11            * R11 now points to output reg
+$OUTLOOP
+    MOVE I0, R2
+    OR R2, R2, R2
+    JZERO $RELEASE
+    MOVE R2, I11
+    INCR R0
+    DECR R1
+    OR R1, R1, R1
+    JZERO $RELEASE
+    JMP $OUTLOOP
+
+$RELEASE
+    INCR R11            * R11 now points at control register
+    MOVE 1, I11         * Line release
+    JMP $PBEND
+
+$PBFAIL
+    MOVE 0, R0
+$PBEND
+    LSTATE
+    RETURN

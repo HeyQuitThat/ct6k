@@ -1,0 +1,6 @@
+* devs.cta
+* defines constants used for device i/o
+.VALUE BASEIO 0xFFF00000
+.VALUE POTDDN 0x504F5458
+.VALUE COTSDDN 0x33435352
+.VALUE COTPDDN 0x33435357
