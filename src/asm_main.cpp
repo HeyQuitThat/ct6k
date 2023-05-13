@@ -27,6 +27,11 @@
 #include "segment.hpp"
 #include "instruction.hpp"
 
+#define ASM_VER_MAJOR "2"
+#define ASM_VER_MINOR "0"
+#define ASM_VER_SUB "1"
+#define ASM_VER_STRING "Comp-o-Tron 6000 symbolic assembler, version " ASM_VER_MAJOR "." ASM_VER_MINOR "." ASM_VER_SUB
+
 // Super simple assembler. Most of the work is done by build_instruction(), so this code just
 // needs to handle the symbol table and file I/O.
 //
@@ -83,6 +88,7 @@
 // - .TXTN .TXTM .TXTL for text (not packed, packed MSB first, packed LSB first)
 // - .VALUE to define a fixed value
 //
+
 
 // Remove whitespace from beginning of string
 void StripBlank(std::string &Line)
@@ -425,6 +431,7 @@ int main(int argc, char *argv[])
     bool OutputBin {true};
     bool GotOutputType {false};
 
+    std::cout << ASM_VER_STRING << "\n";
     // Minimum number of args is 4, so don't bother checking them if we don't have
     // that many
     if (argc < 4)
