@@ -376,10 +376,24 @@ uint8_t BuildReg(std::string RegArg)
     } else {
         throw("Invalid argument");
     }
-    if (!isdigit(RegArg[1]))
+    RegArg.erase(0,1);
+    // check for aliases
+    if (RegArg == "IP") {
+        retval |= REG_IP;
+        return retval;
+    }
+    if (RegArg == "SP") {
+        retval |= REG_SP;
+        return retval;
+    }
+    if (RegArg == "FLG") {
+        retval |= REG_FLG;
+        return retval;
+    }
+    if (!isdigit(RegArg[0]))
         throw("Invalid argument");
 
-    tmp = std::strtoul(&RegArg[1], nullptr, 10);
+    tmp = std::strtoul(RegArg.c_str(), nullptr, 10);
     if (tmp > 15)
         throw("Invalid argument");
     retval |= (uint8_t)(tmp & REGNUM_MASK);
