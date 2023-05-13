@@ -7,7 +7,7 @@
 * unpack.cta
 
 * Start by looking for the printer
-    MOVE 0x1000, R14    * set stack
+    MOVE 0x1000, RSP    * set stack
     MOVE $POTDDN, R0
     CALL $FINDDEV
     OR R0, R0, R0       * no effect but sets zero flag

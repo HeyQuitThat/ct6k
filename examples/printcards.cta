@@ -9,9 +9,9 @@
 * printbuf.cta
 * wait.cta
 
-    MOVE 0x1000, R14    * set stack
+    MOVE 0x1000, RSP    * set stack location
 * Start by looking for the printer
-    MOVE $POT_DDN, R0 * DDN of Print-o-Tron
+    MOVE $POT_DDN, R0   * DDN of Print-o-Tron
     CALL $FINDDEV
     OR R0, R0, R0       * no effect but sets zero flag
     JZERO $END

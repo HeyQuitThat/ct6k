@@ -9,7 +9,7 @@
 * punchbuf.cta
 * wait.cta
 
-    MOVE 0x1000, R14    * set stack
+    MOVE 0x1000, RSP    * set stack
 * Start by looking for the punch
     MOVE $COTP_DDN, R0  * DDN of Comp-o-Tron Punch
     CALL $FINDDEV
