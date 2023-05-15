@@ -32,8 +32,8 @@ public:
     void ModifyWord(uint32_t Offset, uint32_t NewValue);
     uint32_t GetBase();
     std::size_t GetLen();
-    std::string getFilename() const;
-    void setFilename(const std::string &newFilename);
+    std::string GetFilename() const;
+    void SetFilename(const std::string &newFilename);
 
 private:
     uint32_t BaseAddr;

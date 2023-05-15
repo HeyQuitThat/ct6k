@@ -59,12 +59,12 @@ std::size_t CodeSegment::GetLen()
     return Binary.size();
 }
 
-std::string CodeSegment::getFilename() const
+std::string CodeSegment::GetFilename() const
 {
     return Filename;
 }
 
-void CodeSegment::setFilename(const std::string &newFilename)
+void CodeSegment::SetFilename(const std::string &newFilename)
 {
     Filename = newFilename;
 }

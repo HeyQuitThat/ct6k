@@ -67,7 +67,7 @@ bool SymbolTable::IsTableCorrect()
         // Unknown symbol with refs is fatal
         if (Sym.Known == false) {
             std::cerr << "Fatal: symbol " << Sym.Name << " used but not defined at line " <<
-                         Sym.SrcLine << "of file" << Sym.Seg->getFilename() << "\n";
+                         Sym.SrcLine << "of file" << Sym.Seg->GetFilename() << "\n";
             return false;
         }
     }
@@ -83,7 +83,7 @@ bool SymbolTable::UpdateSegment(CodeSegment *Segment)
         // Unknown symbol with refs is fatal
         if (Sym.Known == false) {
             std::cerr << "Fatal: symbol " << Sym.Name << " used but not defined at line " <<
-                         Sym.SrcLine << "of file" << Sym.Seg->getFilename() << "\n";
+                         Sym.SrcLine << "of file" << Sym.Seg->GetFilename() << "\n";
             return true;
         }
         // Known symbol with no refs is not an error - we just carry on.
@@ -92,7 +92,7 @@ bool SymbolTable::UpdateSegment(CodeSegment *Segment)
                 if (Segment->ReadWord(Ref.SegOffset)) {
                     std::cerr << "Fatal internal error: symbol " << Sym.Name <<
                                  " ref is nonzero at line " << Sym.SrcLine << "of file" <<
-                                 Segment->getFilename() << "\n";
+                                 Segment->GetFilename() << "\n";
                     return true;
                 } else {
                     if (Sym.IsValue)

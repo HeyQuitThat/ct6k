@@ -504,7 +504,7 @@ int main(int argc, char *argv[])
         while (!InFile.eof()) {
             CurrentSeg = new CodeSegment();
             CurrentSeg->SetBase(NextAddr);
-            CurrentSeg->setFilename(CurrInFileName);
+            CurrentSeg->SetFilename(CurrInFileName);
             Segs.push_back(CurrentSeg);
             if (AssembleSegment(&InFile, CurrentSeg, &syms, &LineNum)) {
                std::cerr << "Error assembling input file " << CurrInFileName << "\n";
