@@ -29,7 +29,7 @@
 #include "instruction.hpp"
 
 #define ASM_VER_MAJOR "2"
-#define ASM_VER_MINOR "0"
+#define ASM_VER_MINOR "1"
 #define ASM_VER_SUB "1"
 #define ASM_VER_STRING "Comp-o-Tron 6000 symbolic assembler, version " ASM_VER_MAJOR "." ASM_VER_MINOR "." ASM_VER_SUB
 
