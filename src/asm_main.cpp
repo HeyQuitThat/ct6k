@@ -460,17 +460,17 @@ int main(int argc, char *argv[])
     }
 
     if (innames.empty()) {
-        std::cout << "No input files found. Exiting.\n";
+        std::cerr << "No input files found. Exiting.\n";
         return -1;
     }
 
     if (outname.empty()) {
-        std::cout << "No output filename specified. Exiting.\n";
+        std::cerr << "No output filename specified. Exiting.\n";
         return -1;
     }
 
     if (!GotOutputType) {
-        std::cout << "No output format specified. Exiting.\n";
+        std::cerr << "No output format specified. Exiting.\n";
         return -1;
     }
     // make sure we can open the output file first
@@ -480,7 +480,7 @@ int main(int argc, char *argv[])
             mode |= std::ios::binary;
         outfile.open(outname, mode);
     } catch (const char* msg) {
-        std::cout << "Error opening output file: " << msg << "\n";
+        std::cerr << "Error opening output file: " << msg << "\n";
         return -1;
     }
 
@@ -494,7 +494,7 @@ int main(int argc, char *argv[])
         try {
             InFile.open(CurrInFileName, std::ios::in);
         } catch (const char* msg) {
-            std::cout << "Error opening input file " << CurrInFileName << ": " << msg << "\n";
+            std::cerr << "Error opening input file " << CurrInFileName << ": " << msg << "\n";
             outfile.close();
             remove(outname.c_str());
             for (auto s = Segs.begin(); s != Segs.end(); s++)
@@ -507,7 +507,7 @@ int main(int argc, char *argv[])
             CurrentSeg->setFilename(CurrInFileName);
             Segs.push_back(CurrentSeg);
             if (AssembleSegment(&InFile, CurrentSeg, &syms, &LineNum)) {
-               std::cout << "Error assembling input file " << CurrInFileName << "\n";
+               std::cerr << "Error assembling input file " << CurrInFileName << "\n";
                InFile.close();
                outfile.close();
                remove(outname.c_str());
@@ -523,7 +523,7 @@ int main(int argc, char *argv[])
     // symbol tables and check to make sure everything's resolved.
     for (auto s : Segs) {
         if (syms.UpdateSegment(s)) {
-            std::cout << "Error resolving symbol table\n";
+            std::cerr << "Error resolving symbol table\n";
             outfile.close();
             remove(outname.c_str());
             for (auto s = Segs.begin(); s != Segs.end(); s++)
