@@ -22,6 +22,7 @@
 #include <forward_list>
 #include <string>
 #include <string_view>
+#include <boost/format.hpp>
 #include <vector>
 #include "symref.hpp"
 #include "segment.hpp"
@@ -139,6 +140,7 @@ int Usage(char *Cmd)
     std::cout << "\t-o outfile\n";
     std::cout << "\t-B raw binary output format\n";
     std::cout << "\t-C Card-O-Tron card deck output format\n";
+    std::cout << "\t-l produce complete listing\n";
     std::cout << "\nRaw binary files can be loaded directly by the emulator but must start at\n";
     std::cout << "address 0. Generally, this is for short programs that can run on the raw\n";
     std::cout << "hardware. For more flexiblity, or to assemble multiple files in multiple\n";
@@ -183,6 +185,49 @@ bool WriteBin(std::vector<CodeSegment *>Segs, std::ofstream &File)
     }
     return false;
 }
+
+// Print the instruction based upon the value(s) given. If Count is specified, update the count of
+// words used for the instruction.
+std::string FormatDisasm(uint32_t Val, uint32_t Val2, uint32_t *Count)
+{
+    std::string outstr;
+    auto i = new Instruction(Val, Val2);
+    i->Print(outstr);
+    if (Count != nullptr)
+        *Count = i->SizeInMemory();
+    delete i;
+    return outstr;
+}
+
+// Dump a listing of the completed program to the given file. This is done after we write
+// the binary, so no error checking needs to be done.
+void DumpListing(std::vector<CodeSegment *>Segs,  std::ofstream &File)
+{
+    int segnum {0};
+    File << ASM_VER_STRING << "\n";
+    for (auto s : Segs) {
+        File << "\nSEGMENT # " << segnum << " FROM FILE " << s->GetFilename() << "\n\n";
+        for (std::size_t i = 0; i < s->GetLen(); i++) {
+            uint32_t word1 = s->ReadWord(i);
+            uint32_t word2 = s->ReadWord(i + 1); // OK to read off the end, we'll just get 0.
+            uint32_t used {0};
+            std::string instr = FormatDisasm(word1, word2, &used);
+            File << (boost::format("0x%08X : ") % (i + s->GetBase())).str();
+            File << (boost::format("0x%08X ") % word1).str();
+            if (used == 2) {
+                File << (boost::format("0x%08X ") % word2).str();
+                i++;
+            } else {
+                File << "           ";
+            }
+            File << instr << "\n";
+        }
+        segnum++;
+        File << "\n";
+    }
+    File << " --- END OF LISTING ---\n\n";
+}
+
 
 #define COT_BIN_CARD_LEN 31
 // Write a single Card-o-Tron card in the file format expected by the COT emulator.
@@ -430,6 +475,7 @@ int main(int argc, char *argv[])
     std::vector<CodeSegment *>Segs;
     bool OutputBin {true};
     bool GotOutputType {false};
+    bool ProduceListing {false};
 
     std::cout << ASM_VER_STRING << "\n";
     // Minimum number of args is 4, so don't bother checking them if we don't have
@@ -454,6 +500,10 @@ int main(int argc, char *argv[])
             if (i >= argc)
                return Usage(argv[0]);
             outname = argv[i];
+            continue;
+        }
+        if (TmpArg == "-l") {
+            ProduceListing = true;
             continue;
         }
         innames.push_back(TmpArg);
@@ -561,8 +611,22 @@ int main(int argc, char *argv[])
     } else {
         WriteCOT(Segs, outfile);
     }
-
     outfile.close();
+    if (ProduceListing) {
+        std::ofstream listfile;
+        outname += ".listing";
+        try {
+            listfile.open(outname, std::ios::out | std::ios::trunc);
+        } catch (const char* msg) {
+            std::cerr << "Error opening output file: " << msg << "\n";
+            for (auto s = Segs.begin(); s != Segs.end(); s++)
+               delete *s;
+            return -1;
+        }
+        DumpListing(Segs, listfile);
+        listfile.close();
+    }
+
     for (auto s = Segs.begin(); s != Segs.end(); s++)
         delete *s;
     return 0;
