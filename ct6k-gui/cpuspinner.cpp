@@ -101,8 +101,11 @@ void CPUSpinner::run()
                 RunThenWait(MSEC60HZ);
                 break;
             case CR_FULL:
-                for (int i = 0; i < FAST_RUN_CYCLES; i++)
+                for (int i = 0; i < FAST_RUN_CYCLES; i++) {
                     MyCPU->Step();
+                    if (MyCPU->IsBroken())
+                        break;
+                }
                 break;
             case CR_HALTED:
             case CR_STOPPED:
@@ -134,7 +137,7 @@ void CPUSpinner::run()
             RunState = CR_HALTED; // This overrides all other running states
         // Logically, this should be in the switch above but we need this
         // protected by the mutex. So here it is.
-        if (RunState == CR_STEP)
+        if ((RunState == CR_STEP) || MyCPU->IsBroken())
             RunState = CR_STOPPED;
         // Wait on HALTED as well as STOPPED becaue we still need to wake
         // the thread in order to exit.
