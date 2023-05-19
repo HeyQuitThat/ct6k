@@ -107,7 +107,7 @@ std::string ExtractToken(std::string Line, unsigned int Pos)
 {
     std::string retval;
 
-    while (isalpha(Line[Pos]))
+    while (isalnum(Line[Pos]))
         retval += Line[Pos++];
 
     return retval;
