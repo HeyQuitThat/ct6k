@@ -210,6 +210,7 @@ TODO: preload a register with mem size?
 #define OP_INTENA	0x56
 #define OP_INTDIS	0x57
 #define OP_NOP		0xF0
+#define OP_BRK      0xFE
 #define OP_HALT		0xFF
 
 /* Finally... */

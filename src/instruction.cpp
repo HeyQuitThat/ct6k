@@ -130,6 +130,7 @@ OpMap opcode_map[] = {
 {"UNSIGNED", OP_UNSIGNED, op_no_args},
 {"INTENA", OP_INTENA, op_no_args},
 {"INTDIS", OP_INTDIS, op_no_args},
+{"BRK", OP_BRK, op_no_args},
 {"HALT", OP_HALT, op_no_args},
 {"NOP", OP_NOP, op_no_args},
 {"SETFHAP", OP_SETFHAP, op_src_only},

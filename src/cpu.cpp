@@ -270,7 +270,7 @@ uint32_t CPU::Execute()
     // For ease of comprehension, this is all open-coded. It would be possible to
     // set up a bunch of classes and do some polymorphic magic and dynamic casts,
     // but that would get ugly and confusing very quickly.
-
+    Broken = false;
     switch (CurrentInst->GetType()) {
         case op_no_args:
             retval = ExecuteNoArgs();
@@ -414,6 +414,9 @@ uint32_t CPU::ExecuteNoArgs()
             break;
         case OP_NOP:
             // do nothing
+            break;
+        case OP_BRK:
+            Broken = true;
             break;
         case OP_HALT:
             Halt();
@@ -759,6 +762,11 @@ void CPU::RemoveDevice(Periph *Dev)
     Devices[index].Entry.Base_Addr = 0;
     Devices[index].Entry.IOMemLen = 0;
     Devices[index].Entry.Interrupt = 0;
+}
+
+bool CPU::IsBroken() const
+{
+    return Broken;
 }
 
 uint32_t CPU::ReadIO(uint32_t Address)

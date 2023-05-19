@@ -66,6 +66,7 @@ public:
     void Reset();
     bool AddDevice(Periph *Dev);
     void RemoveDevice(Periph *Dev);
+    bool IsBroken() const;
 
 private:
     Memory *Mem;
@@ -75,6 +76,7 @@ private:
     uint32_t IHAP_Addr {0}; // Interrupt Handler Pointer
     Instruction *CurrentInst {nullptr};
     IORegion Devices[PERIPH_MAP_SIZE] {{{0,}, nullptr,},};    // Allocate separately?
+    bool Broken {false};
 
     uint32_t Execute(); // executes current instruction, returns fault value
     uint32_t RetrieveDirectValue();
