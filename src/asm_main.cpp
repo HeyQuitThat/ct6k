@@ -233,7 +233,7 @@ void DumpListing(std::vector<CodeSegment *>Segs,  std::ofstream &File)
 // Write a single Card-o-Tron card in the file format expected by the COT emulator.
 void PunchCard(std::ofstream &File, uint32_t Address, uint32_t Count, uint32_t *Data)
 {
-    File << "<C> " << std::dec << Count << "\n";
+    File << "<C> " << std::dec << Count + 1 << "\n";
     File << std::hex;
     File << Address << '\n';
     for (unsigned int i = 0; i < Count; i++) {
