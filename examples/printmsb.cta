@@ -1,0 +1,61 @@
+* PRINTMSB - send buffer of MSB-packed chars to printer
+* R0 - buffer address of packed data. Must end in a word of 0x0
+* R10 - base address of printer
+* On return, R0 contains number of characters printed
+$PRINTMSB
+    SSTATE
+    OR R10, R10, R10    * Test for valid memory location
+    JZERO $PMFAIL
+
+    MOVE I10, R3        * Read status register
+    OR R3, R3, R3
+    JNZERO $PMFAIL      * Printer error or not ready
+    MOVE R10, R11
+    INCR R11            * R11 now points to output reg
+* Set up shift values to prep for printing
+    MOVE 24, R3         * shift distance for top byte
+    MOVE 16, R4         * shift distance for 2nd byte
+    MOVE 8, R5          * shift distance for 3rd byte, no shift for final byte
+    MOVE 0xFF, R6       * Mask for single byte
+    MOVE 0, R1          * Count
+$OUTLOOP
+    MOVE I0, R2
+    OR R2, R2, R2
+    JZERO $RELEASE      * The only exit condition from the loop
+
+    SHIFTR R2, R3, R9   * move high byte into R9
+    AND R9, R6, R9      * mask off
+    MOVE R9, I11        * send to printer
+    INCR R1             * byte count
+
+    SHIFTR R2, R4, R9   * second byte
+    AND R9, R6, R9      * mask off
+    MOVE R9, I11        * send to printer
+    INCR R1             * byte count
+
+    SHIFTR R2, R5, R9   * third byte
+    AND R9, R6, R9      * mask off
+    MOVE R9, I11        * send to printer
+    INCR R1             * byte count
+
+    AND R2, R6, R9      * final byte, just mask
+    MOVE R9, I11        * send to printer
+    INCR R1             * byte count
+
+    INCR R0             * Move to next word
+    JMP $OUTLOOP
+
+$RELEASE
+    INCR R11            * R11 now points at control register
+    MOVE 1, I11         * Line release
+    JMP $PMEND
+
+$PMFAIL
+    MOVE 0, R0
+    JMP $PMOUT
+
+$PMEND
+    MOVE R1, R0         * return count of bytes printed
+$PMOUT
+    LSTATE
+    RETURN

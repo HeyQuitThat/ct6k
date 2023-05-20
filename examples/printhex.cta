@@ -1,0 +1,42 @@
+* PRINTHEX - print a single value in hexadecimal to the printer
+* R0 - value to print
+* R10 - base address of printer
+* No return value - R0 indeterminate
+$PRINTHEX
+    SSTATE
+    OR R10, R10, R10    * Test for valid memory location
+    JZERO $PHOUT
+
+    MOVE I10, R3        * Read status register
+    OR R3, R3, R3
+    JNZERO $PHOUT      * Printer error or not ready
+    MOVE R10, R11
+    INCR R11            * R11 now points to output reg
+* Set up shift values to prep for printing
+    MOVE 28, R3         * shift distance for top byte
+    MOVE 0xF, R4        * Mask for single digit
+    MOVE 0x30, R5       * value of '0' character
+    MOVE 0x4, R6        * value to shift up
+    MOVE 8, R7          * value to add if a letter
+    MOVE 0x39, R8       * if value is above this, add R7
+    MOVE 8, R1          * 8 number of characters to print
+$PHLOOP
+    SHIFTR R0, R3, R2
+    AND R2, R4, R2
+    ADD R5, R2, R2      * If this 0-9, we're good
+    CMP R2, R8
+    JNOVER $PHSEND
+    ADD R7, R2, R2      * adjust for letters
+$PHSEND
+    MOVE R2, I11        * Send character to printer
+    SHIFTL R0, R6, R0   * queue up next hex value
+    DECR R1
+    JNZERO $PHLOOP
+
+    INCR R11            * R11 now points at control register
+    MOVE 1, I11         * Line release
+
+$PHOUT
+    MOVE 0, R0
+    LSTATE
+    RETURN
