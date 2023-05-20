@@ -1,16 +1,20 @@
 * READCARD - copy data from card to buffer
+* It is assumed that the caller has already checked
+* the status register for completion.
 * Address of buffer in R0.
 * Base address of scanner in R11
 * Upon return, length read is in R0
 $READCARD
     SSTATE
+    INCR R11
+    INCR R11            * R11 now points to status register
     MOVE 0xFF, R2
-    AND R5, R2, R1      * R1 now has size in words
+    AND I11, R2, R1     * R1 now has size in words
     MOVE R1, R2         * Stash in R2
-    INCR R12            * R11 now points to the first data word
+    INCR R11            * R11 now points to the first data word
 $RCLOOP
-    MOVE I12, I0
-    INCR R12
+    MOVE I11, I0
+    INCR R11
     INCR R0
     DECR R1
     JNZERO $RCLOOP
