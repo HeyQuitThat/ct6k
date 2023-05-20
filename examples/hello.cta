@@ -3,37 +3,27 @@
 * assemble this with:
 * devs.cta
 * finddev.cta
-* printbuf.cta
-* unpack.cta
+* printmsb.cta
 
 * Start by looking for the printer
+.ADDR 0x500
     MOVE 0x1000, RSP    * set stack
     MOVE $POTDDN, R0
     CALL $FINDDEV
     OR R0, R0, R0       * no effect but sets zero flag
     JZERO $END
-    MOVE R0, R10        * Printbuf wants the printer address here
+    MOVE R0, R10        * Printmsb wants the printer address here
 
     MOVE I10, R1        * Read status register
     OR R1, R1, R1
     JNZERO $END         * Printer error or not ready
 
-.VALUE OUTBUF 0x500
     MOVE $TEXT, R0
-    MOVE $OUTBUF, R1
-    MOVE $ENDTXT, R2
-    SUB R2, R0, R2
-    CALL $UNPACK        * Unpacked data now at $OUTBUF
-    MOVE R0, R2         * R2 used as temp so we can swap
-    MOVE R1, R0         * Buffer address
-    MOVE R2, R1         * Length
-    CALL $PRINTBUF
+    CALL $PRINTMSB
 
 $END
     HALT
 
 $TEXT
 .TXTM "Hello, Edith!"
-    0x0
-$ENDTXT
     0x0
