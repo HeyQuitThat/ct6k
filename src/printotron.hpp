@@ -20,6 +20,7 @@
 #ifndef __PRINTOTRON_HPP__
 #define __PRINTOTRON_HPP__
 #include <string>
+#include <vector>
 #include <cstdint>
 #include "periph.hpp"
 
@@ -36,8 +37,8 @@ public:
     std::string GetOutputLine();
     void PowerOnReset();
 private:
-    std::string OutputBuffer;
-    bool LineRelease {false};
+    std::vector<std::string> OutputBuffer;
+    std::string CurrentLine;
     uint32_t Status;
 };
 

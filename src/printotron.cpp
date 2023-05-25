@@ -41,6 +41,7 @@ uint32_t PrintOTron::GetDDN()
 PrintOTron::PrintOTron()
 {
     OutputBuffer.clear();
+    CurrentLine.clear();
     Status = POT_STATUS_NO_PAPER; // Will change to ready when UI initializes.
 }
 
@@ -53,17 +54,18 @@ void PrintOTron::WriteIOMem(uint32_t Offset, uint32_t Value)
             // Read-only register
             break;
         case POT_REG_OUTPUT:
-            OutputBuffer += (char)(Value & 0xff);
+            CurrentLine += (char)(Value & 0xff);
             break;
         case POT_REG_CONTROL:
             if (Value & POT_CONTROL_LINE_RELEASE) {
                 Status = POT_STATUS_BUSY;
-                LineRelease = true;
+                OutputBuffer.push_back(CurrentLine);
+                CurrentLine.clear();
             }
             if (Value & POT_CONTROL_PAGE_RELEASE) {
                 Status = POT_STATUS_BUSY;
-                OutputBuffer = "\f";
-                LineRelease = true;
+                CurrentLine.clear();
+                OutputBuffer.push_back("\f");
             }
             break;
         default:
@@ -86,7 +88,8 @@ bool PrintOTron::IsOutputReady()
     if (Status == POT_STATUS_NO_PAPER) {
         Status = POT_STATUS_OK;
     }
-    return LineRelease;
+
+    return !OutputBuffer.empty();
 
 }
 
@@ -96,13 +99,12 @@ std::string PrintOTron::GetOutputLine()
 {
     std::string retval;
 
-    if (!LineRelease)
+    if (OutputBuffer.empty())
         return "";
 
-    retval = OutputBuffer;
-    LineRelease = false;
+    retval = OutputBuffer[0];
     Status = POT_STATUS_OK;
-    OutputBuffer.clear();
+    OutputBuffer.erase(OutputBuffer.begin());
     return retval;
 }
 
@@ -110,5 +112,6 @@ std::string PrintOTron::GetOutputLine()
 void PrintOTron::PowerOnReset()
 {
     OutputBuffer.clear();
+    CurrentLine.clear();
     Status = POT_STATUS_NO_PAPER; // Will change to ready when UI initializes.
 }
