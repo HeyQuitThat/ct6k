@@ -29,7 +29,7 @@ COTWindow::COTWindow(QObject *parent)
     OnImg = new QPixmap(":/ct6k/ib-red.jpg");
     OffImg = new QPixmap(":/ct6k/ib-red-off.jpg");
     COTBox = new QDialog();
-    COTBox->setWindowFlags(Qt::Dialog);
+    COTBox->setWindowFlags(Qt::Window);
     COTBox->setWindowTitle("Card-o-Tron 3CS");
     COTBox->setModal(false);
     COTBox->setSizeGripEnabled(false);
