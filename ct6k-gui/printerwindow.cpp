@@ -102,12 +102,23 @@ void PrinterWindow::StopLog()
 // Print-O-Tron models.
 void PrinterWindow::UpdatePrinterWindow(QString OutLine)
 {
+    // Handle Page Relase (AKA "Form Feed" in our timeline)
+    if (OutLine == "\f") {
+        for (int i = 0; i < 7; i++ ) {
+            ScrollUp();
+            if (i == 3)
+                Pinkbar[BottomIndex]->setText("    ---- FORM FEED ----");
+        }
+        if (PrinterLog.is_open())
+            PrinterLog << "\n\n\n\n    ---- FORM FEED ----\n\n\n" << std::endl;
+
+        return;
+    }
 
     ScrollUp();
     Pinkbar[BottomIndex]->setText(OutLine);
     if (PrinterLog.is_open())
         PrinterLog << OutLine.toStdString() << std::endl;
-
 }
 
 

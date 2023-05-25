@@ -18,6 +18,7 @@
 // cpuspinner.cpp - function definitions for the CPUSpinner class.
 
 #include "cpuspinner.hpp"
+
 #define MSEC1HZ 1000
 #define MSEC10HZ 100
 #define MSEC60HZ 17     // Yes, it's a hair slow. I know. So was the real Comp-o-Tron 6000.
@@ -120,9 +121,11 @@ void CPUSpinner::run()
             CurrentState = MyCPU->DumpInternalState();
             emit UpdatePanel(&CurrentState);
         }
-        // Check to see if the printer has any output
-        if ((MyPOT != nullptr) && MyPOT->IsOutputReady())
-            emit UpdatePrinterWindow(MyPOT->GetOutputLine().c_str());
+        // Check to see if the printer has any output. Need to check in a loop
+        // to make sure we get all output, even after a HALT.
+        if (MyPOT != nullptr)
+            while (MyPOT->IsOutputReady())
+                    emit UpdatePrinterWindow(MyPOT->GetOutputLine().c_str());
 
         // Update Card-o-Tron. Assume that if we have a puncher, we also have a scanner.
         if (MyCOTP != nullptr)
