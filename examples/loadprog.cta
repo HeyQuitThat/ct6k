@@ -1,0 +1,168 @@
+* loadprog.cta
+* Reads an executable program from a deck of cards using the Card-o-Tron Scanner,
+* then execute that program. This forms the basis of the Comp-o-Tron 6000 self-rising
+* feature.
+*
+* The called program is not expected to return; it should have HALT as its last
+* instruction.
+*
+* devs.cta
+* finddev.cta
+* readcard.cta
+* wait.cta
+* printmsb.cta
+
+.ADDR 0xFFC00000  * FFD would work but FFC is easier to remember the binary
+
+.VALUE STACK 0xFFF80    * right below top of memory
+    MOVE $STACK, RSP
+    MOVE 0, R9          * flag for valid start address - R8 is actual start
+* Start by looking for the printer
+    MOVE $POTDDN, R0
+    CALL $FINDDEV
+    MOVE R0, R10        * Print-o-Tron XL. If not found, it's not fatal
+
+    MOVE $MSGSTART, R0
+    CALL $PRINTMSB
+
+* Now look for the scanner
+    MOVE $COTSDDN, R0  * Comp-o-Tron Scanner
+    CALL $FINDDEV
+    OR R0, R0, R0
+    JNZERO $FOUND
+    MOVE $MSGCOTS, R0
+    CALL $PRINTMSB
+    HALT                * No scanner is fatal, so we give up
+$FOUND
+    MOVE R0, R11        * Card scanner register base now in R11
+    MOVE I11, R1        * Read status register
+    MOVE $COTSEMPTY, R2
+    AND R1, R2, R2      * If this bit is set, there are no cards
+    JZERO $MAINLOOP
+    MOVE $MSGEMPTY, R0
+    CALL $PRINTMSB
+    HALT
+
+$MAINLOOP
+    MOVE I11, R1        * Read status register
+    MOVE R1, R0
+    MOVE $COTSRDY, R2   * Check ready bit
+    AND R1, R2, R2
+    JNZERO $STATOK
+    MOVE $MSGRD, R0
+    CALL $PRINTMSB
+    HALT
+$STATOK
+    MOVE R11, R12
+    INCR R12            * R12 now points to scanner command reg
+    MOVE 1, I12         * Issue read command
+$READLOOP
+    CALL $WAIT
+    MOVE I11, R1
+    MOVE $COTSEMPTY, R2
+    AND R1, R2, R2
+    JNZERO $STARTBIN
+    MOVE $COTSBSY, R2    * Check for busy bit
+    AND R1, R2, R2
+    JNZERO $READLOOP
+* Reading complete, now transfer data into buffer
+    MOVE $COTSDONE, R2       * check for completion
+    AND R1, R2, R2
+    JNZERO $GETINFO
+    MOVE $MSGRD, R0
+    CALL $PRINTMSB
+    HALT
+
+$GETINFO
+    INCR R12            * R12 now points to Info register
+    MOVE I12, R5        * Card info
+
+.VALUE COTSCODE 0x00001000
+.VALUE COTSRDY 0x1
+.VALUE COTSBSY 0x8
+.VALUE COTSDONE 0x10
+.VALUE COTSEMPTY 0x4
+.VALUE LENMASK 0x3F
+    MOVE $COTSCODE, R0  * check correct card type - must be "CODE"
+    AND R5, R0, R0
+    JNZERO $VALID
+    MOVE $MSGFMT, R0
+    CALL $PRINTMSB
+    HALT
+
+*OK, we have valid data in the right format, move it to the buffer
+$VALID
+.VALUE BUFFER 0xFFF40    * just below stack
+    MOVE $BUFFER, R0
+    CALL $READCARD
+    OR R0, R0, R0
+    JNZERO $GOODREAD
+    MOVE $MSGRD, R0    * zero length card is invalid
+    CALL $PRINTMSB
+    HALT
+
+$GOODREAD
+    MOVE $BUFFER, R0
+    MOVE I0, R1         * First word is destination address
+    OR R9, R9, R9       * if this is non-zero, we have a valid start address
+    JNZERO $SAVALID
+    MOVE R1, R8
+    INCR R9
+$SAVALID
+    INCR R0
+    MOVE $LENMASK, R2
+    AND R2, R5, R5
+    DECR R5             * R5 now contains the count of words to copy
+$EMPLACE
+    MOVE I0, I1
+    INCR R0
+    INCR R1
+    DECR R5
+    JNZERO $EMPLACE
+
+* Done with copy of this card, head back to top
+    JMP $MAINLOOP
+
+$STARTBIN
+    OR R9, R9, R9       * test for valid start address
+    JNZERO $GO
+    MOVE $MSGFMT, R0
+    CALL $PRINTMSB
+    HALT
+$GO
+    MOVE $MSGGOOD, R0
+    CALL $PRINTMSB
+
+    MOVE 0, RSP         * called program must set up its own stack
+    MOVE 0, R0
+    MOVE 0, R1
+    MOVE 0, R2
+    MOVE 0, R3
+    MOVE 0, R4
+    MOVE 0, R5
+    MOVE 0, R9
+    MOVE 0, R10
+    MOVE 0, R11
+    MOVE 0, R12
+    BRK
+    JMP R8              * will never return, we are done
+
+* Output strings
+$MSGSTART
+.TXTM "Comp-o-Tron 6000 self-rising flower version 1.0"
+    0x0
+$MSGCOTS
+.TXTM "E00: Card-o-Tron Scanner not present"
+    0x0
+$MSGEMPTY
+.TXTM "E01: No cards present"
+    0x0
+$MSGRD
+.TXTM "E02: card read error"
+    0x0
+$MSGFMT
+.TXTM "E03: invalid card format"
+    0x0
+$MSGGOOD
+.TXTM "S00: Program loaded successfully, press RUN"
+    0x0

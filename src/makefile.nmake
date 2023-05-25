@@ -6,7 +6,7 @@ COMMON_HEADERS = arch.h hw.h instruction.hpp
 LINKER = link
 LINKER_OPTS = /LIBPATH:C:\local\boost_1_81_0\libs
 
-all:asm6k.exe punch.exe
+all:asm6k.exe punch.exe loadprog.h
 
 .cpp.obj:
   $(CC) $(CL_OPTS) $*.cpp
@@ -29,6 +29,10 @@ asm6k.exe: $(ASM_OBJS)
 punch.exe: $(PUNCH_OBJS)
   $(LINKER) $(LINKER_OPTS) /OUT:punch.exe $(PUNCH_OBJS)
 
+loadprog.h: asm6k.exe ..\examples\loadprog.cta
+	asm6k -b -o loadprog.bin -r ..\examples\loadprog.cta ..\examples\devs.cta ..\examples\finddev.cta ..\examples\readcard.cta ..\examples\wait.cta ..\examples\printmsb.cta
+	ren loadprog.bin.h loadprog.h
+
 clean:
-  del *.obj asm6k.exe punch.exe
+  del *.obj asm6k.exe punch.exe loadprog.h loadprog.bin
 

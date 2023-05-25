@@ -4,7 +4,7 @@ CXX = g++
 CPPFLAGS = -Wall -g -O2 -std=c++14
 COMMON_HEADERS = arch.h hw.h instruction.hpp
 
-all: asm6k punch
+all: asm6k punch loadprog.h
 
 # The only common code between the assembler and the emulator is the Instruction class
 instruction.o: instruction.cpp $(COMMON_HEADERS)
@@ -43,6 +43,10 @@ asm6k: $(ASM_OBJS)
 punch: $(PUNCH_OBJS)
 	g++ -o punch $(PUNCH_OBJS)
 
+loadprog.h: asm6k ../examples/loadprog.cta
+	./asm6k -b -o loadprog.bin -r ../examples/loadprog.cta ../examples/devs.cta ../examples/finddev.cta ../examples/readcard.cta ../examples/wait.cta ../examples/printmsb.cta
+	mv loadprog.bin.h loadprog.h
+
 clean:
-	@rm -f *.o *.obj emu6k asm6k punch
+	@rm -f *.o *.obj emu6k asm6k punch loadprog.bin loadprog.h
 
