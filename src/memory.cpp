@@ -57,4 +57,9 @@ void Memory::MemWrite(uint32_t Address, uint32_t Value)
         Blob[Address] = Value;
     // No error if address is out of range, value just disappears
     // like in a a real (vintage) CPU.
+}
+
+uint32_t Memory::GetMemSize()
+{
+    return Limit;
 };

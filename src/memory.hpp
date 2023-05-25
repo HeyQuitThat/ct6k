@@ -37,6 +37,7 @@ public:
     ~Memory();
     uint32_t MemRead(uint32_t Address);
     void MemWrite(uint32_t Address, uint32_t Value);
+    uint32_t GetMemSize();
 private:
     uint32_t Limit;
     uint32_t *Blob;
