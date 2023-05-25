@@ -228,6 +228,26 @@ void DumpListing(std::vector<CodeSegment *>Segs,  std::ofstream &File)
     File << " --- END OF LISTING ---\n\n";
 }
 
+// Dump a C++ header file of the completed program to the given file. This is done after we write
+// the binary, so no error checking needs to be done.
+void DumpROM(std::vector<CodeSegment *>Segs,  std::ofstream &File)
+{
+    File << "#include <cstdint>\n\n";
+    File << "// Comp-o-Tron ROM file generated from asm6k\n\n";
+    uint32_t start = Segs[0]->GetBase();
+    File << "#define ROM_START " << std::hex << std::showbase << start << "\n\n";
+    File << "static uint32_t ROMImage[] = {\n";
+    for (auto s : Segs) {
+        for (std::size_t i = 0; i < s->GetLen(); i++) {
+            File << s->ReadWord(i) << ", ";
+            if ((i & 0x7) == 0x7)
+                File << "\n";
+        }
+        File << "\n";
+    }
+    File << "};\n";
+}
+
 
 #define COT_BIN_CARD_LEN 31
 // Write a single Card-o-Tron card in the file format expected by the COT emulator.
@@ -476,6 +496,7 @@ int main(int argc, char *argv[])
     bool OutputBin {true};
     bool GotOutputType {false};
     bool ProduceListing {false};
+    bool OutputROM {false};
 
     std::cout << ASM_VER_STRING << "\n";
     // Minimum number of args is 4, so don't bother checking them if we don't have
@@ -506,6 +527,10 @@ int main(int argc, char *argv[])
             ProduceListing = true;
             continue;
         }
+        if (TmpArg == "-r") {
+            OutputROM = true;
+            continue;
+        }
         innames.push_back(TmpArg);
     }
 
@@ -521,6 +546,11 @@ int main(int argc, char *argv[])
 
     if (!GotOutputType) {
         std::cerr << "No output format specified. Exiting.\n";
+        return -1;
+    }
+
+    if (OutputROM && !OutputBin) {
+        std::cerr << "Output format must be binary if you want a ROM. Exiting.\n";
         return -1;
     }
     // make sure we can open the output file first
@@ -614,17 +644,33 @@ int main(int argc, char *argv[])
     outfile.close();
     if (ProduceListing) {
         std::ofstream listfile;
-        outname += ".listing";
+        std::string listname = outname + ".listing";
         try {
-            listfile.open(outname, std::ios::out | std::ios::trunc);
+            listfile.open(listname, std::ios::out | std::ios::trunc);
         } catch (const char* msg) {
-            std::cerr << "Error opening output file: " << msg << "\n";
+            std::cerr << "Error opening listing file: " << msg << "\n";
             for (auto s = Segs.begin(); s != Segs.end(); s++)
                delete *s;
             return -1;
         }
         DumpListing(Segs, listfile);
         listfile.close();
+    }
+
+    if (OutputROM) {
+        std::ofstream romfile;
+        std::string romname = outname + ".h";
+        try {
+            romfile.open(romname, std::ios::out | std::ios::trunc);
+        } catch (const char* msg) {
+            std::cerr << "Error opening ROM file: " << msg << "\n";
+            for (auto s = Segs.begin(); s != Segs.end(); s++)
+               delete *s;
+            return -1;
+        }
+        DumpROM(Segs, romfile);
+        romfile.close();
+
     }
 
     for (auto s = Segs.begin(); s != Segs.end(); s++)
