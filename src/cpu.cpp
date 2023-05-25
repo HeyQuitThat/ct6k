@@ -86,6 +86,8 @@ CPUInternalState CPU::DumpInternalState()
 uint32_t CPU::ReadMem(uint32_t Address)
 {
     if (Address < BASE_IO_MEM) {
+        if ((Address >= ROM_Base) && (Address < ROM_Base + ROM_Len))
+            return ROM_Content[Address - ROM_Base];
         return Mem->MemRead(Address);
     } else {
         return ReadIO(Address);
@@ -762,6 +764,19 @@ void CPU::RemoveDevice(Periph *Dev)
     Devices[index].Entry.Base_Addr = 0;
     Devices[index].Entry.IOMemLen = 0;
     Devices[index].Entry.Interrupt = 0;
+}
+
+// Add a ROM image, provided by the caller
+bool CPU::AddROM(uint32_t *ROM, uint32_t Base, uint32_t Len)
+{
+    if (Base < Mem->GetMemSize())
+        return true;
+    if ((Base + Len) > BASE_IO_MEM)
+        return true;
+    ROM_Base = Base;
+    ROM_Content = ROM;
+    ROM_Len = Len;
+    return false;
 }
 
 bool CPU::IsBroken() const

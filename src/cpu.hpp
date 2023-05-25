@@ -66,6 +66,7 @@ public:
     void Reset();
     bool AddDevice(Periph *Dev);
     void RemoveDevice(Periph *Dev);
+    bool AddROM(uint32_t *ROM, uint32_t Base, uint32_t Len);
     bool IsBroken() const;
 
 private:
@@ -74,6 +75,9 @@ private:
     bool Running {true};
     uint32_t FHAP_Addr {0}; // Fault Handler Pointer
     uint32_t IHAP_Addr {0}; // Interrupt Handler Pointer
+    uint32_t ROM_Base {0};
+    uint32_t ROM_Len {0};
+    uint32_t *ROM_Content {nullptr};
     Instruction *CurrentInst {nullptr};
     IORegion Devices[PERIPH_MAP_SIZE] {{{0,}, nullptr,},};    // Allocate separately?
     bool Broken {false};
