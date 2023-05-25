@@ -21,6 +21,10 @@
     MOVE $TEXT, R0
     CALL $PRINTMSB
 
+    INCR R10
+    INCR R10            * R10 now points to the printer control register
+    MOVE 0x2, I10       * Form release
+
 $END
     HALT
 
