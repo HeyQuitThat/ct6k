@@ -14,24 +14,22 @@ FEATURES:
 - move resources and scripts to separate directory.
 
 (Hard but not too hard)
-- BRK instruction for debug support
-- Breakpoint in emulator
-- add assembler support for reg aliases (IP, SP, FLG)
+- Breakpoint in emulator (execution address)
 - Mac OSX support (works but widget spacing is weird)
 - Write a programming guide, not just an instruction reference
 
 (Hard)
-- boot loader firmware
-- assembler option to dump symbol table
-- loader for multi-segment
-- file I/O in separate thread
+- assembler: add symbols to listing
+- file I/O in separate thread to keep clock speed consistent
+    - Or just document that the Comp-o-Tron CPU stalls while I/O is happening
+- live display of next instruction like text mode did
 
 Later:
 - serial I/O for terminal
-- WAIT opcode for interrupt-driven I/O
+- random access storage
+- WAIT opcode for interrupt-driven I/O (could use BRK here)
 - Interrupt support
   - Timer interrupt?
-- random access storage?
 - self-hosted assembler
 - COBOL-ish compiler or BASIC-ish interpreter
 
