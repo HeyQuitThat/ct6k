@@ -84,7 +84,7 @@ struct PeriphMapEntry {
  *
  * To use the Print-o-Tron, first read the status register. If it is zero, then the printer
  * is ready to accept a line of text. Write individual characters to the output register,
- * with each character encoded in the high octet of the word. Non-printing characters other
+ * with each character encoded in the low octet of the word. Non-printing characters other
  * than space are ignored. When the line is complete, write a 1 to the control register to
  * release the line to the printer. The line buffer is then cleared, ready for new input.
  *
