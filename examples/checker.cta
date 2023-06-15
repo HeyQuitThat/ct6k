@@ -1,18 +1,20 @@
 * checker.cta - test program to make a checkerboard of the registers
 * Extra challenge - not allowed to just move all 5s or all As into registers
 
-    MOVE 15, R1
-    MOVE 2, R2
+.VALUE COUNT 15
+.VALUE LSHIFT 2
+    MOVE $COUNT, R1
+    MOVE $LSHIFT, R2
 $INCRLOOP
-    INCR R0     * set low bit
+    INCR R0              * set low bit
     SHIFTL R0, R2, R0
     DECR R1
     JNZERO $INCRLOOP
 * R0 is now alternating 1s and 0s.
     INCR R0
-    MOVE R0, R1
-    NOT R1
-    MOVE R0, R2
+    MOVE R0, R1         * Duplicate R0 pattern to R1
+    NOT R1              * Now invert the pattern
+    MOVE R0, R2         * Now rinse and repeat
     MOVE R0, R3
     NOT R3
     MOVE R0, R4
@@ -28,9 +30,11 @@ $INCRLOOP
     MOVE R0, R11
     NOT R11
     MOVE R0, R12
-    MOVE R1, R13
+    MOVE R0, R13
+    NOT R13
     MOVE R0, R14
-* final move will set IP to an invalid memory location, which will contain all Fs,
-* at that point the system will halt
+* We can't do the same thing with R15 because it's the Instruction Pointer.
+* Instead, the final move will set IP to an invalid memory location, which
+* will contain all Fs, causing the system to increment IP and fault. Since
+* there is no fault handler, the system will double-fault and halt.
     JMP  0xAAAAAAA9
-    HALT   * not really needed
