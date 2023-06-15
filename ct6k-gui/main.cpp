@@ -34,10 +34,9 @@ int main(int argc, char *argv[])
     a.setWindowIcon(QIcon(QPixmap(":/ct6k/ib-on.jpg")));
 
     // Load resources from resource file
-    QFontDatabase fontDB;
-    fontDB.addApplicationFont(":/ct6k/Cabin-Regular.otf");
-    fontDB.addApplicationFont(":/ct6k/Cabin-Bold.otf");
-    fontDB.addApplicationFont(":/ct6k/Merchant Copy.ttf");
+    QFontDatabase::addApplicationFont(":/ct6k/Cabin-Regular.otf");
+    QFontDatabase::addApplicationFont(":/ct6k/Cabin-Bold.otf");
+    QFontDatabase::addApplicationFont(":/ct6k/Merchant Copy.ttf");
 
     MainWindow w;
 
