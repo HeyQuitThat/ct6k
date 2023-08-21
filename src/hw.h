@@ -207,7 +207,34 @@ struct PeriphMapEntry {
  * Formatting errors on read will set the ERR_MECH bit in the status register.
  */
 
+/* Type-o-Tron 7B Teleprinter */
+#define TT7B_DDN                0x54545937
+#define TT7B_STATUS             0x0
+#define TT7B_STAT_NO_LINK       0x80000000      // Device not connnected
+#define TT7B_STAT_CTSI          0x00000001      // Inverted Clear To Send bit
+#define TT7B_TX                 0x1             // Send single character of text in low octet
+#define TT7B_RX                 0x2             // Returns a single character in low octet
+#define TT7B_RX_MASK            0xff
+#define TT7B_VALID              0x80000000      // Register contains a valid character
+#define TT7B_INTCTL             0x3
+#define TT7B_INT_RX             0x00000001      // Trigger interrupt when a character is ready to read
+#define TT7B_INT_TX             0x00000002      // Trigger interrupt when clear to send a character
 
+/* The Type-o-Tron 7B is an advanced teletypewriter device based on the Teletype Model 29.
+ * It utilizes the advanced Comp-o-Tron 7-bit text coding system to represent both upper
+ * and lower case along with most common punctuation marks. It is a "full-echo" device
+ * that expects the host computing device to echo back each character typed.
+ *
+ * N.B. To learn about the advanced Comp-o-Tron 7-bit text coding system, type 'man ascii'
+ * in your Linux or Cygwin terminal.
+ *
+ * The host interface simple, using only three registers.
+ * - To send a character, first read the STATUS register. If it is zero, you are clear to send
+ *   a character. Write the character to the low octet of the TX register. At this time, the CTSI
+ *   bit in the STATUS register will be raised until you are clear to send again.
+ * - To receive a character, read the RX register. If the high bit of this register is set, then
+ *   there is a valid character in the low octet. Once you have consumed this character, write
+ *   any value to the RX register to indicate that the device may send the next character.
 
 /* Tape-o-Tron 1200 */
 #define TOT_DDN                 0x544F5412
