@@ -33,10 +33,10 @@ RegisterSet::RegisterSet(QWidget *Parent, bool SmallScreen) : QWidget{Parent}
             Title = "R15/IP";
             break;
         case REG_SP:
-            Title = "R13/SP";
+            Title = "R14/SP";
             break;
         case REG_FLG:
-            Title = "R14/FLG";
+            Title = "R13/FLG";
             break;
         default:
             Title = QString("R%1").arg(i);
