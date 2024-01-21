@@ -138,14 +138,14 @@ int Usage(char *Cmd)
     std::cout << "Usage: " << Cmd << "[options] file ...\n";
     std::cout << "Options:\n";
     std::cout << "\t-o outfile\n";
-    std::cout << "\t-B raw binary output format\n";
-    std::cout << "\t-C Card-O-Tron card deck output format\n";
+    std::cout << "\t-b raw binary output format\n";
+    std::cout << "\t-c Card-O-Tron card deck output format\n";
     std::cout << "\t-l produce complete listing\n";
     std::cout << "\nRaw binary files can be loaded directly by the emulator but must start at\n";
     std::cout << "address 0. Generally, this is for short programs that can run on the raw\n";
     std::cout << "hardware. For more flexiblity, or to assemble multiple files in multiple\n";
-    std::cout << "code segments, assemble to Card-O-Tron binary format and load them using\n";
-    std::cout << "the Comp-O-Tron 6000 Self Rising feature.\n";
+    std::cout << "code segments, assemble to Card-O-Tron card deck format and load your\n";
+    std::cout << "program using the Comp-O-Tron 6000 Self Rising Flower.\n";
 
     return 0;
 }
