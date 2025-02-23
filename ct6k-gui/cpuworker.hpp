@@ -25,7 +25,6 @@
 #include "../src/cpu.hpp"
 // cpu.hpp includes periph.hpp
 #include "cpuspinner.hpp"
-#include "../src/cardotron.hpp"
 
 // CPUWorker class - control interface to CPU Spinner and the CPU from the UI.
 // This is the class that actually instantiates the CPU and owns it, along
@@ -60,6 +59,7 @@ public slots:
 private:
     CPU *CT6K;
     PrintOTron *POT;
+    StorOTron *SOT;
     CPUSpinner *Spinner;
 };
 

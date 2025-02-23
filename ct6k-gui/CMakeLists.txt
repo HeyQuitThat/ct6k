@@ -27,6 +27,7 @@ set(PROJECT_SOURCES
         ../src/periph.cpp ../src/periph.hpp
         ../src/printotron.cpp ../src/printotron.hpp
         ../src/cardotron.cpp ../src/cardotron.hpp
+        ../src/storotron.cpp ../src/storotron.hpp
         flagdisplay.cpp flagdisplay.hpp
         cpuworker.cpp cpuworker.hpp
         cpuspinner.cpp cpuspinner.hpp

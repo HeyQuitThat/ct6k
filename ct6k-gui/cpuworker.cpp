@@ -44,6 +44,8 @@ CPUWorker::CPUWorker(QObject *parent)
     CT6K->AddDevice(COTP);
     COTS = new CardOTronScan();
     CT6K->AddDevice(COTS);
+    SOT = new StorOTron(NULL);
+    CT6K->AddDevice(SOT);
     CT6K->AddROM(ROMImage, ROM_START, sizeof(ROMImage));
     Spinner = new CPUSpinner(this, CT6K, POT, COTP, COTS);
     QObject::connect(Spinner, SIGNAL(UpdatePanel(CPUInternalState*)), P, SLOT(UpdateFromCPU(CPUInternalState*)));
