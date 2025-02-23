@@ -62,7 +62,8 @@ POP
 INCR - increments value indicated by dest
 DECR - decrements value indicated by dest
 SSTATE - saves all registers on stack
-LSTATE - restores all registers except IP from stack
+LSTATE - restores all registers except R0 and IP from stack
+         IP for obvious reasons, R0 for return value.
 
 [Flow, if address is used, it may be in dest or direct value]
 JZERO
@@ -72,9 +73,9 @@ JNOVER
 JUNDER
 JNUNDER
 JMP
-CALL
-RETURN
-IRET
+CALL - does not save state on stack, just return address (next IP)
+RETURN - does not restore state from stack, just pops IP
+IRET - DOES restore all state from stack
 SIGNED
 UNSIGNED
 INTENA
@@ -210,21 +211,21 @@ TODO: preload a register with mem size?
 #define OP_INTENA	0x56
 #define OP_INTDIS	0x57
 #define OP_NOP		0xF0
-#define OP_BRK      0xFE
+#define OP_BRK		0xFE
 #define OP_HALT		0xFF
 
 /* Finally... */
-#define OP_INVALID	0	/* no bits set, used to generate a fault */
+#define OP_INVALID	0 /* no bits set, used to generate a fault */
 
 
 /* Macros to help build and tear down instructions */
 #define __OPSHIFT 24
-#define OP_LOAD(_op) (uint32_t)((uint8_t)(_op) << __OPSHIFT)
+#define OP_LOAD(_op)   (uint32_t)((uint8_t)(_op) << __OPSHIFT)
 #define __S1SHIFT 16
 #define S1_LOAD(_reg)  (uint32_t)((uint8_t)(_reg) << __S1SHIFT)
 #define __S2SHIFT 8
 #define S2_LOAD(_reg)  (uint32_t)((uint8_t)(_reg) << __S2SHIFT)
-#define __DSHIFT 0 	/* for consistency */
+#define __DSHIFT 0	/* for consistency */
 #define DEST_LOAD(_reg) (_reg)
 
 #define GET_OP(_dword) (uint8_t)(((_dword) >> __OPSHIFT) & 0xFF)
@@ -289,13 +290,13 @@ TODO: preload a register with mem size?
 #define	FAULT_DOUBLE	0x80000000
 
 /* Convenience */
-#define MAX_ADDR		0xFFFFFFFF
-#define STATE_SIZE		16 //words
-#define MAX_STATE_PUSH	(MAX_ADDR - STATE_SIZE)
-#define MIN_STATE_POP	(STATE_SIZE)
-#define FHAP_SIZE		16
-#define MAX_FHAP		(MAX_ADDR - FHAP_SIZE)
-#define IHAP_SIZE		32
-#define MAX_IHAP		(MAX_ADDR - IHAP_SIZE)
+#define MAX_ADDR			0xFFFFFFFF
+#define STATE_SIZE			16 //words
+#define MAX_STATE_PUSH		(MAX_ADDR - STATE_SIZE)
+#define MIN_STATE_POP		(STATE_SIZE)
+#define FHAP_SIZE			16
+#define MAX_FHAP			(MAX_ADDR - FHAP_SIZE)
+#define IHAP_SIZE			32
+#define MAX_IHAP			(MAX_ADDR - IHAP_SIZE)
 
 #endif /* !__ARCH_H__ */
