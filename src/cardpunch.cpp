@@ -18,6 +18,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <cstdint>
 
 
 #define MAX_PUNCH 32
