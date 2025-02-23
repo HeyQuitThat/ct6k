@@ -21,9 +21,12 @@
 #define __HW_H__
 
 #include <cstdint>
+#define CT6K_WORD_SIZE_BYTES	4
+#define CT6K_WORD_SIZE_BITS 	32
 
 /* The DDN is the Digital Device Name - a unique identifier for each device */
 #define BASE_IO_MEM 0xFFF00000  // Reserve 20 bits or 1M words for IO space
+#define MEM_READ_INVALID 0xFFFFFFFF // Value of read from invalid address
 
 /* The peripheral map is a sixteen-entry array of the PeriphMapEntry structure,
  * located at BASE_IO_MEM. It's hard-wired via plugboard and must be updated by a
@@ -235,11 +238,87 @@ struct PeriphMapEntry {
  * - To receive a character, read the RX register. If the high bit of this register is set, then
  *   there is a valid character in the low octet. Once you have consumed this character, write
  *   any value to the RX register to indicate that the device may send the next character.
+ */
 
 /* Tape-o-Tron 1200 */
 #define TOT_DDN                 0x544F5412
 /* Disc-o-Tron random-access storage */
 #define DOT_DDN                 0x444F5400
+
+/* Stor-o-Tron Longitudinal Storage Device */
+#define SOT_DDN					0x414D4F47
+/* What do you do when your major competitor is awarded a patent on the disk-based storage
+ * device that you just started designing? You pivot!
+ * The Stor-o-Tron random-access oscillating cylinder is a groundbreaking cylindrical
+ * magnetic storage device. An amazing lightweight 16 foot long cylinder of spun
+ * aluminum rests vertically on air/oil bearings that allow it to rise and fall to
+ * access a vast amount of data.
+ *  - 100 read/write heads
+ *  - 200 precision cylinder vertical positions
+ *  - 1024 words per cylinder
+ * That's equivalent to 640,000 Card-o-Tron cards!
+ * (78MB for modern users, or 19.5 times the size of default main memory.
+ * Roughly the same ratio as an IBM XT with 640k of RAM and a 10MB hard disk.)
+ * Note: requires three-phase power and 100 PSI air supply at 20 SCFM continuous
+ * The Comp-o-Tron corporation recommends this device be installed in a separate
+ * facility, isolated from that of the Comp-o-Tron 6000. Maximum cable run is 700 feet.
+ * Shipping availble to most facilities in the continental USA, within 5 miles of
+ * any major rail terminal.
+ */
+#define SOT_MEM_SIZE (1028)
+#define SOT_REG_STATUS			0x0
+#define SOT_STATUS_READY		0x00000001
+#define SOT_STATUS_BUSY			0x00000002
+#define SOT_STATUS_ERR			0x00000004
+#define SOT_HEAD_COUNT_MASK		0xFF000000
+#define SOT_HEAD_COUNT_SHIFT    24
+#define SOT_POS_COUNT_MASK		0x00FF0000
+#define SOT_POS_COUNT_SHIFT     16
+#define SOT_REG_COMMAND			0x1
+#define SOT_COMMAND_RESET		0x80000000
+#define SOT_COMMAND_SEEK		0x00000001
+#define SOT_COMMAND_READ		0x00000002
+#define SOT_COMMAND_WRITE		0x00000004
+#define SOT_REG_HEADSEL			0x2
+#define SOT_REG_POSSEL			0x3
+#define SOT_BUFFER				0x4
+#define SOT_BUFFER_LEN			1024 // words
+
+#define SOT_SECTOR_SIZE			SOT_BUFFER_LEN
+#define SOT_NUM_POS				200
+#define SOT_NUM_HEADS			100
+#define SOT_NUM_SECTORS			1
+/* To use the Store-o-Tron, first read the STATUS register to ensure that it is ready.
+ * Then write the HEADSEL and POSSEL registers to indicate which block of data you would
+ * like to read or write. Then write the SEEK bit in the COMMAND register, and poll the
+ * STATUS register for the device to return to the ready state. A change in position takes
+ * 300ms on average. A change in head selection is immediate.
+ * To read, set the READ bit in the COMMAND register and then poll the STATUS register 
+ * for the device to return to the ready state. This will take a maximum of 17ms.
+ * At this point you can read the data BUFFER registers to retrieve the 1024 words of data
+ * on the selected track.
+ * To write data to the device, select the HEAD and POSITION as decribed above. Once the device
+ * is ready, write 1024 words to the BUFFER, then set the WRITE bit in the COMMAND register.
+ * The write will complete in a maximum of 17ms. You may poll the STATUS register to ensure that
+ * the device returns the the ready state, or to detect an error.
+ * Note that the device only stores data; the program accessing the device must handle organization
+ * of the written data to ensure that it can retrieve it at a later time.
+ */
+
+
+/* Scope-o-Tron matrix addressable display device */
+#define SCOPE_DDN 				0x54567476
+/* Based on the advanced French 819 line television system. Raw display resolution
+ * in dot-mode is 816 elements horizontal by 736 elements vertical, for a stunning
+ * total of 3.8 million picture elements.
+ * When used in text-rendering mode, the device can display 76 characters per line
+ * on 46 lines. (11x16 character matrix)
+ * For full interactivity, requires the use of a Type-o-Tron device, which can be
+ * run in no-echo mode to save on paper and ribbon.
+ */
+#define SCOPE_STATUS			0x0
+#define SCOPE_COMMAND			0x1
+//TBD
 
 /* Tick-o-Tron MS */
 /* Millisecond-precision timer and real-time clock device with optional wet-cell battery backup. */

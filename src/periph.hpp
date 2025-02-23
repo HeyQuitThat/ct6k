@@ -32,7 +32,9 @@ enum DeviceClass {
     DC_TAPE,        // Tape-o-Tron 1200
     DC_CARD_READER, // Card-o-Tron 3CS (reader half)
     DC_CARD_PUNCH,  // Card-o-Tron 3CS (writer half)
-    DC_RAS,         // Disc-o-Tron random-access storage
+    DC_RAS,         // Disc-o-Tron and Stor-o-Tron random-access storage
+    DC_TELE,		// Type-o-Tron or other tty-like device
+    DC_DISP,		// Scope-o-Tron matrix addressable display device
 };
 
 // Abstract class, to be instantiated and extended by individual peripherals.
