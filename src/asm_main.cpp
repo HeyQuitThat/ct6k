@@ -22,8 +22,8 @@
 #include <forward_list>
 #include <string>
 #include <string_view>
-#include <boost/format.hpp>
 #include <vector>
+#include <iomanip>
 #include "symref.hpp"
 #include "segment.hpp"
 #include "instruction.hpp"
@@ -199,6 +199,18 @@ std::string FormatDisasm(uint32_t Val, uint32_t Val2, uint32_t *Count)
     return outstr;
 }
 
+// Output a formatted hexadecimal digit to the specified stream.
+// Output will be as if we used 0x%8.8x in C
+void HexOut(std::ofstream &File, uint32_t Value)
+{
+    File << std::showbase;
+    File << std::hex;
+    File << std::setw(8);
+    File << Value;
+    File << std::dec;
+    File << std::noshowbase;
+}
+
 // Dump a listing of the completed program to the given file. This is done after we write
 // the binary, so no error checking needs to be done.
 void DumpListing(std::vector<CodeSegment *>Segs,  std::ofstream &File)
@@ -212,10 +224,12 @@ void DumpListing(std::vector<CodeSegment *>Segs,  std::ofstream &File)
             uint32_t word2 = s->ReadWord(i + 1); // OK to read off the end, we'll just get 0.
             uint32_t used {0};
             std::string instr = FormatDisasm(word1, word2, &used);
-            File << (boost::format("0x%08X : ") % (i + s->GetBase())).str();
-            File << (boost::format("0x%08X ") % word1).str();
+            HexOut(File, i + s->GetBase());
+            File << " ";
+            HexOut(File, word1);
             if (used == 2) {
-                File << (boost::format("0x%08X ") % word2).str();
+                HexOut(File, word2);
+                File << " ";
                 i++;
             } else {
                 File << "           ";

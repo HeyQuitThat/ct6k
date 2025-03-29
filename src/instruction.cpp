@@ -17,13 +17,13 @@
 
 // instruction.cpp - definitions for Instruction class
 #include <cstdint>
+#include <cctype>
 #include <string>
 #include <algorithm>
 #include <cassert>
 #include <climits>
-#include <boost/tokenizer.hpp>
-#include <boost/format.hpp>
 #include <iostream>
+#include <iomanip>
 #include "arch.h"
 #include "instruction.hpp"
 
@@ -262,12 +262,25 @@ void Instruction::PrintOpstr(std::string &Out)
     Out += " ";
 }
 
+// Utility function. Add a formatted hexadecimal digit to the given string.
+// Output will be as if we used 0x%8.8x in C
+void AddHexValue(std::string &Line, uint32_t Value)
+{
+    std::stringstream buffer;
+
+    buffer << std::showbase;
+    buffer << std::hex;
+    buffer << std::setw(8);
+    buffer << Value;
+    Line += buffer.str();
+}
+
 // Print the entire instruction, including register arguments and direct value if available.
 void Instruction::Print(std::string &Out)
 {
     if (IsValidInstruction() == false) {
         // assume it's raw data
-        Out += (boost::format("0x%08X") % Raw).str();
+        AddHexValue(Out, Raw);
     } else {
         PrintOpstr(Out);
         switch(Map->Type) {
@@ -279,7 +292,7 @@ void Instruction::Print(std::string &Out)
         case op_src_dest:
             if (DirectValInUse)
                 if (DirectValProvided)
-                    Out += (boost::format("0x%08X") % DirectVal).str();
+                    AddHexValue(Out, DirectVal);
                 else
                     Out += "<direct data>";
             else
@@ -293,7 +306,7 @@ void Instruction::Print(std::string &Out)
         case op_control_flow:
             if (DirectValInUse)
                 if (DirectValProvided)
-                    Out += (boost::format("0x%08X") % DirectVal).str();
+                    AddHexValue(Out, DirectVal);
                 else
                     Out += "<direct data>";
             else
@@ -370,6 +383,8 @@ uint8_t BuildReg(std::string RegArg)
     uint8_t retval {0};
     uint32_t tmp;
 
+    if (RegArg.empty())
+        throw("Invalid argument");
     if (RegArg[0] == 'R') {
         retval = REG_VAL;
     } else if (RegArg[0] == 'I') {
@@ -401,33 +416,51 @@ uint8_t BuildReg(std::string RegArg)
     return retval;
 };
 
-// This line of code hurts my C-loving heart
-typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
-// This line of code hurts everyone else's C++ loving hearts!
-#define CHECK_TOKENS(_n) {if (num_tokens < (_n)) throw("Insufficient input");}
+
+// Get next token from the In string, place it in Out. Erase In string up to end of
+// token. Tokens are simple combinations of letters and numbers. All other characters
+// are skipped.
+void GetNextToken(std::string &In, std::string &Out)
+{
+    unsigned int i {0};
+    bool found {false};
+
+    Out.clear();
+    while (i < In.length()) {
+        unsigned char tmp = In[i++];
+
+        if (isalnum(tmp)) {
+            found = true;
+            Out += tmp;
+        } else {
+            if (found)
+                break;
+        }
+    }
+    In.erase(0, i);
+
+}
 
 // BuildInstruction - quite possibly the worst parser in the history of the world.
 // We can get away with this terrible excuse for a parser because the language
 // is so very simple. No macros, no assemble-time math, and symbols get handled by the caller
 // of this function.
 // Can throw exception!
-uint32_t BuildInstruction(std::string In, uint32_t& ExtraWord, bool& ExtraWordPresent)
+uint32_t BuildInstruction(std::string In, uint32_t &ExtraWord, bool &ExtraWordPresent)
 {
-    tokenizer tok{In};
     uint32_t retval {0};
-    tokenizer::iterator it;
-    int num_tokens {0};
     OpMap *map;
     std::string tmp;
 
     ExtraWordPresent = false;
-    for (it = tok.begin(); it != tok.end(); ++it)
-        num_tokens++;
-    CHECK_TOKENS(1);
-    it = tok.begin();
-    tmp = *it;
+    GetNextToken(In, tmp);
+    if (tmp.empty())
+        return retval;
+
     if (isalpha(tmp[0])) {
-        // possibly a keyword, possibly junk
+        // Possibly a keyword, possibly junk. If an error happens while processing
+        // register arguments, the BuildReg() function will throw an exception, which
+        // we will not catch here. Thus the caller will catch it and deal accordingly.
         map = FindFromString(tmp);
         retval = OP_LOAD(map->Opcode);
         switch (map->Type) {
@@ -435,50 +468,40 @@ uint32_t BuildInstruction(std::string In, uint32_t& ExtraWord, bool& ExtraWordPr
                 // done; retval is complete
                 break;
             case op_src_only:
-                CHECK_TOKENS(2);
-                it++; // next token should be src reg
-                retval |= S1_LOAD(BuildReg(*it));
+                GetNextToken(In, tmp);
+                retval |= S1_LOAD(BuildReg(tmp));
                 break;
             case op_src_dest:
-                CHECK_TOKENS(4); // instruction, src, separator, dest
-                it++; // next token should be src reg
-                tmp = *it;
+                GetNextToken(In, tmp);
                 if (isdigit(tmp[0])) {
                     retval |= (S1_LOAD(REG_NULL) | S2_LOAD(REG_NULL));
-                    ExtraWord = std::stoul(tmp,nullptr,0);
+                    ExtraWord = std::stoul(tmp, nullptr, 0);
                     ExtraWordPresent = true;
                 } else
-                    retval |= S1_LOAD(BuildReg(*it));
-                it++; // skip separator
-                it++;
-                retval |= DEST_LOAD(BuildReg(*it));
+                    retval |= S1_LOAD(BuildReg(tmp));
+                GetNextToken(In, tmp);
+                retval |= DEST_LOAD(BuildReg(tmp));
                 break;
             case op_dest_only:
-                CHECK_TOKENS(2);
-                it++; // next token should be dest reg
-                retval |= DEST_LOAD(BuildReg(*it));
+                GetNextToken(In, tmp);
+                retval |= DEST_LOAD(BuildReg(tmp));
                 break;
             case op_control_flow:
-                CHECK_TOKENS(2);
-                it++; // next token should be dest reg or direct val
-                tmp = *it;
+                GetNextToken(In, tmp);
                 if (isdigit(tmp[0])) {
                     retval |= DEST_LOAD(REG_NULL);
                     ExtraWord = std::stoul(tmp,nullptr,0);
                     ExtraWordPresent = true;
                 } else
-                    retval |= DEST_LOAD(BuildReg(*it));
+                    retval |= DEST_LOAD(BuildReg(tmp));
                 break;
             case op_2src_dest:
-                CHECK_TOKENS(6); // instruction, src1, separator, src2, separator, dest
-                it++;
-                retval |= S1_LOAD(BuildReg(*it));
-                it++; // skip separator
-                it++;
-                retval |= S2_LOAD(BuildReg(*it));
-                it++; // skip separator
-                it++;
-                retval |= DEST_LOAD(BuildReg(*it));
+                GetNextToken(In, tmp);
+                retval |= S1_LOAD(BuildReg(tmp));
+                GetNextToken(In, tmp);
+                retval |= S2_LOAD(BuildReg(tmp));
+                GetNextToken(In, tmp);
+                retval |= DEST_LOAD(BuildReg(tmp));
                 break;
             default:
                 throw("Invalid instruction");
