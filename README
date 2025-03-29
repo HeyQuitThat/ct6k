@@ -6,7 +6,7 @@ Basic directions:
 This package includes source for the emulator and an assembler, along with
 some example assembly files.
 
-Prerequisites: C++ compiler supporting C++14 or newer, and latest Boost libraries.
+Prerequisites: C++ compiler supporting C++14 or newer.
 On Windows you MUST use the Visual Studio compiler and not MINGW.
 
 To build console tools, including the assembler and text UI:
