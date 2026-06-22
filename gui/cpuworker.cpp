@@ -24,9 +24,9 @@
 #include <QPushButton>
 #include <QObject>
 #include <QString>
-#include "../src/cpu.hpp"
+#include <cpu.hpp>
 #include "qobjectdefs.h"
-#include "../src/loadprog.h"
+#include <loadprog.h>
 
 // Constructor. This instantiates the CPU as well as the Spinner to run it in
 // a separate thread.
@@ -44,8 +44,6 @@ CPUWorker::CPUWorker(QObject *parent)
     CT6K->AddDevice(COTP);
     COTS = new CardOTronScan();
     CT6K->AddDevice(COTS);
-    SOT = new StorOTron(NULL);
-    CT6K->AddDevice(SOT);
     CT6K->AddROM(ROMImage, ROM_START, sizeof(ROMImage));
     Spinner = new CPUSpinner(this, CT6K, POT, COTP, COTS);
     QObject::connect(Spinner, SIGNAL(UpdatePanel(CPUInternalState*)), P, SLOT(UpdateFromCPU(CPUInternalState*)));

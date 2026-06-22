@@ -22,10 +22,9 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <QString>
-#include "../src/cpu.hpp"
-#include "../src/printotron.hpp"
-#include "../src/cardotron.hpp"
-#include "../src/storotron.hpp"
+#include <cpu.hpp>
+#include <printotron.hpp>
+#include <cardotron.hpp>
 
 // Run state of CPU Spinner thread. Set by buttons on the UI, checked by the spinner thread
 // each time through the loop.
@@ -70,7 +69,6 @@ private:
     PrintOTron *MyPOT;
     CardOTronPunch *MyCOTP;
     CardOTronScan *MyCOTS;
-    StorOTron *MySOT;
     void RunThenWait(int msec);
 
 };

@@ -1,16 +1,12 @@
-cmake_minimum_required(VERSION 3.5)
+#set(CMAKE_CXX_STANDARD 17)
 
-project(ct6k-gui VERSION 0.1 LANGUAGES CXX)
+
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -21,13 +17,6 @@ set(PROJECT_SOURCES
         dword.cpp dword.hpp
         controlpanel.cpp controlpanel.hpp
         registerset.cpp registerset.hpp
-        ../src/instruction.cpp ../src/instruction.hpp
-        ../src/cpu.cpp ../src/cpu.hpp ../src/hw.h ../src/arch.h
-        ../src/memory.cpp ../src/memory.hpp
-        ../src/periph.cpp ../src/periph.hpp
-        ../src/printotron.cpp ../src/printotron.hpp
-        ../src/cardotron.cpp ../src/cardotron.hpp
-        ../src/storotron.cpp ../src/storotron.hpp
         flagdisplay.cpp flagdisplay.hpp
         cpuworker.cpp cpuworker.hpp
         cpuspinner.cpp cpuspinner.hpp
@@ -37,6 +26,7 @@ set(PROJECT_SOURCES
         ct6k.qrc
         ct6k-gui.rc
 )
+
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(ct6k-gui
@@ -61,7 +51,15 @@ else()
     endif()
 endif()
 
-target_link_libraries(ct6k-gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(ct6k-gui
+		PRIVATE
+		 Qt${QT_VERSION_MAJOR}::Widgets
+		 Machine
+)
+
+target_include_directories(ct6k-gui
+		PRIVATE
+		${CMAKE_BINARY_DIR}/tools)
 
 set_target_properties(ct6k-gui PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

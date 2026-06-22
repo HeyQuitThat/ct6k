@@ -29,7 +29,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QDebug>
-#include "../src/arch.h"
+#include <arch.h>
 
 #include "controlpanel.hpp"
 #include "ct6k-info.h"

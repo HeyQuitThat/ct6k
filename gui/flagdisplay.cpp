@@ -20,7 +20,7 @@
 #include <QFrame>
 #include <QSpacerItem>
 #include "flagdisplay.hpp"
-#include "../src/arch.h"
+#include <arch.h>
 
 #define MAX_FLAG_TITLE_LEN 10 // INTERRUPT + null
 struct FlgMap {

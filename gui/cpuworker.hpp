@@ -22,7 +22,7 @@
 #include <QThread>
 #include <cstdint>
 #include <iostream>
-#include "../src/cpu.hpp"
+#include <cpu.hpp>
 // cpu.hpp includes periph.hpp
 #include "cpuspinner.hpp"
 
@@ -59,7 +59,6 @@ public slots:
 private:
     CPU *CT6K;
     PrintOTron *POT;
-    StorOTron *SOT;
     CPUSpinner *Spinner;
 };
 

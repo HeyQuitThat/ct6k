@@ -26,7 +26,7 @@
 #include <QFrame>
 #include "registerset.hpp"
 #include "flagdisplay.hpp"
-#include "../src/cpu.hpp"
+#include <cpu.hpp>
 
 // This is the overarching class for the visible control panel, including
 // all of the lights, buttons, and accompanying text.

@@ -21,7 +21,6 @@
 #define __CARDOTRON_HPP__
 #include <cstdint>
 #include <fstream>
-#include <string>
 #include <chrono>
 #include "periph.hpp"
 
@@ -47,7 +46,6 @@ private:
     uint32_t StatusReg;
     uint32_t *ReadBuf;
     uint32_t CardInfoReg;
-    uint8_t ReadBufSize;
     bool Reading;
     std::chrono::time_point<std::chrono::steady_clock> ReadStart;
     std::ifstream *InFile {nullptr};

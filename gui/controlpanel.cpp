@@ -20,8 +20,8 @@
 #include <QObject>
 #include <QScreen>
 #include "controlpanel.hpp"
-#include "../src/arch.h"
-#include "../src/cpu.hpp"
+#include <arch.h>
+#include <cpu.hpp>
 #include <QApplication>
 
 // These values can be oversized - the background will be clipped

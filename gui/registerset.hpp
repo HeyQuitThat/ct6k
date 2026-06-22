@@ -19,7 +19,7 @@
 #ifndef REGISTERSET_H
 #define REGISTERSET_H
 #include "dword.hpp"
-#include "../src/arch.h"
+#include <arch.h>
 
 // RegisterSet class - controls the layout and display/input of 16 DWord
 // objects representing the 16 registers of the CPU.
