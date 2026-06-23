@@ -82,6 +82,7 @@ INTENA
 INTDIS
 HALT
 NOP
+BRK - stops and waits for interrupt or user interaction
 
 [Handlers, address in src11]
 SETFHAP
